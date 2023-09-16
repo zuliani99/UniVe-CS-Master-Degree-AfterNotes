@@ -1,2 +1,2 @@
-# UniVe-CS-Master-Degree-AfterNotes
-Repository where I share all my notes regarding the CS Master Degree of Ca' Foscari University of Venice
+# Image Video Understanding
+Hand Written [afternotes](https://drive.google.com/file/d/1DtLhl_GCTLIVzei89MblVmm2P1FMcjBu/view?usp=drive_link)

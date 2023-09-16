@@ -1,2 +1,2 @@
-# UniVe-CS-Master-Degree-AfterNotes
-Repository where I share all my notes regarding the CS Master Degree of Ca' Foscari University of Venice
+# Learning with Massive Data
+Hand written [afternotes](https://drive.google.com/file/d/1V-nrnBxi5lL-_4IhHfnrl1-nnkGax9kJ/view?usp=drive_link)
