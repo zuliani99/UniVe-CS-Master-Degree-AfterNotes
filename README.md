@@ -10,7 +10,7 @@ In each folder you will find the relative afternotes in tow possible format:
 2. [Applied Probability for Computer Science](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Applied%20Probability%20for%20CS)
 3. [Artificial Intelligence 2](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Artificial%20Intelligence%202)
 4. [Calculus and Optimization](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Calculus%20and%20Optimization)
-5. [Cloud COmputing and Distributed System](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Cloud%20Computing%20and%20Distributed%20System)
+5. [Cloud Computing and Distributed System](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Cloud%20Computing%20and%20Distributed%20System)
 6. [Geometric 3D Computer Vision](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Geometric%203D%20Computer%20Vision)
 7. [Image Video Understanding](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Image%20Video%20Understanding)
 8. [Information Retrieval Web Search](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Information%20Retrieval%20Web%20Search)
