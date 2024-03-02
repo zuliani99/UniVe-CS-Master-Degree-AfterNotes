@@ -16,6 +16,7 @@ In each folder you will find the relative afternotes in tow possible format:
 8. [Information Retrieval Web Search](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Information%20Retrieval%20Web%20Search)
 9. [Learning with Massive Data](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Learning%20with%20Massive%20Data)
 10. [Deep Learning For Natural Language Processing](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Deep%20Learning%20for%20Natural%20Language%20Processing)
+11. [Advanced Algorithm adn Programming Languages](https://github.com/zuliani99/UniVe-CS-Master-Degree-AfterNotes/tree/main/Advanced%20Algorithm%20and%20Programming%20Languages)
 
 
 ## Report Style Format
