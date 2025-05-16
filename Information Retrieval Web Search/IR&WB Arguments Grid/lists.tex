@@ -1,0 +1,756 @@
+\chapter{Introduction}
+\begin{itemize}
+    \item Definition of Information Retrieval
+    \item Used by Web Search Engine, it has three main actors
+    \begin{itemize}
+        \item User’s perspective
+        \item Search Engine’s perspective
+        \item Advertiser’s perspective
+    \end{itemize}
+    \item What makes webs search engine difficult
+    \item Four main challenges:
+    \begin{itemize}
+        \item Volume
+        \item Velocity
+        \item Variety
+        \item Varacity
+    \end{itemize}
+    \item Web Search engine
+    \begin{itemize}
+        \item Webcrawler
+        \item Indexing
+        \item Query Processing
+    \end{itemize}
+\end{itemize}
+
+\chapter{Basic Information Retrieval}
+\begin{itemize}
+    \item Assumption
+    \begin{itemize}
+        \item Collection
+        \item Goal
+    \end{itemize}
+    \item Measures
+    \begin{itemize}
+        \item Precision
+        \item Recall
+    \end{itemize}
+    \item \textbf{Term Document Incident Matrix}
+    \begin{itemize}
+        \item Definition
+        \item Incident Matrix
+        \item Incident Vector
+        \item Disadvantage of Incident matrix
+    \end{itemize}
+    \item \textbf{Inverted Index}
+    \begin{itemize}
+        \item Definition
+        \item Construction
+        \begin{enumerate}
+            \item Document gathering
+            \item Tokenization
+            \item Normalization
+            \item Stemming
+            \item Stop Words
+            \item Inverted Index
+        \end{enumerate}
+        \item Indexer Step:
+        \begin{enumerate}
+            \item Token Sequence
+            \item Sort
+            \item Merge
+        \end{enumerate}
+    \end{itemize}
+    \item \textbf{Boolean Retrieval Model}
+    \begin{itemize}
+        \item Definition
+        \item Why it works \(\rightarrow\) AND, OR, NOT
+        \item Why it fails \(\rightarrow\) AND, OR, NOT
+        \item Strengths
+        \item Weaknesses
+    \end{itemize}
+    \item \textbf{Query optimization}
+    \item \textbf{Phrase queries and positional indexes}
+    \begin{itemize}
+        \item Problem of queries containing multiple words
+        \item Biwords indexes
+        \item Positional Indexes
+        \item Combination = Biwords + Positional Indexes 
+    \end{itemize}
+    \item \textbf{Fasting posting merge}
+    \begin{itemize}
+        \item Skip pointers
+    \end{itemize}
+    \item Structured VS Unstructured Data
+\end{itemize}
+
+\chapter{Document Ingestion}
+\begin{itemize}
+    \item Parsing Document
+    \item Token and Tokenization
+    \item Stop Words
+    \item Normalization
+    \begin{itemize}
+        \item Type
+        \item Terms
+    \end{itemize}
+    \item Case Folding
+    \item Thesauri and Soundex
+    \item Lemmanization
+    \item Stemming
+\end{itemize}
+
+\chapter{Dictionary Structure}
+\begin{itemize}
+    \item Native Dictionary
+    \item How to store Dictionary
+    \begin{itemize}
+        \item Hash Tables
+        \begin{itemize}
+            \item Lookup in O(1)
+            \item No Prefix Search, rehashing, difficult to find mirror variants 
+        \end{itemize}
+        \item Binary Trees
+        \begin{itemize}
+            \item K keys = k+1 children
+            \item Solves prefix search
+            \item Search grows up to O(log M)
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Wild Queries}
+    \begin{itemize}
+        \item Definition
+        \item B-Tree
+        \item Permutation index
+        \item n-Gram index
+    \end{itemize}
+    \item \textbf{Spelling Correction}
+    \begin{itemize}
+        \item Definition
+        \item Isolated word
+        \begin{itemize}
+            \item Assumption: correct lexicon
+            \item Definition
+            \item How to measure distances among words?
+            \begin{itemize}
+                \item Edit distance: hamming distance
+                \item Weight edit distance
+                \item n-Gram overlap: jaccard coefficient
+            \end{itemize}
+        \end{itemize}
+        \item Context sensitive
+    \end{itemize}
+\end{itemize}
+
+\chapter{Index Construction}
+\begin{itemize}
+    \item \textbf{Hardware Basics}
+    \begin{itemize}
+        \item Access to data
+        \item Disk Seeks
+        \item Transfer Speed
+    \end{itemize}
+    \item \textbf{Sorting process}
+    \begin{itemize}
+        \item Document are parsed to extract terms and saved with document id
+        \item Inverted file is sorted by terms and then by docID if the sorting algorithm is not stable
+        \item \textit{Problem:} in memory index construction does not scale
+        \begin{itemize}
+            \item Not big stuff in corpus, sorting by stable algorithm is possible by virtual memory
+            \item Sorting requires page fault and swapping
+        \end{itemize}
+        \item \textit{Questions:}
+        \begin{itemize}
+            \item How we can construct index for large corpus of data
+            \item Can we use the same index construction algo for larger collections, but by using disk insted of memory
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{BSBI}
+    \begin{itemize}
+        \item Algo steps:
+        \begin{itemize}
+            \item Accumulate postings for each block
+            \item Sort in memory block
+            \item Write to disk
+            \item Merge blocks into one and then write back
+        \end{itemize}
+        \item Binary merge? \(\rightarrow\) rewrite increasigly larger blocks to disk: expensive
+        \item How we merge sorted runs?
+        \item Multi-way merge: read from all blocks simultaneosly
+        \item Need a dictionary to implement (term \(\rightarrow\) termid) mapping
+        \item Work with term docid postings instead of termid docid postings
+        \item Intermediate file becomes very large
+    \end{itemize}
+    \item \textbf{SPIMI}
+    \begin{itemize}
+        \item Generate Separated dictionaries for each blocks (do not need the mapping across blocks)
+        \item Accumulate postings in postings list without sorting
+        \item With so we have a complete inverted index for each block, separate index can be merged into big index
+        \item Compression more efficient
+    \end{itemize}
+    \item \textbf{Distribute indexing}
+    \begin{itemize}
+        \item Distributed cluster computer to reduce data losses 
+        \item Master Machine \(\rightarrow\) Pool of Machines
+        \item Parses: read DAAT emits (term, docid) wrting into j-partitions 
+        \item Inverter: for each j-partitions, they collect (term, docid), sort, write in posting
+        \item work divided in chucks, failure case reassign to individual workers
+    \end{itemize}
+    \item \textbf{Dynamic Indexing}
+    \begin{itemize}
+        \item Assumption: collections static, documents deleted and modified, dictionary and posing modified too
+        \item Periodically reconstruct the index from scratch
+        \item Maintain two indexes
+        \begin{itemize}
+            \item Big \(\rightarrow\) all terms, disk
+            \item Small \(\rightarrow\) all new terms, memory
+        \end{itemize}
+        \item Search in both and merge results
+        \item Time in time we need to reindex in one main index with logarithmic merge
+    \end{itemize}
+\end{itemize}
+
+\chapter{Index Compression}
+\begin{itemize}
+    \item Compression allow us to
+    \begin{itemize}
+        \item Inverted indexes
+        \item Posting lists
+    \end{itemize}
+    \item Lossy and Lossness compression
+    \item \textbf{Estimate Vocabulary Size}
+    \begin{itemize}
+        \item How big is the term vocabulary, can we assume an upper bound?
+        \item Heap's Law
+        \item Zipf's Law
+        \item Power Law
+    \end{itemize}
+    \item \textbf{Compression}
+    \begin{itemize}
+        \item \textbf{Dictionary}
+        \begin{itemize}
+            \item First cut
+            \item Dictionary as a string
+            \item Blocking
+            \item Front Coding
+        \end{itemize}
+        \item \textbf{Posting}
+        \begin{itemize}
+            \item Posting file entry
+            \item Variable length coding
+            \item Gamma code
+            \item Delta code
+            \item Glomb-Rice
+            \item Interpolate Coding
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\chapter{Scoring, Term Weighting and Vector Space model}
+\begin{itemize}
+    \item Query boolean, good for expert, bad for the majority of the user, boolean query results in too few or too many
+    \item Rather a set of document satisfying a query expression in ranked retrieval, ordering over top docs in collection for query
+    \item When a system provides a ranked result set, large result set are not an issue, we show the top k results
+    \item How can we rank-order the documents in the collection with respect to the query?
+    \begin{itemize}
+        \item Assign a score (0,1) to each doc, measure who well query doc match
+        \begin{itemize}
+            \item If the query does not occur the score should be 0
+            \item The more frequent the query term in the document, the higher the score should be
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{How to assign a score}
+    \begin{itemize}
+        \item Jaccard coefficient
+        \begin{itemize}
+            \item It does not consider term frequency
+            \item Rare terms are more informative than frequent term
+            \item We need a more sophisticated way to normalize the length
+        \end{itemize}
+        \item Bag of words model \(\rightarrow\) vector representation does not consider the ordering of words in a document, thus loose information
+        \item Term Frequency \(TF_{t,d} \rightarrow\) number of times that t occurs in document d
+        \begin{itemize}
+            \item Relevance does not increase proportionally with term frequency
+        \end{itemize}
+        \item Log Frequency Weighting
+        \begin{itemize}
+            \item mitigate previous problem, reason
+        \end{itemize}
+        \item IDF Weight 
+        \begin{itemize}
+            \item More emphaty for rare terms, less emphaty for common terms
+            \item IDF has no effect on ranking "one term" queries, since all documents in which the term occurs have the same score
+            \item IDF affects the ranking of documents for queries with at least two terms
+        \end{itemize}
+        \item \textbf{How do we weight document terms in the vectors?}
+        \begin{itemize}
+            \item terms that appear often in a document should get high weights
+            \item terms that appear in many documents should get low weight
+            \item How do we capture this mathematically speaking
+        \end{itemize}
+        \item \textbf{TF - IDF Weighting:} products of its weight and its IDS weight
+    \end{itemize}
+    \item Binary, Count, Weight Matrix
+    \item \textbf{Query as Vectors}
+    \begin{itemize}
+        \item Do the same for queries: represent them as vectors in the space
+        \item Rank documents according to their proximity to the query
+    \end{itemize}
+    \item We have two possible strategy:
+    \begin{itemize}
+        \item \textbf{Euclidean Distance}, problem with the vector length
+        \item \textbf{Angle and Cosine}
+        \begin{itemize}
+            \item dot product
+            \item length normalization
+            \item cosine (query, document)
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\chapter{Scoring and Result Assembly}
+
+\begin{itemize}
+    \item How to speed up the vector space ranking and analyse a complete search system
+    \item TAAT: one query term at a time, features
+    \item DAAT: compute the total score for each document before processing the next, features
+    \item Efficient cosine ranking
+    \begin{itemize}
+        \item Find the k documents in the collection nearest to the query: k largest query-doc cosines
+        \begin{enumerate}
+            \item Computing the single cosine value efficiently
+            \item Choosing the k largest cosine values efficiently
+        \end{enumerate}
+        \item Can we do this without computing all the n cosines?
+    \end{itemize}
+    \item \textbf{Safe Ranking:} guaranteed that the k docs returned are the k highest scoring documents
+    \begin{itemize}
+        \item Max Heap to select the top K
+        \item Fast Scoring
+        \item Accumulator Array
+        \item Min Heap of K elements
+        \item Wanda Scoring
+        \begin{itemize}
+            \item algo:
+            \begin{enumerate}
+                \item Running threshold score (t-th)
+                \item Prune away doc that are surely bellow the threshold
+                \item Compute the exact score to the unpruned docs
+            \end{enumerate}
+            \item index construction
+            \item upper bound
+            \item threashold
+        \end{itemize}
+        \item Block-max
+        \begin{itemize}
+            \item wand sores the maximum "impact score" for each term/posting list
+            \item B-M index is an argumented inverted index structure to make wand faster
+            \begin{itemize}
+                \item Stores the maximum "impact scores" for each block of compressed inverted list in uncompressed form
+                \item Split the inverted list into blocks to be decompressed separately
+                \item Table for each compressed block (info on that block)
+            \end{itemize}
+            \item Algo:
+            \begin{enumerate}
+                \item Sort list from to to bottom via docid
+                \item Find pivoit id
+                \item Use the global maximum scores to check if the candidate pivoid is a real pivoit
+                \item If is real:
+                \item else: 
+            \end{enumerate}
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Un-Safe Ranking:} the retrieved k doc may be accettable since ranking is only a proxy of user happiness. Its generic approch is to find a set A (in which it does not necessary contain the top k) of contenders. The primary computation bottleneck in scoring is the cosine computation of all candidates.
+    \begin{itemize}
+        \item Wand made unsaefe
+        \begin{itemize}
+            \item Safe aggreagre pruning: smaller k
+            \item unsafe aggregate pruning threashold
+        \end{itemize}
+        \item Index elimination: consider docs only containing one query term
+        \begin{itemize}
+            \item Only consider High-IDF query terms
+            \item Documents that contain many query terms
+        \end{itemize}
+        \item Champion List
+        \item Static Query Score: we want the top-ranking docs to be relevant and authoritative
+        \begin{itemize}
+            \item Relevant: modeled by cosine scores
+            \item Authoritative: query-independent propriety, so to model this we assign to each doc a quality score g(d)
+            \item Net Score
+            \item Top-k by net score
+            \item Champion list in g(d)-ordering
+            \item High and Low lists
+            \item Tired Indexes
+            \item Impact order postings
+            \item Cluster Pruning
+            \item Document clustering
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Parametric and zone indexes}
+    \begin{itemize}
+        \item Fields = (Author, title, date of pub, ...) = metadata of the document
+        \item Sometimes we wnat to search using these fields, thus we have to maintain a posting list for each field value
+    \end{itemize}
+\end{itemize}
+
+\chapter{Evaluation}
+\begin{itemize}
+    \item There are several ways to check if the users are satisfied of the search engine:
+    \begin{itemize}
+        \item The search results get clicked a lot
+        \item Users buy some products after the search engine
+        \item Users and buyers repeat the search
+        \item Time user spend after clicking a link on a serp page before licking back to the serp results
+    \end{itemize}
+    \item \textbf{Measuring relevance of search results}
+    \begin{itemize}
+        \item Bench collection of documents
+        \item Bench suite of queries
+        \item Evaluation of either relevant or non relevant
+    \end{itemize}
+    \item The evaluation should be based on the result satisfing the need and not on the content of required words
+    \item \textbf{UnRanked Retrieval Evaluation}
+    \begin{itemize}
+        \item Precision
+        \item Recall
+        \item F-Measure
+    \end{itemize}
+    \item \textbf{Ranked Retrieval Evaluation}
+    \begin{itemize}
+        \item Binary relevance
+        \begin{itemize}
+            \item Precision(P@K)
+            \item Mean Average Precision (MAP)
+            \item Mean Reciprocal Rank (MAR)
+        \end{itemize}
+        \item Multiple Levels of relevance
+        \begin{itemize}
+            \item Discounted Cumulative Gain
+            \item Normalized Discounted Cumulative Gain (NDCG)
+        \end{itemize}
+    \end{itemize}
+    \item Using User Click
+    \item Comparing to a basic ranking (Kendall Tan Distance)
+\end{itemize}
+
+\chapter{Relevance Feedback \& Query Expansion}
+\begin{itemize}
+    \item Relevance to evaluate the quality of an IR system
+    \item To evaluate we need three benchmarks
+    \item The query result can be different from the real information needed
+    \item Improving Recall
+    \begin{itemize}
+        \item Increase relevance feedback: by telling the ir system which docs are relevant and non relevant
+        \item Query expansion: by adding synonyms and related terms 
+    \end{itemize}
+    \item \textbf{Relevance Feedback}
+    \begin{itemize}
+        \item query, ret docs, user marks rel and non rel, se repres of info needed, se ret new res
+        \item Centroids
+        \item Rocchio's Algorithm
+        \begin{itemize}
+            \item forula
+            \item maximize the similarity between rel docs, while minimizing the similarity with non rel docs
+            \item Cosine similarity
+            \item Rocchio smart algorithm
+            \item New queries move towards relevant documents and move away from non relevant documents
+        \end{itemize}
+        \item Problems:
+        \begin{enumerate}
+            \item Expensive, because long modified queries are expensive to process
+            \item Hard to understand way a particular cod was retreived
+        \end{enumerate}
+    \end{itemize}
+    \item \textbf{Pseudo-relevance Feedback}
+    \item \textbf{Query Expansion}: method used to increase recall
+    \begin{itemize}
+        \item Publication or databases that collects (near)-synonyms, are called thesaurus
+        \begin{itemize}
+            \item for each query t in the query we expand the query with words on the thesaurus, eg using wordnet
+        \end{itemize}
+        \item Manual thesaurus
+        \begin{itemize}
+            \item dictionary manually maintained, difficult to maintain and keeping updated
+        \end{itemize}
+        \item Automatically derived thesaurus
+        \begin{itemize}
+            \item Analysing the distribution of words in the documents using the similarity between words
+            \begin{enumerate}
+                \item two words are similar if they co-occur with similar word
+                \item two words are similar if they occur in a given grammatical relation with the same words
+            \end{enumerate}
+            \item \textit{co-occorrence thesaurus}: based on similarity in \(C=A \cdot A^T\) where A is the document query matrix
+            \item \textit{word- embedding}
+            \begin{itemize}
+                \item dense vector for each word w
+                \item measure similarity as the vector dot scalar product
+                \item word2vec
+                \item word2vec for query expansion
+            \end{itemize}
+        \end{itemize}
+        \item Query equivalence beased on query log minimg (query expansion in search engine)
+        \begin{itemize}
+            \item query logs example
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\chapter{Link Analysis}
+\begin{itemize}
+    \item Initially search engine compare content similarity of the query and the indexed pages
+    \item Content similarity alone was no longer sufficient to express quality classification, since the number of pages grew and it was easy spammed
+    \item Researches switch to \textbf{hyperlinks} (PageRank, HITS), which are used to find web communities
+    \item \textbf{Network Proprieties}
+    \begin{itemize}
+        \item (Barbasi - Albert) A network is scale free if its degree distribution follows a power law
+        \item A particular aspect is that the clustering coefficient C is very high (My friend are friend too)
+        \item Preferential attachment process (rich node gets richer), probability
+        \item Graph definition
+        \item SF network arise from the preferential attachment process, where it is a pattern of network growth, rich nodes get richer
+        \item Small world networks
+    \end{itemize}
+    \item \textbf{Social Network Analysis}
+    \begin{itemize}
+        \item Definition
+        \item Page = Social Actor
+        \item Hyperlink = Relationship
+        \item \textbf{Centrality}
+        \begin{itemize}
+            \item Degree Centrality (Undirected, Directed)
+            \item Closness Centality
+            \item Betweeness Centrality (Undirected, Directed)
+        \end{itemize}
+        \item \textbf{Prestige}
+        \begin{itemize}
+            \item Degree Prestige
+            \item Proximity Prestige
+            \item Rank Prestige
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Co-citation and bibliographic coupling}
+    \begin{itemize}
+        \item When a paper cite an other the relationship is establish
+        \item Co-citation
+        \begin{itemize}
+            \item if paper i and j are both cited by paper k, then they may be related in some sense to one other. More paper they are cited by the stronger the relationship is. Similarity measure, number of cocite i and j
+            \item L is the similarity matrix
+            \item \(C_{ij}\) is the simialrity measure
+        \end{itemize}
+        \item Bibliographic coupling:
+        \begin{itemize}
+            \item links paper that cite the same article. If i and j cite paper k, they may be related
+            \item the more paper cite both papers i and j the stronger their similarity is 
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{PageRank}
+    \begin{itemize}
+        \item Definition
+        \item More in links page i receives the more prestige it gets
+        \item The importance of page i is the sum of pagerank of all pages that points to i 
+        \item p Columns vector of pagerank values
+        \item A Adjacent matrix
+        \item \(P = A^T P\)
+        \item Charatheristic equation of the eigensystem
+        \item \(\lambda P = A^T P\) we use the power iteration to find p
+        \item Derive a Markov chain, to models the web surfing by a stochastic process
+        \item Propriety
+        \item Probability that the system is in state j after 1 step
+        \item Stationary probability distribution
+        \item A is not stochastic, not irreducible and not aperiodic
+        \item Proof
+        \item Teleportation
+        \item Advantage: fighting spam, global measure and it is query independent
+        \item Disadvantage: Query independent
+    \end{itemize}
+    \item \textbf{HITS}
+    \begin{itemize}
+        \item It is query independent
+        \item Authority: a good one is pointed by many god nodes
+        \item Hub: a good one points to many good authorities
+        \item Scores
+        \item Power iteration
+        \item Strenght: ability to rank pages according to the query topic
+        \item Weakness: easy spammed, topic drift, inefficient at query time
+    \end{itemize}
+\end{itemize}
+`
+\chapter{Web Crawling}
+\begin{itemize}
+    \item Process of locating, fetching and storing the pages available in the web
+    \item Web crawlers exploit the hyperlinks structure of the web
+    \item Basic crawler operation
+    \begin{itemize}
+        \item Begin with known seed url
+        \item Fetch and parse them
+        \begin{itemize}
+            \item Extract URLs they point to
+            \item Place the expected URLs on a queue
+        \end{itemize}
+        \item Fetch each URL on the queue and repeat
+    \end{itemize}
+    \item Queue management is particular, in fact we could insert lot of spam pages or spider traps 
+    \item Consider variance of latency and stopping
+    \item Crawler must be:
+    \begin{itemize}
+        \item Robust
+        \item Explicit polite
+        \item Implicit Polite
+    \end{itemize}
+    \item \textbf{What any crawler should do:}
+    \begin{itemize}
+        \item Capable of distributed operation
+        \item Be scalable
+        \item Performance efficiency
+        \item Fetch page of "higher quality" first
+        \item Continuous operation
+        \item Extensible
+    \end{itemize}
+    \item \textbf{Processing steps in crawling}
+    \begin{enumerate}
+        \item Pick a url from the frontier
+        \item Fetch the document at the url
+        \item Parse the url, extracting the links from the other docs
+        \item Check if url has contents already seen, if not add to indexes
+        \item For each extracted url ensure it passes certain url filter tests and check if ti is already in the frontier
+    \end{enumerate}
+    \item \textbf{Basic Crawler Architecture:}
+    \begin{itemize}
+        \item DNS
+        \begin{itemize}
+            \item Problem asking sequential requests at a server
+            \item Solved by improving dns catching or sending a dns batch of requests
+        \end{itemize}
+        \item Parsing URL normalization: Solve problem of assign same url to different crawler
+        \item Content: if a fetched page is already in the index, do not further process it
+        \item Filters: verify rules in robots files, once a robots.txt file is fetched from a site, need not fetch it repeatedly. (This file specifies access restrictions)
+        \item Duplicate URL elimination: test if an extracted + filtered url has already been passed to the frontier
+    \end{itemize}
+    \item \textbf{Distribute web crawling and fault tollerance}
+    \begin{itemize}
+        \item Hash-based partitioning: stupid way since near site will be assign in 2 different locations
+        \item Site-based partitioning: arbitrary decide how to partition the space
+        \item \textit{Fault tollerance}
+        \begin{itemize}
+            \item Firewall Mode
+            \item Crossover Mode
+            \item Exchange Mode
+        \end{itemize}
+    \end{itemize}
+    \item URL Frontier's considerations:
+    \begin{itemize}
+        \item Freshness: crawl some pages more often than others
+        \item Politeness: do not hit a web server to often
+    \end{itemize}
+    \item \textbf{URL Partition:} two separate queue for download of usrls
+    \begin{itemize}
+        \item Discovery queue
+        \item Refreshing queue
+    \end{itemize}
+    \item The web is dynamic
+    \item Revisit policy of Web pages
+    \begin{itemize}
+        \item General problem:
+        \item Freshness (binary) of page \(e_i\)
+        \item Age (real positive of page \(e_i\)
+        \item \textbf{Repository Refreshing:}
+        \begin{itemize}
+            \item Average freshness as two distinct policies:
+            \begin{itemize}
+                \item Fresh page as high
+                \item age of pages as low
+            \end{itemize}
+            \item When Update:
+            \begin{itemize}
+                \item Unifrom (better)
+                \item Proportional
+            \end{itemize}
+            \item Queue theory and quality of service
+        \end{itemize}
+    \end{itemize}
+    
+\end{itemize}
+
+\chapter{Web Mining}
+
+\chapter{Learning to Rank}
+\begin{itemize}
+    \item Can we use ML to rank the documents displayed in the search result?
+    \begin{itemize}
+        \item Why didn't it happen earlier?
+        \item Why wasn't much needed?
+        \item Why ML is needed now?
+    \end{itemize}
+    \item Using classification for ad hoc IR
+    \begin{itemize}
+        \item Training corpus: feature vector, shortest text span
+        \item Goal
+        \item Linear score function
+        \item Can we generalize these two classifier functions over more that two features?
+    \end{itemize}
+    \item \textbf{BM25:} probabilistic model for scoring which use term independence assumption to approximate the document probability of being relevant
+    \item \textbf{BM25F (multi-Fields)}
+    \item How we find the best parameter? LTR framework
+    \item LTR applied to BM25F
+    \item Given a query q and a set of documents
+    \begin{itemize}
+        \item Learn model h that allow to score and rank the documents D according to relevance
+        \item result = sort(h((d1),h(d2),...) h is the bm25f with proper parameter \(\theta\)
+    \end{itemize}
+    \item How we apply the gradient decent?
+    \begin{itemize}
+        \item Gradient of sort wrt \(\theta\)
+        \item Sort is not continuous and derivable function
+        \item How can we bypass this problem?
+    \end{itemize}
+    \item \textit{Line search}
+    \begin{itemize}
+        \item Process
+        \item Guess the labels of the training set, a regressor where the objective is to optimize MSE rather than NDCG
+        \item Change the strategy considering the pairwise approach
+    \end{itemize}
+    \item \textbf{RankNet}
+    \item LRT applied to BM25F revisited
+    \item LRT approches
+    \item \textbf{Decision Tree}
+    \begin{itemize}
+        \item Definition
+        \item Internal node and leaf node
+        \item How do we chose the best split
+    \end{itemize}
+    \item \textbf{Gradient Boosted Regression Tree}
+    \begin{itemize}
+        \item Combine weak learner sequentially
+        \item Evaluation with loss function
+        \item Lead to overfitting quickly
+    \end{itemize}
+    \item \textbf{Lambda-MART}
+    \begin{itemize}
+        \item Smooth approximation of the NDCG gradient, called \(\lambda\)-gradient
+        \item for each training instance, it estimates the benefit of incrementing or decreasing the currently predict score
+        \item \(\lambda_i\) single magic number for each url describing whether is well ranked and how much far is from it
+    \end{itemize}
+
+    \begin{comment}
+    \item \textbf{Decision Tree}
+    \begin{itemize}
+        \item Description
+        \item How to use them
+        \item What is a regression tree
+        \item How to choose the best training split
+        \item From a single tree to ensamble of tree
+        \begin{itemize}
+            \item Problem of single tree
+            \item Bagging
+            \item Random Forest
+        \end{itemize}
+        \item \textbf{MART / GBRT}
+        \begin{itemize}
+            \item Algorithm to construct it
+            \item Can we use GBRT better than LTR / can we optimize NDCG rather than MSE
+        \end{itemize}
+        \item \textbf{LambdaRANK}
+        \item \textbf{LambdaMART}
+    \end{itemize}
+    \end{comment}
+\end{itemize}

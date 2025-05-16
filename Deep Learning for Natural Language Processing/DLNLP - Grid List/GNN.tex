@@ -1,0 +1,199 @@
+\chapter{Graph and NLP}
+\section{Theoretical Foundations of GNN}
+\begin{itemize}
+    \item Convolutional neural networks respect translational invariance
+    \item Patterns are interesting irrespective of where they are in the image
+    \item \textbf{Locality}: neighbouring pixels relate much more strongly than distant ones
+    \item What about arbitrary graphs?
+    \begin{itemize}
+        \item The nodes of a graph are not assumed to be in any order 
+        \item We would like to get the same results for two isomorphic graphs
+        \item \textbf{Permutation invariance and equivariance}
+    \end{itemize}
+    \item Assuming the graph has no edges
+    \item \(x_i \in \mathbb{R}\) be the feature of node i
+    \[X = (x_1, ..., x_n)^T\]
+    \item We have specified a node ordering!
+    \item We would like the result of any neural networks to not depend on this
+    \item It will be useful to think about the operations that change the node order, like \textbf{Permutations}
+    \item Each permutation defines an \(n \times n\) matrix, row with one 1 and all zeros, col i (which is referring to the row) goes to the position in wich is present the 1
+    \item \textbf{Permutation Invariance}
+    \begin{itemize}
+        \item Design functions \(f(X)\) over sets that will not depend on the order
+        \item Thus applying a permutation matrix shouldn’t modify the result!
+        \item \(f(X)\) is permutation invariant if, for all permutation matrices \(P\) st: 
+        \[f(PX) = f(x)\]
+        \item Generic form description (see notes)
+    \end{itemize}
+    \item \textbf{Permutation Equivariance}
+    \begin{itemize}
+        \item We want to still be able to identify node outputs, which a permutation-invariant aggregator would destroy
+        \item Seek functions that don’t change the node order
+        \item \(f(X)\) is permutation equivariant if, for all permutation 
+        matrices \(P\)
+        \[f(PX) = Pf(X)\]
+        \item Each node’s row is unchanged by \(f\)
+        \item Equivariant set functions as transforming each node input \(x_i\) into a latent vector \(h\)
+    \end{itemize}
+    \item We can represent these edges with an adjacency matrix, \(A\)
+    \item Node permutations now also accordingly act on the edges
+    \item We need to appropriately permute both rows and columns of \(A\), When applying a permutation matrix \(P\), this amounts to \(PAP^T\)
+    \[\text{Invariance} \quad f(PX) = f(X) \quad f(PX, PAP^T) = f(X,A)\]
+    \[\text{Equivariance} \quad f(PX) = Pf(X) \quad f(PX, PAP^T) = Pf(X,A)\]
+    \item On sets, we enforced equivariance by applying functions to every node in isolation
+    \item \textbf{Node’s neighbourhood}
+    \begin{itemize}
+        \item (1-hop) neighbourhood
+        $N_i = \{j : (i,j) \in \epsilon \land (j, i) \in \epsilon \}$
+        \item $X_{N_i} = \{x_j : \in N_i\}$
+    \end{itemize}
+    \item \textbf{Permutation Equivariance Fucntions}
+\end{itemize}
+
+\section{Convolutional GNN}
+\begin{itemize}
+    \item The goal is to learn a function of signals/features on a graph \(G=(V,E)\) which takes as input:
+    \begin{itemize}
+        \item A feature description \(x_i\) for every node \(i\) summarized in a \(N \times D\) feature matrix \(X\)
+        \item A representative description of the graph structure in matrix form, adjacency matrix \(A\)
+        \item And produces a node-level output \(Z\)
+    \end{itemize}
+    \item \textbf{Limitations}
+    \begin{itemize}
+        \item Initial node features are not considered
+        \begin{itemize}
+            \item Add self-loops in \(A\)!
+        \end{itemize}
+        \item The matrix \(A\) is not normalized, hence using it in the multiplication will change the scale
+        \begin{itemize}
+            \item Use the normalized \(A\)!
+        \end{itemize}
+        \item \textbf{These two fixes will lead to the GCN formulation}
+    \end{itemize}
+\end{itemize}
+
+\section{Graph Attention Networks}
+\begin{itemize}
+    \item Features of neighbours aggregated with implicit weights (via attention)
+    \item Useful as “middle ground” w.r.t. capacity and scale
+    \item Attention coefficients \(a_{ij}\) implicitly defined via self-attention over node features
+    \item Alpha is the attention mechanism
+    \item Alpha’s parameters trained jointly with the remaining architecture
+    \item Works in both inductive and transductive  settings
+    \item Attention Score 
+    \item Multi-Head Attention
+\end{itemize}
+
+
+
+\section{Message Passing Neural Network}
+\begin{itemize}
+    \item Compute arbitrary vectors (“messages”) to be sent across edges
+    \item Two Phases
+    \begin{itemize}
+        \item Message Passing
+        \item Readout
+    \end{itemize}
+    \item \textbf{Extending Message Passing Framework}
+    \begin{itemize}
+        \item What about edges?
+        \item Compare different types of inductive biases
+        \item Propose a general and comprehensive GN formulation
+    \end{itemize}
+    \item \textbf{Type of Baiases}
+    \begin{itemize}
+        \item Fully Connected
+        \item Convolutional
+        \item Recurrent
+        \item Graph Network
+    \end{itemize}
+    \item \textbf{GNN: a General Formualtion}
+\end{itemize}
+
+\section{Graph (NN) in NLP}
+\begin{itemize}
+    \item Represent natural language as a graph
+    \begin{itemize}
+        \item Dependency graphs
+        \item Text graph containing multiple hierarchies of elements
+    \end{itemize}
+    \item \textbf{Graph Construction from Text}
+    \begin{itemize}
+        \item Different NLP tasks require different aspects of text
+        \item Static vs dynamic construction
+        \item Goal: good downstream task performance
+    \end{itemize}
+    \item \textbf{Static Graph Construction}
+    \begin{itemize}
+        \item Problem Setting
+        \begin{itemize}
+            \item Input: raw text
+            \item Output: graph
+        \end{itemize}
+        \item Graph structure learned during preprocessing by argumenting text with domain knowledge
+        \item \textbf{Types:}
+        \begin{itemize}
+            \item Dependency Graph
+            \item Constituency Graph
+            \item Abstract Meaning Representation Graph
+            \item Information Extraction (IE) Graph
+            \item Knowledge Graphs Q\&A
+            \item Co-occurrence Graph 
+            \item SQL Graph
+            \item Dynamic Graph Construction
+        \end{itemize}
+    \end{itemize}
+    
+    \item \textbf{Dynamic Graph Construction}
+    \begin{itemize}
+    \item Problem Setting:
+    \begin{itemize}
+        \item Input: raw text
+        \item Output: graph    
+    \end{itemize}
+    \item Graph structure (adjacency matrix) learning on the fly, joint with graph representation learning
+    \end{itemize}
+\end{itemize}
+
+\section{Knowledge Graphs in NLP}
+\begin{itemize}
+    \item \textbf{Tasks}
+    \begin{itemize}
+        \item Link prediction / triple classification
+        \begin{itemize}
+            \item Link prediction
+            \begin{itemize}
+                \item Learning to rank problem
+                \item Information retrevial metrics
+                \item No ground truth negativities
+            \end{itemize}
+            \item Triple Classification
+            \begin{itemize}
+                \item Binary classification task and metrics
+                \item Test set require positive and ground truth negatives
+            \end{itemize}
+        \end{itemize}
+        \item Collective node classification/ link-based clustering
+        \item Entity matching
+    \end{itemize}
+    \item \textbf{Transductive Link Prediction}: When both subject and object off the predicted link occur in the training knowledge graph
+    \item \textbf{Inductive Link Prediction}: when subject or object of the predicted link do not occur in the training knowledge graph
+    \item \textbf{Representation Learning}
+    \begin{itemize}
+        \item Learning representation of nodes and edges
+        \item Our goal is Knowledge Graph Embeddings
+        \begin{itemize}
+            \item Automatic, supervised learning of embeddings, projections of entities and relations into a continuous low-dimensional space
+            \item Scoring Function: \(f\) assign a score to a triple \((s,p,o)\), high score = triple is very likely to be factually correct
+            \item Translation-based Scoring Functions: \(f_{TransE} = ||(e_s + r_p) - e_o ||_n\)
+            \item Loss function
+            \begin{itemize}
+                \item Pairwise Margin-Based Hinge loss
+                \item Negative Log-Likehood / Cross Entropy
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{Knowledge Graphs (NN)}
+Multi Relational Graphs, see notes.

@@ -1,0 +1,92 @@
+\chapter{Variabili Casuali}
+\begin{tcolorbox}[title=Variabili Casuali]
+Una \textbf{variabile aleatoria} o \textbf{casuale} \(X\) è una funzione che assume valori numerici determinati dall’esito di un certo fenomeno aleatorio. Formalmente, se \(\Omega\) è lo spazio campionario relativo al fenomeno di interesse, \(X\) è una particolare funzionw
+\[X : \Omega \rightarrow \mathbb R\]
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=Funzione di Ripartizione]
+Si dice \textbf{funzione di ripartizione} (o di distribuzione cumulativa) di una variabile aleatoria \(X\) la funzione \(F : \mathbb{R} \rightarrow [0, 1]\) così definita:
+\[F(x) = \mathbb{P}[P \leq x], \quad \forall i \in \mathbb{R}\]
+
+La funzione di ripartizione \(F\) ha le seguenti proprietà:
+\begin{itemize}
+    \item \(F\) è non decrescente
+    \item \(F\) è continua a destra
+    \item \(\lim_{x \rightarrow - \infty}F(x)=0\) e \(\lim_{x \rightarrow + \infty}F(x)=1\)
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Proprietà del Valore Atteso}
+\begin{itemize}
+    \item \(\mathbb{E}[a] = a\), dove \(a\) è una costante
+    \item \(\mathbb{E}[aX + b] = a\mathbb{E}[X] + b\), dove \(a\) e \(b\) sono costanti
+\end{itemize}
+
+\subsection{Proprietà della Varianza}
+\begin{itemize}
+    \item \(Var[a] = 0\), dove \(a\) è una costante
+    \item \(Var[aX + b] = a^2Var[X]\), dove \(a\) e \(b\) sono costanti
+\end{itemize}
+
+\section{Variabili Aleatorie Discrete}
+\begin{tcolorbox}[title=Variabile Aleatoria Discreta]
+Una \textbf{varaibile aleatoria discreta} \(X\) assume valori in un insieme numerabile (o finito) di punti, \({x_1,x_2,...,x_i,...})\).
+
+Proprieta':
+\begin{itemize}
+    \item \(0 \leq p_i \leq 1,    \quad    \forall i = 1,2,...\)
+    \item \(\sum_i p_i = 1\)
+    \item \(\mathbb{P}[X \in A] = \sum_{i:x_i \in A}p_i\)
+\end{itemize}
+\end{tcolorbox}
+
+\subsubsection{Funzione di Probabilità}
+Un’assegnazione di probabilità per \(X\), \(P(x) = \mathbb{P}[X = x]\) viene chiamata funzione di probabilità e può essere rappresentata graficamente tramite un diagramma a bastoncini
+
+\subsubsection{Funzione di Ripartizione}
+\[F(X) = \sum_{i:x_i\leq x}\mathbb{P}[X = x_i] = \sum_{i:x_i \leq x}p_i\]
+
+\subsubsection{Valore Atteso \(\mathbb{E}[X]\)}
+\[\mathbb{E}[X] = \sum_i x_ip_i = x_1p_1 + x_2p_2 + ...\]
+
+\subsubsection{Varianza}
+\[Var[X] = \sum_i (x_i - \mathbb{E}[X])^2p_i \rightarrow \sum_ix_i^2p_i - [\mathbb{E}[X]]^2\]
+
+\section{Variabili Aleatorie Continue}
+\begin{tcolorbox}[title=Variabile aleatoria continua]
+Una \textbf{variabile aleatoria continua} \(X\) assume valori in un insieme continuo di punti (un sottoinsieme di \(\mathbb{R}\) non numerabile).
+
+La curva è il grafico di una funzione \(f(x)\) tale che::
+\begin{itemize}
+    \item \(f(x) \geq 0, \quad \forall x\in \mathbb{R}\)
+    \item \(\int_{\mathbb{R}} f(x)\,dx = 1\), cioè l'area totale sotto il grafico di \(f(x)\) è 1.
+\end{itemize}
+\end{tcolorbox}
+
+\newpage
+\subsubsection{Densità di Probabilità}
+Una funzione \(f(x)\) con le proprietà precedenti viene chiamata densità di probabilità.
+
+Una volta assegnata una densità di probabilità alla variabile \(X\), si può scrivere, per ogni evento \(A\) di \(R\): 
+\[\mathbb{P}[X \in A] = \int_{A}f(x)\,dx\]
+
+\subsubsection{Funzione di Ripartizione}
+\[F(x) = \int_{-\infty}^x f(t)\,dt\]
+
+\subsubsection{Valore Atteso \(\mathbb{E}[X]\)}
+\[\mathbb{E}[X] = \int_{\mathbb{R}}xf(x)\,dx\]
+
+\subsubsection{Varianza}
+\[Var[X] = \int_{\mathbb{R}}(x - \mathbb{E}[X])^2f(x)\,dx \rightarrow \int_{\mathbb{R}}x^2f(x)\,dx - [\mathbb{E}[X]]^2\]
+
+\section{Moda, Mediana e Quantili}
+\subsubsection{Moda}
+La \textbf{moda} di una va \(X\) è il punto (o i punti) in cui la funzione di probabilità (o di densità) assume il valore massimo.
+
+\subsubsection{Mediana}
+La \textbf{Mediana} di una va \(X\) è il minino valore \(m\) per cui
+\[F(m) = \mathbb{P}[X \leq m] \geq \frac{1}{2}\]
+
+\subsubsection{Quantili}
+Fissato un valore \(\alpha \in (0,1)\), il \textbf{quantili di livello \(\alpha\)} di una va \(x\) è il minimo valore \(q_{\alpha})\) per cui
+\[F(q_{\alpha}) = \mathbb{P}[X \leq q_{\alpha}] \geq \alpha\]

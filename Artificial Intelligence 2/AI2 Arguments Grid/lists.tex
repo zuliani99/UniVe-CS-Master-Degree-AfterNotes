@@ -1,0 +1,680 @@
+\chapter{Information Theory}
+\begin{itemize}
+    \item \textbf{Communication System}
+    \begin{itemize}
+        \item Source
+        \item Transmitter
+        \item Channel
+        \item Noise
+        \item Receiver
+        \item Destination
+    \end{itemize}
+    \item Efficiency
+    \item Reliability
+    \item \textbf{Redundancy}
+    \item \textbf{Three levels of information}
+    \begin{itemize}
+        \item Syntatical Level
+        \item Semantical Level
+        \item Pragmatic Level
+    \end{itemize}
+    \item \textbf{Quantify Information}
+    \begin{itemize}
+        \item Definition
+        \item \(P(E) = 1\)
+        \item \(P(E) = 0\)
+        \item Information as Probability of Function
+        \item Proprieties
+        \item \textbf{Unique Function} that satisfy the proprieties
+    \end{itemize}
+    \item \textbf{Definition of Entropy}
+    \begin{itemize}
+        \item Source, Stochastic Process, Entropy
+        \item Problem with \(p(x) = 0\)
+        \item Proprieties of entropy: \(H(x) = 0 \quad H(x) = log(n)\)
+    \end{itemize}
+    \item \textbf{Entropy of two random variables}
+    \begin{itemize}
+        \item Input
+        \item \textit{Marginal Entropy}
+        \item \textit{Joint Entropy}
+        \item \textit{Conditional Entropy}
+        \item \textit{Chain Rule}
+    \end{itemize}
+    \item \textbf{Mutual Information}
+    \begin{itemize}
+        \item Definition
+        \item Euclidean Distance, proprieties
+        \item Kulback-Leibler Distance, proprieties
+        \item Compute the mutual information
+        \begin{itemize}
+            \item Useful to compute how much information travels on the channel
+            \item Before
+            \item After
+            \item Proprieties
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+\chapter{Data Compression - Source Coding Theorem}
+\begin{itemize}
+    \item \textbf{Coding definition}
+    \item Rules that must follows
+    \item \textbf{4 types of code:}
+    \begin{itemize}
+        \item Non-singular codes
+        \item Unique decodable code
+        \item Prefix code
+        \item Quantity efficiency code
+        \begin{itemize}
+            \item \textbf{Length of a code or Measure of efficiency}
+            \item Relationship between \textit{efficiency of a code} and \textit{entropy given by the source}
+            \item Entropy lower bound for L(c), D-acid 
+        \end{itemize}
+    \end{itemize}
+    \item Huffman Coding
+    \item Optimality of Huffman Code
+\end{itemize}
+
+\chapter{Reliable Communication Through Unreliable Channels}
+\begin{itemize}
+    \item Types of channel
+    \begin{itemize}
+        \item Lossless code
+        \item Lossy code
+    \end{itemize}
+    \item \textbf{Formal definition of Channel}
+    \item Channel representation
+    \begin{itemize}
+        \item Channel graph
+        \item Channel matrix
+    \end{itemize}
+    \item N-th extension of the channel
+    \item \textbf{Capacity of the channel}
+    \begin{itemize}
+        \item Explanation and analysis of the \textit{mutual information}
+        \item It depends on source and channel
+        \item \textbf{Capacity of the channel definition}
+    \end{itemize}
+    \item \textbf{Reliability}
+    \begin{itemize}
+        \item Code replication
+        \item Improve reliability
+        \item Reduces the rate speed of sanding data
+        \item Trade off
+        \item Rateo of speed
+        \item \textbf{Shannon's Second Theorem}
+    \end{itemize}
+\end{itemize}
+
+\chapter{Neural Networks}
+\begin{itemize}
+    \item Paradigm inspired by the way biological nervous system works, elements: neurons
+    \item \textbf{McCulloch and Pitts Model}
+    \item Network Topologies and Architectures
+    \begin{itemize}
+        \item Feedforward only: fully connected and single layer
+        \item Feedback networks: sparsely connected and multilayer
+    \end{itemize}
+    \item Classification Problem
+    \begin{itemize}
+        \item Features, classes
+        \item Finding the best configuration of weights on the income connection and the threshold
+        \item Forget the threshold by adding an extra unit set to -1
+    \end{itemize}
+    \item \textbf{Perceptron:} definition
+    \item \textbf{Perceptron Learning Algorithm}, parameters
+    \begin{enumerate}
+        \item Initialization
+        \item Activation
+        \item Computation of actual response
+        \item Adaption of weight vector
+        \item Continuation
+    \end{enumerate}
+    \item The perceptron Convergence Theorem
+    \item Multilayer feedforward networks
+    \begin{itemize}
+        \item Single layer
+        \item Multilayer feedforward network by adding a hidden layer
+        \item \textbf{Universal Approximation Power}
+    \end{itemize}
+    \item \textbf{Back - propagation Learning Algorithm}
+    \begin{itemize}
+        \item Definition, Supervised Learning
+        \item In what consist the learning
+        \item Error Function
+        \item What is our aim
+        \item What do we use to achieve this
+        \item \textbf{Pass:}
+        \begin{itemize}
+            \item Feedforward Pass
+            \item Backword Pass
+            \begin{itemize}
+                \item Notation
+                \item \textit{Updating Hidden - to - Output Weights}
+                \item \textit{Updating Input - to - Hidden Weights}
+            \end{itemize}
+        \end{itemize}
+        \item Locality of Back - propagation
+        \begin{itemize}
+            \item Off - Line
+            \item On - Line
+            \item Compromise
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{The Algorithm}
+    \item Problem of the choice of the learning rate:
+    \begin{itemize}
+        \item Small
+        \item Big
+        \item Solution: momentum term: definition and characteristics
+    \end{itemize}
+    \item Problem of local minima
+    \item Theoretical / Practical questions
+    \begin{itemize}
+        \item Generalization
+        \item Training, Validation and Test set
+        \item Learning phase stopped in the minimum validation error
+    \end{itemize}
+    \item Model Evaluation
+    \begin{itemize}
+        \item True error
+        \item Sample error
+    \end{itemize}
+    \item Cross validation
+    \item Overfitting
+    \item Size of Neural Network -> Horizon Effect
+    \item \textbf{Pruning Approach:}
+    \begin{itemize}
+        \item Definition
+        \item Online and Offline Pruning
+        \item What we have to do
+        \item Algebra and Vector description
+        \item Consider only the initial contributions, with the heuristic that it will not far away from the real one
+        \item Algorithm
+    \end{itemize}
+\end{itemize}
+
+\chapter{Optimal Brain Surgeon}
+\begin{itemize}
+    \item Usage of the second order derivatives to improve generalization
+    \item Permits pruning of more weights than other methods
+    \item \textbf{Key point} is the recursion relation for calculating the inverse Hessian matrix \(H^{-1}\)
+    \item \textbf{Introduction}
+    \begin{itemize}
+        \item Problem: minimize the system complexity
+        \item Casted in minimizing the number of connection weights
+        \item This overfitting could occur
+        \item Which weight should be eliminate?
+        \item Delete weights with small magnitude, but lead to wrong weights
+        \item OBD uses the minimal increase in training error for weight elimination
+        \item Assume that the matrix is diagonal
+        \item ODB delete wrong weights
+        \item OBS makes no restrictive assumption about the form of the Hessian
+    \end{itemize}
+    \item \textbf{Optimal Brain Surgeon}
+    \begin{itemize}
+        \item Function of Taylor series respect to weights
+        \item etc
+    \end{itemize}
+\end{itemize}
+
+\chapter{Statistical Learning Theory}
+\begin{itemize}
+    \item Deal with supervised learning (input(feature), output(label))
+    \item Estimate a function relationship between the input and the output spaces
+    \item \textbf{Classification Algorithm}
+    \item Assumption
+    \begin{itemize}
+        \item Joint probability distribution unknown
+        \item learning example sampled independently
+        \item No assumption on p is made
+        \item p is fixed
+    \end{itemize}
+    \item Measure of "How good" a function f is when we use a classifier
+    \item Loss function 
+    \item Risk
+    \item Best classifier
+    \item The classification problem
+    \item Nearest Neighbour Classifier
+    \begin{itemize}
+        \item Definition
+        \item Assumption: training set is fixed
+        \item K-NN
+        \item \(K_n-NN\)
+        \item How good is the Nearest Neighbour rule
+        \item Stone Theorem
+        \item Kernel rule, smoothing factor
+    \end{itemize}
+    \item \textbf{Empirical Risk Minimization Principle}
+    \begin{itemize}
+        \item Minimize empirical risk
+        \begin{itemize}
+            \item Training data
+            \item Family of function
+            \item Loss function
+            \item Empirical Risk Minimization (ERM)
+        \end{itemize}
+        \item Estimation VS Approximation
+        \item Small complexity on F
+        \item Large complexity on F
+        \item Shattering
+        \item VC Dimension
+        \item Structural Risk Minimization
+    \end{itemize}
+\end{itemize}
+
+\chapter{Deep Neural Network}
+\begin{itemize}
+    \item Learn feature hierarchy from the initial pixel in order to obtain a classifier
+    \item Shallow Architecture
+    \begin{itemize}
+        \item Inefficient to represent deep features
+        \item Universal Approximation Law
+        \item Produces large hidden layer and increase a lot the number of parameters 
+    \end{itemize}
+    \item Deep Architecture
+    \begin{itemize}
+        \item Fit function better with less parameter
+        \item Increase the number of hidden layer
+        \item Decrease the number of parameter
+    \end{itemize}
+    \item Idea not new
+    \item More available data, more computing power, new idea
+    \item Image classification, image, height x weight x 3 of 0 x 255 dimension
+    \item Challenge
+    \begin{itemize}
+        \item Viewpoint 
+        \item Illumination 
+        \item Scale
+        \item Deformation
+        \item Background clutter
+        \item Occlusion
+        \item Intraclass 
+    \end{itemize}
+    \item Data driven approch
+    \item Retina, Relative field, feature detector
+    \item Cat experiment
+    \item Specialized Neuron, activating by lines, edges etc
+    \item Convolution
+    \item Matrix dot product with filter
+    \item \textbf{Convolution}
+    \item Mask: identity, edge detection, sharpeon, box blur, gaussian blur
+    \item Strade, Padding
+    \item Traditional approach and deep learning
+    \item \textbf{Convolutional Neural Networks (CNN)}
+    \begin{itemize}
+        \item Object Character Recognition
+        \item Fully Connected NN
+        \item Locally Connected NN
+    \end{itemize}
+    \item Maxpooling
+    \item \textbf{AlexNET}
+    \begin{itemize}
+        \item 8 layer in the following schema:
+        \begin{enumerate}
+            \item Conv + Pool
+            \item Conv + Pool
+            \item Conv
+            \item Conv
+            \item Conv + Pool
+            \item Full
+            \item Full
+            \item SoftMax Output (1000 way)
+        \end{enumerate}
+        \item 2 independent GPU, run in parallel and there are connection between the two GPUs
+        \item Way GPU
+        \item Deepening in softmax
+        \item Using the sigmoid activation function to propagate G, becomes zero
+        \item ReLU
+    \end{itemize}
+    \item Mini-Batch stochastic gradient descent
+    \item Technique to reduce overfitting
+    \begin{itemize}
+        \item Data Argumentation
+        \item Dropout
+    \end{itemize}
+    \item \textbf{ImageNET}
+    \begin{itemize}
+        \item What is and how it has been build
+        \item Overall
+    \end{itemize}
+    \item Other Computer vision task
+    \begin{itemize}
+        \item Semantic segmentation
+        \item Classification + Localization
+        \item Object Detection
+        \item Instance Segmentation
+        \item Image Captioning
+    \end{itemize}
+    \item \textbf{Recurrent Neural Network}
+\end{itemize}
+
+\chapter{Support Vector Machine (SVM)}
+\begin{itemize}
+    \item Abstract idea of SVM
+    \item Formal definition of SVM classifier \(h_{w, b}(x) \quad g(z)\)
+    \item Confidence
+    \item Example of SVM
+    \item Example of many decision boundary
+    \item Question
+    \item \textbf{Functional margin}
+    \item \textbf{Geometric margin}
+    \item Relation between the two margins
+    \item The three steps of the optimization problem, optimal margin classifier
+    \item \textbf{Duality}
+    \begin{itemize}
+        \item Actual Problem
+        \item Lagrangian function / Duality
+        \item Lagrangian Dual Function
+        \item Lower bound on optimal value
+        \item Focus on convex problem
+        \item Wolfe Duality
+    \end{itemize}
+    \item Primal Problem
+    \item N lagrangian, so derivatives respect to w and b, with merging in the lagrangian
+    \item Our dual problem, rephrasing of the optimization problem
+    \item Dot product, only support vectors are used
+    \item Maximum margin hyperplane
+    \item Given the solution of the dual optimization probelm
+    \begin{itemize}
+        \item Weight vector of the maximum margin hyperplane
+        \item Hyperplane
+        \item Linear SVM classifier
+    \end{itemize}
+    \item Support Vectors Equation
+    \item SVM error function
+    \item SVM and VC dimension (Vapnik Theorem)
+    \item Outliers of soft margin
+    \begin{itemize}
+        \item Correct classify it reducing the roboustness
+        \item Leave it missclassified, reducing the effect by introducing slack variable
+        \item Formula
+        \item Small C
+        \item Large C
+        \item C ti infinity
+        \item Dual representation of the problem
+        \item Soft margin as hard margin
+        \item Formula
+    \end{itemize}
+    \item Kernel Trick
+    \begin{itemize}
+        \item SVM works with linearly separable problem
+        \item Kernel Trick to learn a hyperplane in a new space, interesting when data is not linearly separable
+        \item Mapping function
+        \item Kernel function
+        \item Cover's Theorem
+        \item SVM works with inner product between input vector
+        \item Replace with a kernel function to learn in a new feature space
+        \item Restrictions:
+        \begin{itemize}
+            \item Marcer's Theorem
+            \item Positive definite kernel
+        \end{itemize}
+        \item The discriminant function / hyperplane
+        \item Replacing the map function in the dual problem
+    \end{itemize}
+    \item \textbf{Multi - Class Problems}
+    \begin{itemize}
+        \item One-vs-the rest classifier
+        \item One-vs-one classifier
+        \item best approach: k one-vs-one classifier and use the most accurate classifier 
+    \end{itemize}
+\end{itemize}
+
+\chapter{Unsupervised Learning}
+\begin{itemize}
+    \item Classical clustering problem: set of n objects, n x n matrix A of pairwise similarities
+    \item Goal is to partition the vertices of G into maximally homogeneous groups (clusters)
+    \item \textbf{K-Means}
+    \begin{itemize}
+        \item Description
+        \item How it works
+        \item Proprieties
+        \item Problem
+    \end{itemize}
+    \item \textbf{Image as a graph} 
+    \begin{itemize}
+        \item Description
+        \item Feature Base (Central) Clustering
+        \item Graph base (Pairwise) Clustering
+        \item Gaussian Kernel
+    \end{itemize}
+    \item \textbf{Eigenvector - Based Clustering}
+    \begin{itemize}
+        \item Cluster as a vector x (participation of each node)
+        \item Normalize the eigenvectors
+        \item We want to maximize 
+        \item Eigenvalue problem, chose the eigenvector of A with largest eigenvalue
+        \item If \(A = A^T\) then A is symmetric and has only real eigenvalues
+        \item If A is symmetric then \(x^TAx\)
+        \item \textbf{The algorithm:}
+        \begin{enumerate}
+            \item Affinity matrix A
+            \item Eigenvalues and eigenvectors
+            \item Repeat
+            \begin{enumerate}
+                \item Eigenvector of the larges unprocessed eigenvalue
+                \item Zero components that has been processed
+                \item Threshold the other to determine its belonging
+                \item All elements processed, there are suff clusters
+            \end{enumerate}
+            \item Until there are suff clusters
+        \end{enumerate}
+    \end{itemize}
+    \item Clustering as graph partitioning
+    \begin{itemize}
+        \item Formula
+        \item Minimum cut problem
+        \item Advantage: poly time
+        \item Disadvantage: measure what happens between the two clusters and not within both
+    \end{itemize}
+    \item Normalize NCut
+    \item \textbf{Graph Laplacian}
+    \begin{itemize}
+        \item Main tool for spectrul clustering, unormalized graph laplacian
+        \item D diagonal matrix
+        \item W affinity matrix
+        \item Proprieties of matrix L:
+        \begin{itemize}
+            \item \(x^Tx = \frac{1}{2}\sum_{i,j = 1}w_{i,j}(x_i - x_j)^2\)
+            \item L is symmetric
+            \item Smallest eigenvalue is 0 with eigenvector 1
+            \item L has non -negative eigenvalues
+        \end{itemize}
+        \item \textbf{The Normalized Graph Laplacian}
+        \begin{itemize}
+            \item Symmetric Matrix
+            \item Random Walk Matrix
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Solving NCut}
+    \begin{itemize}
+        \item Any cut can be represented as a binary indicator vector x
+        \item Formula
+        \item y is an indicator vector
+        \item NP hard problem
+        \item Approximation
+        \item Relaxation of the constraint value from being discrete to continuous real value
+        \item Generalized eigenvalue problem
+    \end{itemize}
+    \item \textbf{Two-way NCut}
+    \begin{enumerate}
+        \item Affinity matrix W and degree matrix D
+        \item Solve the generalized eigenvalue problem
+        \item Use the eigenvector associated to the second smallest eigenvalue to bipartite the graph. Way the second smallest?
+    \end{enumerate}
+    \begin{itemize}
+        \item Through relaxation we loose some precision / information. Not guaranteed that there is a one-to-one correspondance
+        \item Some point could not so clear to assign
+        \item No clear threshold to split based on the second vector
+        \item Shortcut to overcome this problem
+        \begin{itemize}
+            \item Constant value
+            \item Median value
+            \item Splitting point that has the minimum NCut value (choose n possible splitting point, compute the NCut and choose the minimum)
+        \end{itemize}
+        \item What if we consider more than two cluster?
+    \end{itemize}
+    \item \textbf{NCut with more than two clusters}
+    \begin{enumerate}
+        \item \textbf{Recursive two-way NCut:}
+        \begin{enumerate}
+            \item Given G compute D and W
+            \item Solve the generalized eigenvalue problem for the smallest eigenvalue
+            \item second eigenvalue, eigenvector, bipartite the graph by finding the splitting point that minimize ncut
+            \item Decide if the current partition is satisfied or not
+            \item Continue the repartition
+        \end{enumerate}
+        \begin{itemize}
+            \item Use only the second eigenvalue 
+        \end{itemize}
+        \item \textbf{Using the first K eigenvectors:}
+        \begin{enumerate}
+            \item Unnormalized graph laplacian
+            \item K smallest eigenvectors of the generalized eigenproblem
+            \item U = u1, u2,...uk
+            \item Yi vector corresponding to the i-th row of U
+            \item Yi as points, cluster them using kmeans
+        \end{enumerate}
+    \end{enumerate}
+    \item \textbf{Spectra Clustering Vs K-Means}
+    \begin{itemize}
+        \item Cluster data that is connected but not necessary compact
+        \item Given: similarity matrix S and k number of cluster
+        \begin{enumerate}
+            \item Similarity graph and normalized graph laplacian L sym
+            \item lower dimension space where clusters are more obvious
+            \item V = v1, v2,..., vk
+            \item matrix U from V by normalizing the row sum to have norm 1
+            \item  Yi vector corresponding to the i-th row of U
+            \item Cluster the points Yi using k-means
+        \end{enumerate}
+    \end{itemize}
+    \item K-means to laplacian eig. cluster with non convex boundaries
+    \item Problem: choosing k s.t. all eigenvalues are very small and the next is very large
+    \item Eigengap heuristic (difference between consecutive eigenvalue)
+\end{itemize}
+
+\chapter{Dominant Set}
+\begin{itemize}
+    \item Data rep. as weight graph so construct similarity matrix
+    \item Data as nodes
+    \item Edges as similarity relation between nodes
+    \item Allow to codify and use complex structured and unstructured data
+    \item \textbf{Cluster} maximal clique of a graph
+    \begin{itemize}
+        \item Clique related to internal cluster criteria
+        \item Maximal clique problem can not be applied on weight graph
+        \item Dominant set, evolution of the maximal clique problem
+    \end{itemize}
+    \item \textbf{Dominant Set}
+    \begin{itemize}
+        \item measure of cohesiveness of a cluster and vertex participation of diff cluster
+        \item graph theory, game theory and QOP
+        \item Connection between Dominant set and local extrema of QOP
+        \item Consider nodes belonging to diff cluster considering the hp of overlapping clusters
+    \end{itemize}
+    \item \textbf{Graph-theoretic definition of a cluster}
+    \begin{itemize}
+        \item Data = G (V, E, w)
+        \item G as an adjacency matrix A
+        \item High \textit{Internal} Homogeneity
+        \item High \textit{External} In-Homogeneity
+        \item Idea of the criterion
+        \item S in or equal to C and i in S
+        \item Average weight degree of i with regard the set S
+        \item Relative similarity bet i and j respect to the average similarity bet i and its neighbours
+        \item Weigh of i with regard to S, gives the similarity bet i and S - i with respect to the overall similarity among the vertices of S - i
+        \item The total weight of S 
+        \item Definition of Dominant Set
+        \begin{itemize}
+            \item Internal homogeneity: all node in the cluster are important for it
+            \item External homogeneity: considering a new point to add the cluster cohesiveness will decrease
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{From dominant set to local optima:}
+    \begin{itemize}
+        \item Vector as participation of the nodes
+        \item Eigenvalue problem, with A symmetric matrix
+        \item Problem finding x that minimize f, but has to be normalized, constraint, probability space
+        \item \textbf{Support of x}
+        \item \textbf{Characteristic vector}
+        \item Dominant set one-to-one correspondence with strict local maxima of quadratic function 
+    \end{itemize}
+    \item \textbf{Link to Game Theory}
+    \begin{itemize}
+        \item Definition
+        \item Proprieties:
+        \begin{itemize}
+            \item Symmetric game
+            \item Complete knowledge
+            \item Non-cooperative game
+            \item Pre-existing set of pure strategies
+        \end{itemize}
+        \item V pure strategies
+        \item Similarity matrix A represent the payoff matrix and it resume the revenue
+        \item Mixed strategy: prob dist over the set of pure strategies
+        \item Expected payoff of couple of player playing diff strategy
+        \item Goal: maximise the its resulting revenue
+        \item A as similarity matrix so players to maximize their revenue has to coordinate their strategy so the sampled one belongs to the same cluster
+        \item The players reach the symmetric mash equilibrium
+        \item \textbf{Nash Equilibrium}
+        \begin{itemize}
+            \item Definition
+            \item Inequality of definition
+            \item Equilibrium is symmetric when x1 = x2, inequality
+            \item Pro: sat int hom
+            \item Con: not include any constraint that guarantees the maximality conditions
+        \end{itemize}
+        \item \textbf{Evolutionary Stable Strategy}
+        \begin{itemize}
+            \item Definition
+            \item Inequalities
+            \item Play x since the payoff against itself is higher than y
+        \end{itemize}
+        \item \textbf{In conclusion:}
+        \begin{itemize}
+            \item Clustering game one-to-one dominant set
+            \item Dominant set one-to-one local solution of SQOP
+            \item \textbf{EESs one-to-one to local solution of SQOP}
+        \end{itemize}
+        \item EES abstract well the definition of cluster
+        \begin{itemize}
+            \item Internal coherency: high support for elem within the cl
+            \item External coherency: low support for elem out of the group
+        \end{itemize}
+        \item EES one-to-one Maximal clique, definition of clique and maximal clique
+    \end{itemize}
+    \item \textbf{Extracting Dominant Set: Replicator Dynamics}
+    \begin{itemize}
+        \item Individuals are repeatedly sampled at random, infinite population, to play a two-player game
+        \item Not suppose to have complete knowledge on the game
+        \item They act:
+        \begin{itemize}
+            \item According to inherited behavioural
+            \item Pure Strategy
+        \end{itemize}
+        \item Suppose to have some Evolutionary Selection Process that operates over time
+        \item \(x_i(t)\) population share playing pure strategy i at time t
+        \item Stochastic process of state of pop at time t
+        \item Evolution equation taken by the Darwin's principle of nature selection
+        \item description of it
+        \item Proportionality 
+        \item Replication equation used by replicator dynamics
+        \begin{itemize}
+            \item Formula
+            \item \(x_i\) proportion of strategy i in the pop
+            \item \(x = (x_1,..., x_n)\) vector of dist of strategy
+            \item \(f_i(x)\) fitness of strategy i
+            \item \(o_(x)\) average pop fitness
+            \item \(\dot{x_i}\) grow rate of strategy i, it increase if
+        \end{itemize}
+        \item \(f_i(x)\) is assumed to depend linearly upon the population distribution
+        \item Formula
+        \item \((Ax)_i\) expected payoff of the i-th row
+        \item \(x^Ax\) is the average payoff
+        \item Discretization which assume \textit{non-overlapping} generations, formula
+    \end{itemize}
+\end{itemize}

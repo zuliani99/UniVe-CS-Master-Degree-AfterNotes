@@ -1,0 +1,30 @@
+\chapter{Function Properties}
+\section{Mean}
+\begin{itemize}
+    \item \(\mathbb{E}[aX +bY + c] = a\mathbb{E} + b\mathbb{E} + c\)
+    \item \(\mathbb{E}[X + Y] = \mathbb{E}[X] + \mathbb{E}[Y]\)
+    \item \(\mathbb{E}[X] = a\mathbb{E}[X]\)
+    \item \textbf{For independent \(X\) and \(Y\)} \(\mathbb{E}[XY] = \mathbb{E}[X] \times \mathbb{E}[Y]\)
+    \item \(X_1,X_2,...,X_n\) RVs, then \(\mathbb{E}[X_1 + X_2 + ... + X_n] = \mathbb{E}[X_1] + \mathbb{E}[X_2] + ... + \mathbb{E}[X_n] = \sum_{i=1}^n X_i\)
+\end{itemize}
+
+\section{Variance}
+\begin{itemize}
+    \item \(\mathbb{VAR}[X] = \mathbb{E}[X^2] - \mathbb{E}[X]^2\)
+    \item \(\mathbb{VAR}[X + c] = \mathbb{VAR}[X] \quad \quad \mathbb{VAR}[cX] = c^2\mathbb{VAR}[X]s\)
+    \item \(\mathbb{VAR}[aX + bY + c] = a^2\mathbb{VAR}[X] + b^2\mathbb{VAR}[Y] + 2ab\mathbb{COV}[X, Y]\)
+    \item \textbf{For independent \(X\) and \(Y\)} \(\mathbb{VAR}[X + Y] = \mathbb{VAR}[X] + \mathbb{VAR}[Y]\)
+\end{itemize}
+
+\section{Covariance}
+\begin{itemize}
+    \item \(\mathbb{VAR}[X] = COV[X,X]\)
+    \item \(\mathbb{COV}[cX,Y] = c\mathbb{COV}[X,Y] \quad 
+ \quad \mathbb{COV}[X,cY] = c\mathbb{COV}[X,Y]\)
+    \item \(\mathbb{COV}[X + Y, Z] = \mathbb{COV}[X,Z] + \mathbb{COV}[Y,Z]\)
+    \item \(\mathbb{COV}[X, Y + Z] = \mathbb{COV}[X,Y] + \mathbb{COV}[X,Z]\)
+    \item \(\mathbb{COV}[X,Y] = \mathbb{COV}[Y,X]\)
+    \item \(\mathbb{COV}[X,c] = 0\)
+    \item \textbf{For independent \(X\) and \(Y\)} \(\mathbb{COV}[X,Y] = 0\)
+    \item \(\mathbb{COV}[X + Y, Z + W] = \mathbb{COV}[X,Y] + \mathbb{COV}[X,W] + \mathbb{COV}[Y,Z] + \mathbb{COV}[Y,W]\)
+\end{itemize}

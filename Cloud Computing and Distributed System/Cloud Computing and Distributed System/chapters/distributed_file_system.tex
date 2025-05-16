@@ -1,0 +1,129 @@
+\chapter{Distributed File System}
+A distributed file system enables programs to \textit{store} and \textit{access} remote files exactly \textbf{as they do local ones}, allowing users to access files from any computer on a network. The performance and reliability should be comparable to that for files stored on local disk. \textbf{Motivation} for using distributed file system:
+\begin{itemize}
+    \item \textbf{Availability}
+    \item \textbf{Fault tolerance}
+    \item \textbf{Performance}
+    \item \textbf{Heterogeneity}
+\end{itemize}
+A distributed file system in general \textbf{offers the following functionalities:}
+\begin{itemize}
+    \item \textit{Sharing} of resources
+    \item \textit{Persistence} for distributed shared objects
+    \item \textit{Distributed} replicas of resources
+    \item Consistency of resources, between multiple copies of data when updates occur.
+\end{itemize}
+
+\section{File System Modules}
+The main \textbf{role} of a file system is to \textit{deal} and \textit{manage} files \textbf{around the system}. Each file contains \textit{data} and a \textit{set of attributes} used to make identify them or taking some decisions. \textbf{File systems are responsible} for the \textit{organization, storage, retrieval, naming, sharing and protection of files.}
+\begin{itemize}
+    \item The \textbf{data} consist of a sequence of data items, accessible by operations to read and write any portion of the sequence
+    \item The \textbf{attributes} are held as a single record containing information such as the length of the file, timestamps, file type, owner’s identity and access control lists
+\end{itemize}
+
+\section{Distributed File System Requirements}
+\begin{itemize}
+    \item \textbf{Transparency:} the design must balance the flexibility and scalability that derive from transparency against software complexity and performance.
+    \begin{itemize}
+        \item \textit{Access transparency:} clients does not have knowledge on how to resources are accessed by the system
+        \item \textit{Location transparency:} clients are not affected by possible change of locations of resources
+        \item \textit{Performance transparency:} clients see always the same level of performance
+        \item \textit{Scalability transparency:} the service can be expanded by incremental growth to deal with a wide range of loads and network sizes.
+        \item \textit{Mobility transparency:} if files are moved clients are not affected
+    \end{itemize}
+    \item \textbf{Concurrency:} changes to a file by one client should not interfere with the operation of other clients simultaneously accessing or changing the same file
+    \item \textbf{Replication:} in a file service that supports replication, a file may be represented by several copies of its contents at different locations
+    \item \textbf{Heterogeneity:} the service interfaces should be defined so that client and server software can be implemented for different operating systems and computers
+    \item \textbf{Consistency:} when files are replicated or cached at different sites, there is an inevitable delay in the propagation of modifications made at one site to all of the other sites that hold copies
+    \item \textbf{Fault Tolerance:} the central role of the file service in distributed systems makes it essential that the service continues to operate
+    \item \textbf{Security:} there is a need to authenticate client requests so that access control at the server is based on correct user identities and to protect the contents
+    \item \textbf{Efficiency:} a distributed file service should offer facilities that are of at least the same power and generality as those found in conventional file systems and should achieve a comparable level of performance.
+\end{itemize}
+
+\section{Case Study}
+\subsection{File Service Architecture}
+The architecture is designed to \textbf{enable a stateless implementation} of the server module. It structures the file service as three components \textbf{flat file service}, a \textbf{directory service} and a \textbf{client module}.
+
+%IMAGE
+
+\begin{itemize}
+    \item The \textbf{flat file service} refer to implementing operations on the contents of files. \textit{Unique file identifiers} are used to refer to files in all requests for flat file service operations.
+    \item The \textbf{directory service} provides a mapping between text names for files and their UFIDs.
+    \item The \textbf{client module }also holds information about the network locations of the flat file server and directory server processes
+\end{itemize}
+
+\subsection{Sun Network File System}
+\textbf{Sun Network File System} is implemented though \textbf{NFS protocol}, which is a set of remote procedure calls that provide the means for clients for perform operations on a remote file store. NFS provides access transparency, user programs can issue file operations for local or remote files without distinction. It is composed by
+\begin{itemize}
+    \item The \textbf{NFS Server module} is stored in the kernel on each computer that acts as an NFS server
+    \item The \textbf{NFS Client module} cooperates with the virtual file system in each client machine. It operates in a similar manner to the conventional UNIX file system, transferring blocks of files to and from the server and caching the blocks in the local memory whenever possible
+\end{itemize}
+
+%IMAGE
+
+\textbf{Caching} in both the \textit{client} and the \textit{server computer} are indispensable features of NFS implementations in order to achieve \textbf{adequate performance}. The server keeps in local memory blocks of files belonging to the exported file system. It is necessary to deal with \textbf{consistency of data}, and for that reason two strategies are adopted:
+\begin{itemize}
+    \item \textbf{Write Through:} block are \textit{written on the disk} when the server receives the write request by a client
+    \item \textbf{Write Back:} blocks are \textit{not immediately written on the disk} at the receiving time of the write request
+\end{itemize}
+The client module caches the results of read and write operations, \textit{reducing the request} number to the server. The \textit{main problem} is that there can be \textit{different versions} of the same file in different nodes, and so the solution is to assign the \textbf{client} the \textbf{responsibility to check for data consistency} in its cache. For \textit{every access} to a shared file one has to verify the \textbf{validity cache condition}.
+
+Each element in the cache of the client has:
+\begin{itemize}
+    \item \(T_c\) time of \textbf{last validation}
+    \item \(T_m\) time of \textbf{last modification}
+\end{itemize}
+Chosen a \textbf{threshold \(t\)} it is necessary to verify that the \textit{time} from \textit{last validation} must \textbf{not be greater} than \(t\).
+
+\subsection{Andrew File System}
+Like NFS allows the applications to access remote file systems \textbf{without recompilation}. AFS with respect to NFS has \textbf{more scalability} and it allows the following main features:
+\begin{itemize}
+    \item Files are entirely transferred by the server to the clients in one operation
+    \item Clients keep in their own a cache local copy of the file (entire) received by the server
+\end{itemize}
+AFS is designed to \textbf{perform well} with \textit{larger numbers of active users} than other distributed file systems.
+
+AFS is implemented as two software components that exist as UNIX processes called 
+\begin{itemize}
+    \item \textbf{Vice:} is a server that works at upper level that runs as a user-level UNIX process in each server computer
+    \item \textbf{Venus:} is a client working at upper level that runs in each client computer and corresponds to the client module in our abstract model
+\end{itemize}
+
+%IMAGE
+
+The file system of each workstation is formed by local files, not shared, and shared files, stored on the server and copies are cached on the local disks of workstations.
+
+When the \textbf{process close the file:} if the \textbf{local copy} has been \textit{modified} then it is sent back to the server, otherwise the copy is kept in the workstation for possible successive requests. In general read and write operations are not so frequent and the \textbf{local cache is very large}. Andrew file system assumes:
+\begin{itemize}
+    \item Most of the file are small
+    \item Read is more frequent than write
+    \item Sequential access is more common
+    \item Most of the file are modified only by one client
+    \item File are often used as burst
+\end{itemize}
+
+\textbf{So it could be not reasonable to use Andrew file system for database.}
+
+One of the most important problem is given by \textbf{Consistency of the cache}
+\begin{itemize}
+    \item When a module \textit{Vice} (server) gives a file to \textit{Venus} (client) it also sends a \textbf{callback promise}, which is a promise of the server to contact later the client \textbf{when the file is modified by other clients}
+    \item In the client cache to each file there is the \textbf{callback} associated and it can be in two possible states:
+    \begin{itemize}
+        \item \textbf{Valid} the server has not yet communicated the file changes
+        \item \textbf{Cancelled} the server did a recall communicating to invalidate the local copy of the file because of changes
+    \end{itemize}
+    \item When a server receives the change request of a file, it send a message to all those clients to which it previously promised a \textbf{callback}
+    \item Once connected by the server, the client put the callback associated to that file as cancelled
+\end{itemize}
+
+Another aspect that should be considered is the \textbf{fault tolerance}. 
+\begin{itemize}
+    \item When a workstation starts again after crash it must try to keep most of the content of its cache
+    \item It could have lost some callback by the server and so the cache has to be validated again
+    \item \textbf{Revalidation} of the cache works as follow:
+    \begin{itemize}
+        \item The client sends a \textit{cache validation request} with the file to be validated and the date of the last change
+        \item If the server verifies that \textbf{there were no change}s starting from the date indicated by the client, then the file and the corresponding callback is \textbf{validated}
+        \item Otherwise the callback is set as \textbf{cancelled}
+    \end{itemize}
+\end{itemize}

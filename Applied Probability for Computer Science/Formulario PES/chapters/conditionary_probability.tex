@@ -1,0 +1,19 @@
+\chapter{Probabilità Condizionata}
+\begin{itemize}
+    \item \textbf{Probabilità condizionata:}
+    \[\mathbb{P}[A|B] = \frac{\mathbb{P}[A \cap B]}{\mathbb{P}[B]} \quad \mathbb{P}[B] > 0\]
+    \[\mathbb{P}[\bar{A} | B] = \frac{\mathbb{P}[\bar{A} \cap B]}{\mathbb{P}[B]} = \frac{\mathbb{P}[B] - \mathbb{P}[A \cap B]}{\mathbb{P}[B]} = 1 - \mathbb{P}[A | B]\]
+    \item \textbf{Formula delle probabilità composte:}
+    \[\mathbb{P}[A_1 \cap A_2 \cap ... \cap A_n] = \mathbb{P}[A_1]\mathbb{P}[A_2 | A_1]\mathbb{P}[A_3|A_1 \cap A_2] ... \mathbb{P}[A_n | A_1 \cap ... \cap A_{n-1}]\]
+    \item \textbf{Eventi indipendent:} \(\mathbb{P}[A | B] = \mathbb{P}[A]\)
+    \item \textbf{\(n\) eventi (reciprocamente) indipendenti:}
+    \[\mathbb{P}[A_{i_1} \cap ... \cap A_{i_k}] = \mathbb{P}[A_{i_1}] ... \mathbb{P}[A_{i_k}]\]
+    \item \textbf{Sistema in serie:}
+    \[\mathbb{P}[A] = \mathbb{P}\Bigg[ \bigcap_{i=1}^nA_i\Bigg] = \prod_{i=1}^n \mathbb{P}[A_i] = \prod_{i=1}^n(a-p_i)\]
+    \item \textbf{Sistema in parallelo:}
+    \[\mathbb{P}[B] = 1 - \mathbb{P}[\bar{B}] = 1 - \mathbb{P}\Bigg[\bigcap_{i=1}^n\bar{A}_i\Bigg] = 1- \prod_{i=1}^n\mathbb{P}[\bar{A}_i] = 1-\prod_{i=1}^n p_i\]
+    \item \textbf{La legge della probabilità totale:}
+    \[\mathbb{P}[A] = \sum_i \mathbb{P}[A \cap C_i] = \sum_i \mathbb{P}[C_i]\mathbb{P}[A|C_i]\]
+    \item \textbf{La formula di Bayes:}
+    \[\mathbb{P}[C_m|A] = \frac{\mathbb{P}[A|C_m]\mathbb{P}[C_m]}{\sum_i\mathbb{P}[A|C_i]\mathbb{P}[C_i]}\]
+\end{itemize}

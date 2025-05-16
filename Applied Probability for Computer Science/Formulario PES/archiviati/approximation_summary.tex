@@ -1,0 +1,8 @@
+\chapter{Approximation}
+Given \(X_1,X_2,...,X_n\) a sequence of independent random variables with \(S_n = \sum_{i = 1}^n X_i\) if:
+\begin{itemize}
+    \item \(X_i \stackrel{iid}{\sim} \text{Bernulli}(p) \approx S_n \sim \text{Binomial}(n,p)\)
+    \item \(X_i \stackrel{iid}{\sim} \text{Geometric}(p) \approx S_n \sim \text{NegativeBinomial}(n,p)\)
+    \item \(X_i \stackrel{iid}{\sim} \text{Exponential}(\lambda) \approx S_n \sim \text{Gamma}(\alpha=n,\lambda)\)
+    \item \(X_i \stackrel{iid}{\sim} \text{Poisson}(\lambda) \approx S_n \sim \text{Poisson}(n*\lambda)\)
+\end{itemize}

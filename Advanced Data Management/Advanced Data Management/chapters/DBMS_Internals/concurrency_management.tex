@@ -1,0 +1,190 @@
+\chapter{Concurrency Management}
+The operations of a transaction may be performed between those of others. This can cause interference that leaves the database in an inconsistent state. The \textit{Concurrency Manager} is the system module that ensures the execution of concurrent transactions without interference during database access.
+
+\section{Introduction}
+We assume that each transaction is \textit{consistent}, i.e. when it executes in isolation, it is guaranteed to map consistent states of the database to consistent states.
+
+\begin{tcolorbox}
+\textbf{Serial Execution} An execution of a set of transactions $T = {T_1, ..., T_n}$ is \textit{serial} if, for every pair of transactions $T_i$ and $T_j$, all the operations of $T_i$ are executed before any of the operations of $T_j$ or vice versa.
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Serializable Execution} An execution of a set of transactions is \textit{serializable} if it has the same effect on the database as some serial execution of the transactions that commit.
+\end{tcolorbox}
+
+The DBMS module that controls the concurrent execution of transactions is called the \textbf{Concurrency Manager or Scheduler}.
+
+The \textbf{theory of serializability} a mathematical tool that allows us to prove whether a given scheduler is correct. The theory uses a structure called \textbf{history (or schedule)} to represent the chronological order in which the operations of a set of concurrent transactions are executed, and defines the properties that a history has to meet to be serializable.
+
+\section{History}
+From the point of view of a DBMS a transaction $T_i$ starts with a \textit{begin}, then continues with a partially ordered sequence of read $(ri[x])$ and write $(wi[x])$ operations on the database, and terminates either with an \textit{abort}$(a_i)$ or a \textit{commit}$(c_i)$ operation.
+
+To simplify the presentation, we will make the following additional assumptions:
+\begin{itemize}
+    \item The database is a fixed set of independent records that can only be read or updated
+    \item A transaction reads and updates a specific record at most once
+\end{itemize}
+
+To treat formally the concurrent execution of a set of transactions $\{T_1,T_2,...,T_n\}$ the concept of \textbf{history} is used.
+\begin{tcolorbox}
+\textbf{History.} Let $T = {T_1, T_2,...,T_n}$ a set of transaction. A \textbf{history} $H$ on $T$ is an ordered
+set of operations such that:
+\begin{enumerate}
+    \item The operation of $H$ are those of $T_1, T_2,...,T_n$
+    \item $H$ preserves the ordering between the operations belonging to the same transaction
+\end{enumerate}
+Intuitively, the history H represents the actual or potential execution order of the operations of the transactions $T_1, T_2,...,T_n$.
+\end{tcolorbox}
+
+\section{Serializable History}
+For equivalent histories we could mean that they produce the same effects on the database. Since a DBMS knows nothing of the computations made by a transaction in temporary memory, a \textit{weaker notion of equivalence} which takes into account only the order of operations in \textit{conflict} made on the database is preferred.
+\begin{tcolorbox}
+\textbf{Operations in conflict.} Two operations of different transactions are in \textit{conflict} if they are on the same data item and at least one of them is a write operation.
+\end{tcolorbox}
+The concept of operations in conflict allows to characterize three types of abnormal situations:
+\begin{itemize}
+    \item \textit{Dirty Reads (Write-Read Conflict)} 
+    \item \textit{Unrepeatable Read (Read-Write Conflict)}
+    \item \textit{Lost Update (Write-Write Conflict)} 
+\end{itemize}
+
+\begin{tcolorbox}
+\textbf{Histories c-equivalent.} Two histories $H_1$ and $H_2$ are \textit{c-equivalent (conflict-equivalent)}, that is equivalent with respect to operations in conflict, if:
+\begin{itemize}
+    \item They ($H_1$ and $H_2$) are defined on the same set of transactions and have the same operations
+    \item They ($H_1$ and $H_2$) have the same order of operations in conflict of transactions terminated normally
+\end{itemize}
+\end{tcolorbox}
+It is motivated by the fact that the result of concurrent execution of $T_1, T_2,...,T_n$ depends only on the order of execution of operations in conflict.
+
+A history can be transformed into a c-equivalent one using the following property:
+\begin{tcolorbox}
+\textbf{Commutative Property.} Two database operations $o_i$ and $o_j$ commute if, for all initial database states, they:
+\begin{enumerate}
+    \item Return the same results
+    \item Leave the database in the same final state
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}
+\textbf{Conflict Serializability.} A history $H$ on the transactions $T = {T_1, T_2,...,T_n}$ is \textit{c-serializable} if it is c-equivalent to a serial history on $T_1, T_2,...,T_n$.
+\end{tcolorbox}
+\textit{Each c-serializable history is serializable, but there are serializable histories that are not c-serializable.}
+
+\subsubsection{Serialization Graph}
+Although it is possible to examine a history $H$ and decide whether or not it is c-serializable using the commutativity and reordering of operations. The other way is to proceed based on the analysis of a particular graph derived from $H$, called \textit{serialization graph}.
+\begin{tcolorbox}
+\textbf{Serialization Graph.} Let $H$ a history of committed transactions $T = {T_1, T_2,...,T_n}$. The \textit{serialization graph} of $H$, denoted $SG(H)$, is a directed graph such as:
+\begin{itemize}
+    \item A \textbf{node} for every committed transaction in H
+    \item \textbf{Directed arc} from $T_i \rightarrow T_j (i \neq j)$ if and only if in $H$ some operation $p_i$ in $T_i$ appears before and conflicts with some operation $p_j$ in $T_j$.
+\end{itemize}
+\end{tcolorbox}
+We say that two transactions $T_i$ and $T_j$ conflicts if $Ti \rightarrow Tj$ appears in $SG(H)$.
+\begin{tcolorbox}
+\textbf{C-Serializability Theorem.} A history $H$ is c-serializable if and only if its serialization graph $GS(H)$ is \textit{acyclic}.
+\end{tcolorbox}
+
+\section{Serializability with Locking}
+The c-serializability theorem is used to prove that the scheduling algorithm for the concurrency control used by a scheduler is correct.
+
+\subsection{Strict Two-Phase Locking}
+Each data item used by a transaction has a lock associated with it, a \textit{read} or a \textit{write} lock. The protocol follows two rules:
+\begin{enumerate}
+    \item If a transaction wants to \textit{read} a data item, it first request a \textit{shared} lock on the data item. If no other transaction holds the lock, then the data item is locked. If, however, another transaction $T_j$ holds a lock in conflict, then $T_i$ must wait until $T_j$ releases it
+    \item All locks held by a transaction $T_i$ are released together when $T_i$ commits or aborts
+\end{enumerate}
+
+\begin{tcolorbox}
+\begin{itemize}
+    \item A Strict 2PL protocol ensures c-serializability.
+    \item \textit{The set of Strict 2PL histories is a proper subset of the c-serializable histories}
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Deadlocks}
+Two-phase locking is simple, but the scheduler needs a strategy to detect deadlocks.
+
+\subsubsection{Deadlock Detection}
+\begin{itemize}
+    \item A strategy to detect deadlocks uses a wait-for graph in which the nodes are active transactions and an arc from $T_i$ to $T_j$ indicates that $T_i$ is waiting for a resource held by $T_j$
+    \item Then a cycle in the graph indicates that a deadlock has occurred, and one of the transactions of the cycle must abort
+    \item The standard method to decide which transaction to abort is to choose the “youngest” transaction by some metric
+    \item Linear complexity algorithm
+    \item Instead of \textit{wait-for graph} we can use the \textit{timeout} strategy: if a transaction has been waiting too long for a lock, then the scheduler simply presumes that deadlock has occurred
+\end{itemize}
+
+\subsubsection{Deadlock Prevention}
+Use a locking protocol that disallows the possibility of a deadlock occurring as follows. Each transaction $T_i$ receives a timestamp $t_s(T_i)$ when it starts: $T_i$ is older than $T_j$ if $t_s(T_i) < t_s(T_j)$. Each transaction is assigned a priority on the basis of its timestamp: the older a transaction is, the higher priority it has.
+
+When a transaction $T_i$ requests a lock on a data item that conflicts with the lock currently held by another active transaction $T_j$, two algorithms are possible:
+\begin{enumerate}
+    \item \textit{Wait-die} (or non-preemptive technique):
+    %IMAGE
+    Therefore, an older transaction \textit{waits} only for a younger one, otherwise the younger \textit{dies}.
+    \item \textit{Wound-wait} (or preemptive technique):
+    %IMAGE
+    Older transaction \textit{wounds} a younger one to take its lock, otherwise the younger waits for the older one.
+\end{enumerate}
+
+\textit{In both cases when an aborted transaction $T_i$ is restarted, it has the same priority it had originally.}
+
+\begin{tcolorbox}
+Both the \textit{Wait-Die} and \textit{Wound-Wait} methods do not create deadlocks.
+\end{tcolorbox}
+
+When the methods need to choose between two transactions which one to abort, it is always preferred the \textbf{younger one}, because it has probably \textit{done less work}, and therefore it is less costly to abort. Moreover, the aborted transaction is \textit{restarted} again with the \textit{same value} of the time stamp, and therefore it sooner or later will become the oldest transaction and will not be interrupted.
+
+However, the behavior of the two methods is very different:
+\begin{itemize}
+    \item \textit{Wound-wait} a transaction $T$ can wait for data locked by an older transaction or restarts a younger one $T_y$. Most likely is the \textit{first} case followed by the waiting rather than restarting
+    \item \textit{Wait-die} a transaction $T$ can wait for data locked by a younger transaction or it restarts due to an older one $T_0$. Most likely is the \textit{second} case and then the method favors the restarting rather than waiting
+\end{itemize}
+
+\section{Serializability without Locking}
+The transactions can commit at any time without requesting permission. For this reason, the methods are called \textbf{pessimistic} because are based on the idea that a bad thing is likely to happen.
+
+Other methods, called \textbf{optimistic}, have been studied for concurrency control which, instead, do not lock data because are based on the idea that bad things are not likely to happen.
+
+\subsubsection{Snapshot Isolation}
+\begin{itemize}
+    \item A transaction can perform any database operation without requesting permission, and taking advantage of \textit{multiversions} of each data item
+    \item The transactions must request permission to commit
+    \item The method is called \textbf{optimistic}
+\end{itemize}
+
+\section{Multiple-Granularity Locking}
+The concurrency control techniques seen so far, based on the idea of a single record lock, is not sufficiently general to treat transactions that operate on collections of records.
+
+Other techniques based their idea on the data to lock can have different granularities and among them is defined an inclusion relationship.
+\begin{itemize}
+    \item The inclusion relation between data can be thought of as a tree of objects where each node contains all its children
+    \item If a transaction gets an \textit{explicit} $S$ or $X$ lock on a node, then it has an implicit lock in the same lock mode on all the descendants of that node.
+\end{itemize}
+
+\begin{tcolorbox}
+Multiple-granularity locking requires that before a node is explicitly locked, a transaction must first have a proper intention lock on all the ancestors of that node in the granularity hierarchy.
+\end{tcolorbox}
+The intention lock types are the following:
+\begin{itemize}
+    \item \textit{IS (intentional shared lock)} allows requestor to explicitly lock descendant nodes in S or IS mode
+    \item \textit{IX (intentional exclusive lock)} allows requestor to explicitly lock descendants in \textit{S, IS, X, IX} or \textit{SIX} mode
+    \item \textit{SIX (shared intentional exclusive lock)} implicitly locks all descendants of node in \textit{S} mode and allows requestor to explicitly lock descendant nodes in \textit{X, SIX}, or \textit{IX} mode
+\end{itemize}
+
+To deal with multiple granularity locks, it is necessary \textbf{extend} the \textit{Strict 2PL protocol} with new rules, obtaining the protocol called \textit{Multi-granularity Strict 2PL}:
+\begin{enumerate}
+    \item A node can be \textbf{locked} by a transaction $T_i$ in $S$ or $IS$ mode only if the parent is locked by $T_i$ in $IS$ or $IX$ mode
+    \item A node can be \textbf{locked} by a transaction $T_i$ in $X$, $IX$ or $SIX$ mode only if the parent is locked by $T_i$ in $SIX$ or $IX$ mode
+\end{enumerate}
+
+\section{Locking for Dynamic Databases}
+Transactions can also insert or delete records into tables with indexes. These possibilities raise new problems to be solved to ensure serializability during the concurrent execution of a set of transactions, while continuing to adopt the Strict 2PL protocol.
+
+\subsubsection{Insertion and Deletion}
+The inserted or deleted records are called \textit{phantoms} because they are records that appear or disappear from sets, that is are invisible only during a part of a transaction execution.
+
+\subsubsection{Concurrency Control in B+–trees}
+The concurrent use of a \textit{B+–tree} index by several transactions may be treated in a simple way with \textit{Strict 2PL protocol}, by considering each node as a granule to lock appropriately.
+
+A better solution is obtained by exploiting the fact that the indexes are used in a particular way during the operation.

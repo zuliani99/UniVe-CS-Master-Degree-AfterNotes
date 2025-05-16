@@ -1,0 +1,48 @@
+\chapter{Probabilità Elementare}
+\begin{itemize}
+    \item \textbf{Principio fondamentale del calcolo combinatorio:} \(m_1 \times m_2\)
+    \item \textbf{Principio fondamentale generalizzato:} \[\prod_{i+1}^rm_i = m_1 \times ... \times m_r\]
+    \item \textbf{Disposizioni con ripetizione:} \[\prod_{i=1}^rn = n^r\]
+    \item \textbf{Disposizioni semplici:} \(n \times (n - 1) \times ... \times (n - r + 1)\)
+    \item \textbf{Permutazioni:} \(n \times (n - 1) \times (n - 2) \times ... \times 2 \times 1 =: n!\)
+    \item \textbf{Combinazioni:} \[\frac{n \times (n - 1) \times ... \times (n - r + 1)}{r!} =: {n \choose r}\]
+    \item \textbf{Operazioni sugli eventi e Diagrammi di Venn:}
+    \begin{itemize}
+        \item Complemento \(A^c = 1 - A\)
+        \item Intersezione \(A \cap B\)
+        \item Unione \(A \cup B\)
+        \item Inclusione \(A \subset B\)
+        \item Incopatibilita' \(A \cap B = \emptyset\)
+    \end{itemize}
+    \item \textbf{Assiomi di probabilità:}
+    \begin{itemize}
+        \item Positivita' \(0 \leq \mathbb{P}[A] \leq 1\)
+        \item Normalizzazione \(\mathbb{P}[\Omega] = 1\)
+        \item Additivita': se \(A_i \cap A_j = \emptyset\) allora
+        \[\mathbb{P}\Bigg[\bigcup_{n=1}^\infty A_n\Bigg] = \sum_{n=1}^\infty \mathbb{P}[A_n]\]
+    \end{itemize}
+    \item \textbf{Alcune proprietà della probabilità:}
+    \begin{itemize}
+        \item \textit{Complementare:} \(\mathbb{P}[\bar{A}] = 1-\mathbb{P}[A]\)
+        \item \textit{Evento impossibile:} \(\mathbb{P}[\emptyset] = \mathbb{P}[\bar{\Omega}] = 1-\mathbb{P}[\Omega] = 0\)
+        \item \textit{Unione:} \(\mathbb{P}[A \cup B] = \mathbb{P}[A] + \mathbb{P}[B] - \mathbb{P}[A \cap B]\)
+        \item \textit{Partizione:} se \(C_1, C_2,...\) sono una partizione
+         \[\mathbb{P}\Bigg[\bigcup_{n=1}^\infty C_i\Bigg] = \mathbb{P}[\Omega]=1\]
+    \end{itemize}
+    \item \textbf{Legge della probabilità totale:} \[\mathbb{P}[A] = \sum_i\mathbb{P}[A \cap C_i]\]
+    \item \textbf{Eventi elementari equiprobabil:}
+    \[\mathbb{P}[A] = \frac{\text{\# casi favorevoli}}{\text{\# possibili casi}}\]
+    \item \textbf{Popolazioni e sottopopolazioni}
+    \begin{itemize}
+        \item \textit{Soluzione con reinserimento:}
+        \[\#\Omega = N^n \quad \#A_k ={n \choose k}m^k(N-m)^{n-k}\]
+        \begin{flalign*}\mathbb{P}[A_k] &={n \choose k}m^k(N-m)^{n-k}\frac{1}{N^n}\\
+                          &={n \choose k}\Big(\frac{m}{N}\Big)^k\Big(\frac{N-m}{N}\Big)^{n-k}\\
+                          &={n \choose k}\Big(\frac{m}{N}\Big)^k\Big(1- \frac{m}{N}\Big)^{n-k}
+        \end{flalign*}
+        \item \textit{Soluzione senza reinserimento:}
+        \[\#\Omega = {N \choose n} \quad \#A_k={m \choose k} {N-m \choose n-k}\]
+        \[\mathbb{P}[A_k] = \frac{{m \choose k}{N-m \choose n-k}}{{N \choose n}}\]
+    \end{itemize}
+    
+\end{itemize}

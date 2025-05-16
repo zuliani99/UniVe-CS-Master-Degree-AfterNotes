@@ -1,0 +1,1123 @@
+\chapter{Langauge Model}
+\begin{itemize}
+    \item \textbf{Probabilistic Language Modeling}
+    \begin{itemize}
+        \item \textbf{Goal}: compute the probability of a sentence or sequence of words 
+        \item \textbf{Related task}: probability of upcoming words
+        \item \textbf{A model}: that compute either of these \(p(w)\) or \(p(w_n | w_1, w_2, ..., w_{n-1})\) is a LM or language model
+        \item How to compute \(p(w)\)? \(\rightarrow\) chin rule of probability
+        \item How to estimates these probabilities?
+        \begin{itemize}
+            \item count / count minus the specific word
+            \item \textit{Any issues?} 
+            \begin{itemize}
+                \item Word that cannot appear
+                \item Very expensive
+                \item Infinite number of prefix so a very sparse prob
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    \item Unigram Model
+    \item Text generation with a LM
+    \begin{itemize}
+        \item Given the prefix how to pick the next given word? Randomly, sampling word from the distribution, pick word with higher conditional probability
+        \item Once I choose the word there is no way of making an correction
+    \end{itemize}
+    \item N-grams model
+    \begin{itemize}
+        \item We can extend to trigram, 4-grams, 5-grams
+        \item insufficient model of language since it has long dependencies
+    \end{itemize}
+    \item 2-gram model 
+    \begin{itemize}
+        \item \[p(w_i, w_{i-1}) = \frac{count(w_{i-1}, w_i)}{count(w_{i-1})}\]
+    \end{itemize}
+    \item Estimating probabilities
+    \begin{itemize}
+        \item Instead of doing multiplication we can use a summation by the logarithm
+    \end{itemize}
+    \item \textbf{How good is our LM}
+    \begin{itemize}
+        \item Consider the perplexity: the best ML is the one that best predict an unseen test set
+        \item Perplexity is the inverse probability of the test set, normalized by the number of words
+        \item Minimizing the perplexitu is the same as maximising the probability 
+        \item Lower perplexity = better model
+        \item Bigram with zero probability: 0 prob to the test set so we cant compute the perplexity
+        \item How we deal with n grams of zero probabilities?
+        \begin{itemize}
+            \item Add one estimation, called laplace smoothing, consist on pretend that we saw each word one more time that we did (add one to the count)
+            \item One hot encoding, but dot product is zero, vectors are orthogonal
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+
+\chapter{NL Model}
+\begin{itemize}
+    \item Represent words with low dimensional vectors called embeddings
+    \item Given the embedding through a NN, softmax layer convert a vector into a probability distribution over the entire vocabulary
+    \item \textbf{Fixed windows approach}
+    \begin{itemize}
+        \item words OHE
+        \item concatenated word embeddings
+        \item hidden layer
+        \item output soft max
+        \begin{itemize}
+            \item Advantages:
+            \begin{itemize}
+                \item No sparsity problem
+                \item Model is size O(n)
+            \end{itemize}
+            \item Disadvantages:
+            \begin{itemize}
+                \item Fixed window is too small
+                \item Enlarging window enlarged W
+                \item Location of word matters we wold like something more general
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    \item Relations
+    \begin{itemize}
+        \item Synonyms
+        \item Similarity
+        \item Relatedness
+        \item Anatomy
+        \item Connotation
+    \end{itemize}
+    \item \textbf{Word meaning}
+    \begin{itemize}
+        \item Defining a meaning by linguistic distribution
+        \item Each word is a vector called embedding
+        \item Vectors since
+        \begin{itemize}
+            \item With a word, a feature is a word identity
+            \item With \textbf{embeddings}, feature is a word vector, thus we can generalize similar but unseen words
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{OHE:} 
+    \begin{itemize}
+        \item Sentence are represented as a 0/1 vector of dimension the the length of the vocabulary
+        \item Similarity via dot product not work since vector are orthogonal
+        \item RMSE works fine
+    \end{itemize}
+    \item Distributional encoding (bag of words): words that occur in similar context has similar meaning
+    \item TF-IDF
+    \item \textbf{Similarity measures}:
+    \begin{itemize}
+        \item Dot product: tends to be higher when the two vectors have large values in the same dimension, so we normalize it by the length
+        \item Cosine similarity
+    \end{itemize}
+    \item \textbf{CBOW}: given a window of words of length \(2m + 1\) define a probabilistic model for predicting the middle word
+    \[P(x_0 | x_{-m},..., x_{-1}, x_1, ..., x_m)\]
+    Train the model minimizing the loss
+    \[L = - \sum \log P(x_{-m},..., x_{-1}, x_1, ..., x_m)\]
+    \begin{itemize}
+        \item Map all the context words into the n dimensional space
+        \item Average these vectors to get a context vector
+        \item Get the score vector from the output
+        \item Use the score to compute probability via softmax
+    \end{itemize}
+    \item \textbf{Skip-Gram:} given a window of words of length \(2m + 1\) define a probabilistic model for predicting each context word
+    \[P(x_{context} | x_0)\]
+    \begin{itemize}
+        \item Map the center words into the n-dimensional space 
+        \item For the i-th compute the score for a word occupying that position
+        \item Normalize the score for each position to get a probability
+        \begin{itemize}
+            \item Problem on the loss function since the sum requires us to iterate over the entire vocabulary for each example.
+            \item The complexity comes from the output layer where we apply the softmax function to get the probability tat each vocabulary word appear in the neighbour of the input word
+            \item Convert the problem into a binary classification problem saying if two words are neighbour or not
+            \item To train this we have also to sample some negative example, that's why it is called negative sampling
+            \item \textbf{Negative Sampling}
+            \begin{itemize}
+                \item Predicting neighbouring word
+                \item Each training sample to update only a small percentage of weights in the word embedding matrix 
+            \end{itemize}
+            \item \textbf{Subsampling frequent word:} to decrease the number of training examples, clean the dataset
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{Matrix Factorization Models}
+\begin{itemize}
+    \item Co-occurrences can be computed in two way:
+    \begin{itemize}
+        \item \textbf{Full document} co-occurrences
+        \item \textbf{Windows-based} co-occurrences, capture both semantic and syntactic information
+    \end{itemize}
+    \item \textbf{Problem} with co-occurrences matrix
+    \begin{itemize}
+        \item Increase in size with vocabulary
+        \item Very high dimensional 
+        \item Models are less robust
+    \end{itemize}
+    \item Idea: store the important info in a fixed small number of dimension: dense vector
+    \item \textbf{Singular Value Decomposition}
+    \begin{itemize}
+        \item Approximate the full matrix by only considering the leftmost k terms in the diagonal matrix (the k largest singular values)
+        \item Explain matrix computation
+    \end{itemize}
+    \item \textbf{Latent Semantic Analysis}
+    \begin{itemize}
+        \item Assume that words that are close in meaning will occur in similar pieces of text
+        \item U-matrix maps words to k-concepts
+        \item V-matrix maps k-concepts to documents
+    \end{itemize}
+    \item \textbf{Point Wise Mutual Information}
+    \begin{itemize}
+        \item How to represent co-occurrence of words and contexts
+        \item Binary feature or frequency count
+        \item Sometimes low co-occurrences are very informative and high co-occurrences are not
+        \item We need to identify when co-occurrences are higher than we would expect by chance
+        \item \textbf{Point wise mutual information}
+        \item Problem 
+        \item Positive point wise mutual information
+    \end{itemize}
+    \item \textbf{Brown Cluster}
+    \begin{itemize}
+        \item Input: large corpus of words
+        \item Otput 1: a partition of words into words clusters
+        \item Output 2 (general): a hiererchical word clustering
+        \item Intuition: similar word appear in similar context. Similar word have similar distribution of words to their immediate left and right
+        \item Formualtion of \(Quality(C)\)
+        \item \textbf{First Algorithm}
+        \begin{itemize}
+            \item Start with \(|V|\) clusters 
+            \item We want to get k final clusters
+            \item We run \(|V| - k\) merge steps
+            \begin{itemize}
+                \item Pick two clusters \(c_i\) and \(c_j\) and merge them into a single cluster
+                \item Continue piking two clusters st the Quality(C) after the merge step is maximized 
+            \end{itemize}
+        \end{itemize}
+        \item \textbf{Second Algorithm}
+        \begin{itemize}
+            \item Take the top m most frequent words, put each into its own cluster \(c_1, c_2, ..., c_m\)
+            \item For \(i = (m  + 1) ... |V|\)
+            \begin{itemize}
+                \item Create a cluster \(c_{m+1}\) for the i'-th most frequent word. Now we have \(m + 1\) clusters
+                \item Choose two clusters from \(c_1, ..., c_{m + 1}\) to be merged, pick the merge that gives a maximum value for Quality(C). Now we are back to m clusters
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Word2Vec SkipGram Negative Sampling - PPMI Matrix Formulation}
+    \begin{itemize}
+        \item Skipgram negative sampling is implicitly factorizing a specific matrix of this kind
+        \item Two points to note:
+        \begin{enumerate}
+            \item The entries in the matrix are a shifted positively pointwise mutual information between the word and its context word
+            \item The matrix factorization method is not truncated SVD, it minimize the objective function to compute the factorized matricies
+        \end{enumerate}
+    \end{itemize}
+    \item \textbf{Global Vector (GloVE)}
+    \begin{itemize}
+        \item Pick the best of cont-based and prediction-based models
+        \item It construct an explicit word-context matrix
+        \item The optimization objective is weighted least-squares loss assigning more weight to the correct reconstruction of frequent items
+        \item When using the same word and context vocabularies, the GloVE model represent each word as the sum of it corresponding word and context embedding vectors.
+        \item Given two words i and j that occour in text, their co-occurrence probability is defined as the probability of seeing word i in the context of word j
+        \item Formal notation
+    \end{itemize}
+    \item \textbf{GloVe VS SkipGram}
+    \begin{itemize}
+        \item Skipgram: capture co-occurrence one window at a time
+        \item GloVE: captures the count of the overall statistics of how often words appear.
+        \begin{itemize}
+            \item Appropiate scaling and objective gives count-based models the proprieties and performnce of predict-based models
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{FastText}
+    \begin{itemize}
+        \item \textbf{Limitation of word2vec}
+        \begin{itemize}
+            \item Out of vocabulary words: an embedding is created for each word, hence it can't handle words outside its training set.
+            \item Morphology: like "eat" and "eaten" are different
+        \end{itemize}
+        \item Each word w is represented as a bag of character n-Gram
+        \item Add \(< >\) to indicate the beginning and the end of words
+        \item Include the word w itself in the set of n-Gram
+        \item \textit{Heuristics}:
+        \begin{itemize}
+            \item N-Gram between 3 and 6 characters
+            \item Short n-Gram(n = 4): capture syntactic info
+            \item Long n-Gram(n = 6): capture semantic info
+        \end{itemize}
+        \item \textbf{Loss discussion}
+        \item Sharing representation across words allowing to learn reliable representation of rare words
+    \end{itemize}
+\end{itemize}
+
+\chapter{RNN}
+\begin{itemize}
+    \item \(A_t = \theta_c A_{t-1} + \theta_xx_t \quad h_t = \theta_nA_t\)
+    \item Type of RNN
+\end{itemize}
+\section{Back Propagation Through Time}
+\begin{itemize}
+    \item Parameters are shared and the derivative are accumulated
+    \item The weights of the unrolled RNN are the same
+\end{itemize}
+\section{RNN and long term dependencies}
+\begin{itemize}
+    \item The closer I move to the end of the sequence the more I have to add and multiply the weights. During training the gradient could vanish or explode, I will not learn long term dependencies
+    \item If weights are large: exploading gradient
+    \item If the weights are small: vanishing gradient
+    \item \textbf{Fixing Exploading Gradients}
+    \begin{itemize}
+        \item \textbf{Gradient Clipping}
+        \item \textbf{Truncated BPTT}
+    \end{itemize}
+    \item \textbf{Fixing Vanishing Gradient: adding non-linearity:} \(thanh\), like doing an additional power iteration
+    \item RNN exmple: sentiment analysis
+    \item RNN as LM
+\end{itemize}
+
+\section{Long - Short Term Memory Networks}
+\begin{itemize}
+    \item LSTM were created with the following goals:
+    \begin{itemize}
+        \item Long-term dependencies
+        \item Incorporation of feedback connections
+        \item Preserving valuable info from prior data
+        \item Proficiency in handling data sequences
+    \end{itemize}
+    \item The output of an LSTM depends on
+    \begin{itemize}
+        \item Current long-term memory, cell state
+        \item The previous hidden state, short term memory
+        \item Input data
+    \end{itemize}
+    \item Three gates that regulates the amount of long and short term memories allowed
+    \begin{itemize}
+        \item \textbf{Forget Gate}: how much of the long-term memory will be remember
+        \begin{itemize}
+            \item How much we will preserve from the long-term memory
+            \item Weight removal of part of the long-term memory
+        \end{itemize}
+        \item \textbf{Input Gate}: how we update the long-term memory
+        \begin{itemize}
+            \item \% memory to remember
+            \item Potential memory to remember based on short term and input data
+            \item How much of the new memory will be added to the long-term memory 
+        \end{itemize}
+        \item \textbf{Output Gate}: update the short-term memory
+        \begin{itemize}
+            \item Potential long-term memory to become sort
+            \item \% of short to remember
+            \item new short memory
+        \end{itemize}
+    \end{itemize}
+    \item Symbols meaning:
+    \begin{itemize}
+        \item \(tanh \rightarrow\) potential amount of memory to retain 
+        \item \(\sigma \rightarrow\) percentage of memory to remember/become 
+    \end{itemize}
+\end{itemize}
+
+\section{Gated Recurrent Unit}
+\begin{itemize}
+    \item Combines forget and input gates, into update gate
+    \item Merges the cell state and the hidden state
+    \item Has fewer parameters than LSTM
+    \item No need cell layer
+    \item Calculations within each iteration ensure that \(h_t\) values being passed along, either retain a high amount of old information or are jump-started with a high amount of new information
+    \item \textbf{GRU VS LSTM}
+    \begin{itemize}
+        \item GRU significantly fewer parameters and train faster
+    \end{itemize}
+\end{itemize}
+
+\section{Bidirectional RNN and LSTM}
+\subsection{BI-RNN}
+\begin{itemize}
+    \item Combine two RNN:
+    \begin{itemize}
+        \item First move forward through time from the start of the sequence 
+        \item Second move backword through time from the end of the sequence
+    \end{itemize}
+    \item Two RNN stacked on top of each other
+    \item The one that process the input in its original order and the one that process reversed input sequence
+    \item Output computed based on the hidden state of both RNNs
+    \item The weight of the forward are different from the backword RNN
+\end{itemize}
+
+\subsection{BI-LSTM}
+\begin{itemize}
+    \item Inputs flows in both directions, capable of using both sides, a side for LSTM
+    \item \textbf{Output} is combined in several ways: \textit{average, sum, concatenation, multiplication} 
+    \item Every component has information from both past and present
+    \item Bi-LSTM can produce more meaningful output
+    \item Much slower model
+    \item Reqire more time for training
+\end{itemize}
+
+\section{Sequence 2 Sequence}
+\begin{itemize}
+    \item Used to convert one sequence into an other
+    \begin{itemize}
+        \item Sequences might have different length
+        \item Based on encoder-decorder architecture
+        \item Combines two RNNs
+    \end{itemize}
+    \item \textbf{Given an input/source sentence}
+    \begin{itemize}
+        \item Start and end token of the sentence
+        \item Each word to the embedding layer and then into the encoder
+    \end{itemize}
+    \item \textbf{At each time step:}
+    \begin{itemize}
+        \item Input o the encoder is the previous hidden state and the embedding of the current word
+        \item Encoder output a hidden state which is the vector representation of the sentence so far
+        \item Once the final word \(x_t\) has been passed into the RNN, we use the final hidden state ans context vector
+    \end{itemize}
+    \item \textbf{Now turn of the encoder}: append the \(<SOS>\) token to the start target sequence
+    \item \textbf{At each time step:}
+    \begin{itemize}
+        \item Input: embedding of the current token and the previous hidden state
+        \item Initial decoder hidden state is the context vector
+    \end{itemize}
+    \item \textbf{Points worth nothing:}
+    \begin{itemize}
+        \item Input/source encoder embedding and output/target decoder embedding are two different embedding layer with different parameters
+        \item Linear layer to convert decoder's hidden state into one of the possible words by softmax
+        \item The predicted word is used as input for the next loop
+    \end{itemize}
+    \item \textbf{Training:} once we have our predictor target sequence we compare with the actual target, compute the loss, back-propagation
+    \item \textbf{How to select the right word during training}
+    \begin{itemize}
+        \item Gready search: highest softmax probability
+        \item Exhaustive search: generate all possible sequence
+        \item Teacher forcing: Use ground truth as input instead of the model output from a prior time stamp
+        \item Beam Search: on each step of decoder keep track of the k-most probable partial translations
+    \end{itemize}
+\end{itemize}
+
+\chapter{Self-Supervised Learning}
+\begin{itemize}
+    \item Acquiring large scale dataset with curated humman-annotations is hard and expensive
+    \item The set of categories to learn need to be prefedined
+    \item \textbf{Self-Supervised Learning (SSL)}: a smart way of doing supervised learning, the data and not the human provides annotations
+    \item We am to learn good data representation
+    \item Need an automated way to obtain a training signal from the data itself, without human supervision
+    \item One solution is self-prediction: try to predict the properties of the data or hide part of the data and try to reconstruct it
+    \item Pretext and downstream tasks
+    \begin{itemize}
+        \item Define a pretext task and train the network for that
+        \item These features are used for a different downstream task where labels are available
+    \end{itemize}
+    \item Self-Supervised Learning in NLP:
+    \begin{itemize}
+        \item Center word prediction
+        \item Neighbour word prediction
+        \item Neighbour sentence prediction
+        \item Auto-regressive modelling
+        \item Masked language modelling
+        \item Next sentence prediction
+        \item Sentence order prediction
+        \item Sentence permutation
+        \item Document rotation
+    \end{itemize}
+\end{itemize}
+
+
+\chapter{Attention Mechanism}
+\section{Neural Turing Machine}
+\begin{itemize}
+    \item Goal: taking input and output and learn algorithms that map from one to the other
+    \item We feed random input and the corresponding expected outputs from the algorithms we intend to learn
+    \item NTM learns to read and write data from the external memory at different time steps to some a given task
+    \item \textbf{Controller:} responsible for making the interface between the:
+    \begin{itemize}
+        \item Input sequence
+        \item Output representation
+        \item Memory through read and write heads
+    \end{itemize}
+    \item \textbf{Memory}; contains vectors
+    \item NTM lears
+    \begin{itemize}
+        \item When to write to memory
+        \item Which memory cell to read from
+        \item How to convert result of read into final output
+        \item When to stop writing: avoiding drifting
+    \end{itemize}
+    \item \textbf{In a NTM:}
+    \begin{itemize}
+        \item Controller: LSTM or RNN
+        \item The hidden state to the read heads
+        \item Read head retrieve the information from the memory
+        \item The retrieve data is passed to the controller again
+        \item The controller send the hidden state to the write head that decide what to store
+    \end{itemize}
+    \item \textbf{Direct access is not differentiable, so we use attention}
+    \begin{itemize}
+        \item I'm not directly accessing a memory locations
+        \item I'm accessing all memory locations with a certain prob dist that represent the attention scores
+        \item Multiply the vector of probability distribution times the matrix that contain all the records
+    \end{itemize}
+    \item \textbf{Blurry Operations}: interact to a greater or lesser degree with all the elements in memory rather than addressing a single one or few elements directly.
+    \begin{itemize}
+        \item Degree determined by attention focus 
+        \begin{itemize}
+            \item Constraints each read and write operation to interact with a small portion of the memory while ignoring the rest
+            \item The proportion of memory taken into attentional focus is determined by normalized weights emitted by the heads
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Memory Addressing}
+    \begin{itemize}
+        \item \textit{Content Based - Addressing}
+        \begin{itemize}
+            \item Cosine similarity between the embeddings form the lstm and the embedding in the memory
+            \item Softmax between the temperature of a cosine similarity and the other
+        \end{itemize}
+        \item \textit{Local Based  - Addressing}
+        \begin{itemize}
+            \item Interpolation
+            \begin{itemize}
+                \item The new weight account from both the content based addressing and the focus in the last time stamp
+            \end{itemize}
+            \item Convolutional Shift
+            \begin{itemize}
+                \item It smoothly shift the weights left to right based on a parameter
+                \item This allow NTM to perform basic algorithm like copy and sort
+                \item Very close to the head shifting in a classical turing machine
+            \end{itemize}
+            \item Sharpening
+            \begin{itemize}
+                \item If we index N memory locations from 0 to N-1, the rotation applied to the weights by the parameter can be expressed as a circular convolution where all index arithmetic are computed modulo N
+                \item It blurs out data, how to fix, sharpening, highlight the most relevant
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Read operations}: is a weighted sum, in the most desiderable situation, the weights are OHE vector, 0s and one 1
+    \item \textbf{Write Operation}:
+    \begin{itemize}
+        \item Combination of erase and add operations
+        \item The process is composed with the previous state and new input, Implements a similar mechanism as the forget and input gates in LSTM
+    \end{itemize}
+    \item \textbf{Controller unrolled}
+    \begin{itemize}
+        \item Once the head has updated its weight vector it is ready to operate on the memory depending on the head type:
+        \begin{itemize}
+            \item Read head: it outputs a weighted combination on the memory locations
+            \item If it is a write head the content of the memory is modified according to weights with an erase and an add vector
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+\section{Additive Attention}
+\begin{itemize}
+    \item \textbf{Bottleneck Problem}
+    \begin{itemize}
+        \item NN needs to be able to compress all the necessarily information of a source sentence into a fixed length vector
+        \item Difficult to cope with long sentences especially those that are longer than the sentences in the training corpus 
+        \item Attention mechanism helps to look at all hidden states from encoder sequence for making predictions
+        \item How we decide which states are more or less useful for every prediction at every time step of the decoder
+        \item Use a NN to learn which hidden encoder states to attend to and by how much
+    \end{itemize}
+    \item \textbf{Alignment Computation}
+    \begin{itemize}
+        \item How important is the embedding \(h_j\) compared to what I have in the hidden state of the decoder at the previous state
+        \item a is a FFNN
+    \end{itemize}
+    \item \textbf{Attention Component}
+    \begin{itemize}
+        \item Score converted into a prob dist via softmax
+        \item \(a_{ij}\) importance of annotation \(h_j\) wrt the previous hidden state \(s_{i-1}\) in deciding the next state \(s_i\) and generating \(y_i\) 
+    \end{itemize}
+    \item \textbf{Context vector}
+    \begin{itemize}
+        \item Depends on a sequence of annotations to which the decoder map an input sequence
+        \item Each annotations contains informations about the whole input sequence with a strong focus on the parts surrounding the i-th word of the input sequence 
+    \end{itemize}
+    \item \textbf{Attention is great indeed it}
+    \begin{itemize}
+        \item Significantly improves NTM performance
+        \item Solves the bottleneck problem
+        \item Helps with vanishing gradient problem
+        \item Provide some interpretability
+    \end{itemize}
+    \item \textbf{General DL Framework}
+    \begin{itemize}
+        \item Given a set of vector values and a vector query, attention is a technique to compute a weighted sum of the values dependent on the query
+    \end{itemize}
+    \item \textbf{Intuition}
+    \begin{itemize}
+        \item Weighted sum is a selective summary of the information contained in the values, where the query determines which values to focus on
+        \item Is a way to obtain a fixed size representation of an arbitrary set of representations
+    \end{itemize}
+    \item \textbf{RNN Problems}
+    \begin{itemize}
+        \item Hard to learn long distance dependencies
+        \item Linear order of words
+        \item Embedding combined with all the previous one and at a certain point we completely loose information of the initial input sequence
+        \item Forward and backword passes have un-parallelizable operations
+        \begin{itemize}
+            \item Future RNN hidden states can't be computed in full before past hidden states have been computed
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Self-Attention}
+\begin{itemize}
+    \item Attention treats each word's embedding representation as a query to access and incorporate information from a set of values
+    \item \textbf{Attention as a soft-lookup method}
+    \begin{itemize}
+        \item Attention as performing fuzzy lookup in a key value store
+        \item In a look-up table we have a table of keys that map to values. The query matches one of the keys returning its value
+        \item In attention the query matches all keys softly, to a weighted between 0 and 1. The keys values are multiplied by the weights and summed
+    \end{itemize}
+    \item \textbf{Self-Attention Mechanism on the same sequence}
+    \begin{itemize}
+        \item Attention operates on queries, keys and values
+        \item In self-attention the queries, keys and values are drawn from the same source
+        \item Formulas
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Attention Mechanism}
+\begin{itemize}
+    \item Self attention, can we use it as our main building block? Can it be a drop-in replacement for recurrence?
+    \item NO! it has few issues
+    \begin{enumerate}
+        \item \textbf{Doesn't have inherit notion of order}
+        \begin{itemize}
+            \item \textbf{Solution}: add positional representation to the inputs
+            \item We need to encode the order of the sentence in our keys, queries and values
+            \item \textbf{Sinusoidal Representation:} concatenate sinusoidal functions of varying periods
+            \begin{itemize}
+                \item Why:
+                \begin{itemize}
+                    \item Periodicity
+                    \item Constrained values
+                    \item Extrapolation for long sequences
+                \end{itemize}
+                \item Pros: periodicity and extrapolation
+                \item Cons: not learnable, extrapolation doesn't really work
+            \end{itemize}
+            \item \textbf{Learned absolute position representation}
+            \begin{itemize}
+                \item Let all \(p_i\) be learnable parameters
+                \item Pro: flexibility: each position gets to be learned to fit the data
+                \item Con: definitely can't extrapolate to indices outside \(1,...,T\)
+            \end{itemize}
+        \end{itemize}
+        \item \textbf{No non-linearities for DL. It's all just weighted average}
+        \begin{itemize}
+            \item \textbf{Solution}: easy fix: apply the same FFNN to each self-attention output
+            \item So instead of passing directly the soft-attention result to the next step we send it in a FFNN
+        \end{itemize}
+        \item \textbf{Need to ensure we don't "look at the future" when predicting a sequence}
+        \begin{itemize}
+            \item \textbf{Solution}: Masking
+            \begin{itemize}
+                \item Parallelize operations while not looking at the future
+                \item Keeps info about the future from \textit{"leaking"} to the past
+            \end{itemize}
+            \item Self attention in decoders, we need to ensure we can't peek at the future
+            \item At every timestamp we could change the set of keys and queries to include only past words
+            \item Enable parllelization to future words by setting attention scores to \(-\infty\)
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
+
+
+
+\chapter{Transformers}
+It is an \textbf{encoder - decoder} model with attention and without recursion.
+\section{Encoder Part}
+\begin{itemize}
+    \item \textbf{Input Embedding}: convert a token into vector
+    \item \textbf{Positional Encoding}: add location of the word within the sentence via sinusoidal representation
+    \item \textbf{Multi-head Attention}
+    \begin{itemize}
+        \item Self-attention, keys, queries and vales comes from the same source
+        \item Query - key dot product in one matrix multiplication \(XQ(XK)^T \in \mathbb{R}^{n \times n}\)
+        \item Softmax and compute the weighted average with an other matrix multiplication
+        \[softmax(XQ(XK)^T) \cdot XV  \in \mathbb{R}^{n \times d}\]
+        \item What if we want to look in multiple places in the sentence at once
+        \begin{itemize}
+            \item We define multiple attention heads through multiple Q,K,V matrcies, h for example
+            \item Each attention head perform attention independently
+            \item Then outputs of all heads are combined
+            \item Each head gets to "look" at different things, and construct value vectors differently
+            \item It's not really more costly, explain
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Add \& Norm}: scaled product attention is a final variation to aid transformer training
+    \begin{itemize}
+        \item When dimensionality becomes large, dot products between vectors tend to become large
+        \item We define the attention scores by \(\sqrt{\frac{d}{h}}\) to stop the scores becoming large just as a function of \(\frac{d}{h}\)
+    \end{itemize}
+    \item \textbf{Encoder Tricks}
+    \begin{itemize}
+        \item \textbf{Residual Connections}
+        \begin{itemize}
+            \item Help the model to train better
+            \item Though to make the loss landscape considerably smoother
+        \end{itemize}
+        \item \textbf{Layer Normalization}
+        \begin{itemize}
+            \item Help the model to train faster
+            \item Cut down uninformative variations in hidden vectors values by normalizing to unit mean and sd within each layer
+            \item Z score (how many sd our point is far from the mean) \(\times\) gain + bias
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{Decoder Part}
+\begin{itemize}
+    \item \textbf{Cross-Attention}
+    \begin{itemize}
+        \item Keys and values are drawn from the encoder
+        \item Queries are drawn from the decoder
+        \item \(H\) vector of concatenation of encoder output
+        \item \(Z\) vector of concatenation of input decoder
+        \item Query and \(Z\) times Keys and \(H\): \(ZQK^TH^T  \in \mathbb{R}^{T \times T}\)
+        \item Softmax and compute the weighted average with \(H\) and Values
+        \[softmax(ZQK^TH^T) \cdot HV \in \mathbb{R}^{T \times d}\]
+    \end{itemize}
+    \item \textbf{Masked Self-Attention}
+    \begin{itemize}
+        \item We have \(h\) attention mask for \(h\) heads
+    \end{itemize}
+\end{itemize}
+
+\section{Transformer Drawbacks}
+\begin{itemize}
+    \item \textbf{Positional Representation}
+    \item \textbf{Quadratic Compute in Self-Attention}
+    \begin{itemize}
+        \item Highly parallelizable
+        \item However the total \# operations grows as \(O(T^2d)\), where \(T\) is the sequence length and \(d\) is the dictionary
+    \end{itemize}
+\end{itemize}
+
+\chapter{Contextualized Word Embedding}
+\section{ELMo}
+Replace static Embeddings with context-dependent embeddings
+\begin{itemize}
+    \item Each token's representation is a function of the entire input sequence computed by a deep bidirectional LM
+    \item Return for each token a linear combination of its representation across layers
+    \item Different layer capture different information
+    \item Each layer of this language model computes a vector representation for each token
+    \item For each task: train task dependent softmax weights to combine the layer wise representation into a single vector for each token jointly with a task specific mode that uses those vectors
+    \item \textit{Forward LM:} deep LSTM that goes form the start to the end to predict the token based on the prefix
+    \item \textit{BackwordLM:} deep LSTM that goes form the end to the start to predict the token based on the suffix
+    \item Train these LMs jointly with the same parameters for the token representation ad the softmaz layer
+    \item How to use it
+    \begin{itemize}
+        \item Embedding into choosen architecture
+        \item Frozen Embeddings
+        \item Fine Fine-Tuning, bee careful for the catastrophic forgetting
+    \end{itemize}
+\end{itemize}
+
+\section{BERT}
+\textbf{Bidirectional Encoder Representation from Transformer}
+\begin{itemize}
+    \item Fed the transformer encoder with a sequence
+    \item Get the embeddings for each words
+    \item \textbf{Goal} Understand laguage
+    \item 12 or 24 encoders layer (Small or Large)
+    \item Pre-Training phase:
+    \begin{itemize}
+        \item Pretrain to understand the language
+        \begin{itemize}
+            \item masked Language Models (MLM)
+            \item Next Sentence Predictions (NSP) 
+            \item Both tasks are jointly trained
+        \end{itemize}
+        \item Finetune on specific tasks
+        \begin{itemize}
+            \item Softmax on final layer of [CLS] token
+            \item Softmax to the tokens in the sequences
+            \item [CLS] question [SEP] answer passage [SEP], lean to predict start and end token on answer token
+        \end{itemize}
+    \end{itemize}
+    \item Explain training-eval phase
+    \item Mask out k\% of the input words and then predict the masked words, k = 15 usually
+    \begin{itemize}
+        \item Too little masking: too expensive to train
+        \item Too much masking: not enought context 
+    \end{itemize}
+    \item Problem: mask token never seen at fine-tuning
+    \begin{itemize}
+        \item 15 \% of words to predict, we replace them with
+        \item 80 \% with [mask]
+        \item 10 \% random word
+        \item 10 \% keep the same
+    \end{itemize}
+\end{itemize}
+
+\section{GPT}
+\textbf{GPT: Generative Pre-Trained Transformer}
+\begin{itemize}
+    \item Feed the transformer decoder with a sentence predict the next word
+    \item Only a single Masked Multi-Head Attention
+    \item Language model
+\end{itemize}
+\subsection{GPT-1}
+\begin{itemize}
+    \item Auto-Regressive 12 layer transformer decoder
+    \item Pre-trained on raw text as language model
+    \item Fine-tuned on labeled data: classification, entailment, similarity, multiple choice
+\end{itemize}
+\subsection{Tokenization}
+\begin{itemize}
+    \item What happens when we encounter a word at test time that we're never seen in our training data?
+    \begin{itemize}
+        \item in Word level tokenization no way of assigning index, no word emebdding, can't process that input sequence
+    \end{itemize}
+    \item Solution: low-frequency word in training with a special \(<UNK>\) token, used to handle unseen words
+    \item Problem: unseen word are all the same
+    \item Word-level tokenization treats different forms of the same word
+    \begin{itemize}
+        \item Open, opened, opens
+        \item Separate types and embeddings
+        \item This can be problematic when training over smaller dataset
+        \item Re-learn the meaning of words
+    \end{itemize}
+\end{itemize}
+\subsection{Byte Paring Encoding}
+\begin{itemize}
+    \item From base vocabulary
+    \item Count up frequency of each character pair in the data, choose the most occured
+    \item Select it and merge the characters together into one symbol, Add this new symbol to the vocab then retokenize the data
+    \item Keep repeating this process, untill we stop
+\end{itemize}
+\subsection{Word Piece Encoding}
+\begin{itemize}
+    \item Good balance between flexibility of single characters and the efficiency of full words for decoding, sidestep the needs of special treatment of unknown words
+    \item Pretrained model performs the word segmentation
+    \item Special encoding for out-of-vocabulary words, explain
+\end{itemize}
+\subsection{GPT-2}
+\begin{itemize}
+    \item Larger, more parameters, more vocabularies
+    \item \textbf{Emergent zero-shot learning}
+    \begin{itemize}
+        \item Ability to do many tasks with no examples and no gradient updates
+        \item Specifying the right sequence prediction problem
+        \item Comparing probabilities of sequences
+        \item We can get interesting zero shot learning behaviour if we are creative enough with how we specify our task
+    \end{itemize}
+\end{itemize}
+\subsection{GPT-3}
+\begin{itemize}
+    \item Specify a task by simply prepending example of the task before our example
+    \item Called also in-context learning, to stress that no gradients are performed when learning a new task
+    \item What are the limits of promting
+    \begin{itemize}
+        \item Some tasks seems too hard even for LMs to learn through promting alone, like math operations
+        \item Solution: \textbf{Chain-of-Though Promting}: helps the system explaining to get the answer
+    \end{itemize}
+\end{itemize}
+\subsection{RoBERTa}
+Same model as BERT but better tuned
+\begin{itemize}
+    \item Better HP
+    \item Larger model
+    \item Big bathces with more data
+    \item Removing NSP
+    \item Trained on longer sequence
+    \item \textbf{Static Masking (BERT)}
+    \begin{itemize}
+        \item Precompute the mask before training
+        \item Masks are constant at each iteration
+    \end{itemize}
+    \item \textbf{VS Dynamic Masking (RoBERTa)}
+    \begin{itemize}
+        \item Change mask on the fly
+        \item Change it at every training iteration, results in a more data and generalization capabilities
+    \end{itemize}
+\end{itemize}
+\subsection{BART}
+\begin{itemize}
+    \item BERT: encoder, good for analysis tasks, trained with MLM 
+    \item GPT: decoder, good for LM
+    \item \textbf{BART}: both encoder and decoder
+    \item \textbf{Pre-Training Tasks}
+    \begin{itemize}
+        \item Token masking, deletion, filling
+        \item Sentence permutation
+        \item Text infilling
+        \item Document rotation
+    \end{itemize}
+\end{itemize}
+\subsection{T5}
+\begin{itemize}
+    \item Treat every NLP tasks as a "txt-to-text" problem, same model, same HP, same loss function
+    \item How: adding a task specific prefix to the input sequence, and pretrain the model to get task specific output 
+    \item T5 uses an encoder decoder arch. with the differences:
+    \begin{itemize}
+        \item Layernorm applied before each attention and FF transformation
+        \item No additive baias is used for layer norm
+        \item A simpler positional embeddings is used, it uses a scalar to the corresponding logit used to compute attention weights
+        \item Dropout is applied through the network
+    \end{itemize}
+\end{itemize}
+\subsection{GPT-3.5}
+\begin{itemize}
+    \item LM \(\neq\) Assisting users
+    \item Pre-training can improve NLP app by serving as parameter initialisation
+    \item From LM to assistant
+    \begin{itemize}
+        \item \textbf{Instruction Fine-tuning}: collect examples of pair across many tasks and fine-tune a LM, but has a lot of limitations:
+        \begin{itemize}
+            \item Expensive to collect ground truth
+            \item P1: task like open-encoded creative generation has no right answer
+            \item P2: LM penalize all token-level mistakes equally but some errors are worse than other
+            \item Miss-match between LM objective and human preferences
+        \end{itemize}
+        \item \textbf{Reinforcement Learning for Human Feedback (RLHF)}
+        \begin{itemize}
+            \item Training a LM on some task
+            \item Obtain human reward, higher is better
+            \item We want to maximise the reward of samples from our LM
+            \item Gradient ascend
+            \item Reward is not differentiable
+            \item Policy gradient, tool for estimating and optimizing this objective
+            \item Log derivate trick
+            \item Plug all back
+            \item Put the gradient inside the expectation, we can approximate this objective with montecarlo samples, performing m-samples and then compute the average
+            \item I have the gradient of my model's parameter wrt the samples, I can get an update rule so gradient Ascent
+            \begin{itemize}
+                \item If R is ++: gradient step to maximise the sample prob
+                \item If R is --: gradient step to minimise the sample prob
+            \end{itemize}
+            \item Now for any arbitrary non differentiable reward function R(s) we can train our LM to maximise the expected reward
+            \item \textit{Problem 1}: human in the loop is expensive, solution model their preferences as a separate NLP problem
+            \item \textit{Problem 2}: human judgements are noisy and misscalibrated, solution ask for pairwise comparison
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\subsection{Istruction-GPT}
+\begin{itemize}
+    \item Collect demonstration data and train a supervised policy
+    \item Collect comparison data and train a reward model
+    \item Optimize a policy against the reward model using reinforcement learning (RLHF)
+\end{itemize}
+
+\input{GNN.tex}
+
+\chapter{Vision and Language}
+\section{ViT}
+\textbf{ViT: Vision Transformer}
+\begin{itemize}
+    \item N input patches each shape for example 3x16x16
+    \item Linear projection to D-dimensional vector
+    \item Add positional embedding: learn D-dim vector per position and a special extra input, the classification token like the [CLS] token
+    \item Transformer Encoder, like NLP Transformer
+    of\item Output vectors, last output is the linear projection to C-dim vector o predicted class scores
+    \item \textbf{ViT vs CNN}
+    \begin{itemize}
+        \item IN most CNNs decrease resolution and increase channels as you go deeper in the network \textit{(hierarchical architecture)}
+        \item In ViT all blocks have the same resolution and number of channels \textit{(isotopic architecture)}
+    \end{itemize}
+    \item \textbf{Pros}:
+    \begin{itemize}
+        \item Can learn global features of images
+        \item ViTs are not as sensitive to data argumentation as CNNs, thus they can be trained on smaller dataset
+        \item ViTs can be used for a variety of image classification tasks
+    \end{itemize}
+    \item \textbf{Cons}:
+    \begin{itemize}
+        \item Computationally expensive, large number of parameters
+        \item Are not efficients as CNNs at processing images since they need to attend to every part of the image, even if it is not important for the task
+    \end{itemize}
+\end{itemize}
+
+
+\section{CLIP}
+\textbf{CLIP: Contrastive Language-Image Pre-Trained}
+\begin{itemize}
+    \item Motivation: instead of using a set of labels, get supervision from NL
+    \item Result: robust zero-shot inference, multimodel feature space
+    \item Series of text description \(\rightarrow\) textual embedding
+    \item Series of images \(\rightarrow\) vision emebdding
+    \item Maximise the diagonal similarities, minimize the rest
+    \item Compute the cosine similarities of these embedding scaled by a temperature parameter and normalized into a prob dist via softmax
+    \item Use symmetric cross entropy loss
+    \item \textbf{Zero-shot image Classification}
+    \begin{itemize}
+        \item Image, encode it into a feature space
+        \item Pick all the classes and create a text with prefix: "A photo of a \{class name\}"
+        \item Convert the text using text encoder
+        \item Compute cosine similarity
+        \item Pick the top similar pair of embedding
+        \item Zero shot image classification
+    \end{itemize}
+\end{itemize}
+
+\section{Image Captioning}
+\begin{itemize}
+    \item Image into a CNN
+    \item Output used as context vector to my sequence-to-sequence model (RNN)
+    \item Auto-regressive
+    \item I continue until I obtain the token \(<END>\)
+\end{itemize}
+
+
+\subsection{Image Captioning using Spartial Features}
+\begin{itemize}
+    \item \textbf{Problem}: input is "bottleneck" through c, model needs to encode everything it wants to say within c
+    \item \textbf{Solution}: Attention idea, new context vector at every time step, each one will attend to different image regions
+    \begin{itemize}
+        \item Each time step of \textbf{decoder} it uses a different context vector that looks at different parts of the input image
+        \item This entire process is differentiable
+        \item Model chooses its own weights. No attention supervision is required
+    \end{itemize}
+\end{itemize}
+
+\subsection{Image Captioning using Transformers}
+\begin{itemize}
+    \item No recurrence at all
+    \item We don't need convolutions
+    \item Transformers from pixels to language
+\end{itemize}
+
+
+\section{Diffusion Models}
+\begin{itemize}
+    \item \textbf{Forward diffusion process}: at each step add some gaussian noise until we destroy the image structure. At each iteration we can decide how much noise we want tot add.
+    \item \textbf{Reverse denoising process}: at each step generate a bit cleaner version of the image, gradually reconstruct the image
+    \item Sampling from a gaussian dist with mean and std determined by a NN
+    \begin{itemize}
+        \item Gaussian are convinient since we can jump to arbitrary time step in the process
+    \end{itemize}
+\end{itemize}
+
+\subsection{DDPM: Denoising Diffusion Probabilistic Models}
+\begin{itemize}
+    \item \textbf{Challenges}
+    \begin{itemize}
+        \item Training and sampling in high-res space consume a lot of resources
+        \item Images are high-dimensional
+    \end{itemize}
+    \item \textbf{Remedies}
+    \begin{itemize}
+        \item Downsampling images and next up-sampling generations
+        \item Do diffusion in latent space
+        \begin{itemize}
+            \item Compressed space so it has lower resolution
+            \item It is perceptual compression, model doesn't need to learn imperceptible details
+            \item It is a projection onto lower dimensional space
+        \end{itemize}
+        \item We can condition the LDMs either via concatenation or by a more general cross-attention mechanism
+        \item The denoising step is done in the latent space
+    \end{itemize}
+\end{itemize}
+
+
+
+\chapter{NLP Tasks}
+\section{Part of speech Tagging}
+\begin{itemize}
+    \item Input: a sequence of word tokens
+    \item Output: a sequence of part-of-speech tags t
+    \item \textbf{Why part of speech tagging}
+    \begin{itemize}
+        \item Can be useful for other NLP tasks: parsing, MT, sentiment, text-to-speech
+        \item Linguistic or language-analytic computational tasks
+    \end{itemize}
+    \item \textbf{A limited number of tags for word class}
+    \begin{itemize}
+        \item Distributed criteria: same context, same syntatic functions
+        \item Morphological criteria 
+        \item Not about meaning
+    \end{itemize}
+    \item \textbf{Open-class parts of speech}
+    \begin{itemize}
+        \item Nouns
+        \item Verbs
+        \item Adjective
+        \item Adverbs
+        \item Preposition
+        \item Determiners
+        \item Pronouns 
+    \end{itemize}
+    \item \textbf{Why tagging is hard}
+    \begin{itemize}
+        \item If every word by spelling was a candidate for just one tag, positional tagging would be trivial
+        \item This won't always work
+        \begin{itemize}
+            \item Roughly 15\% of word types are ambiguous, but those 15\% tend to be very common
+            \item So around the 60\% of word tokens are ambiguous
+        \end{itemize}
+    \end{itemize}
+    \item Positional tagging algorithm
+    \begin{itemize}
+        \item Hidden markov model
+        \item RNNs, transformers
+        \item LLM
+    \end{itemize}
+\end{itemize}
+
+
+\section{Name Entity Recognition}
+\begin{itemize}
+    \item Anything that can be referred to with a proper name, most common 4 tags:
+    \begin{enumerate}
+        \item PER: person
+        \item LOC: location
+        \item ORG: organization
+        \item GPE: geo-political entity
+    \end{enumerate}
+    \item Tings that helps us to understand the context of the text
+    \item Find spans of text that constitute proper names, tag the type of the entity
+    \item \textbf{Why NER is hard?}
+    \begin{itemize}
+        \item Segmentation, we have to find and segment entities
+        \item Type Ambiguity
+    \end{itemize}
+    \item \textbf{BIO Tagging}: B \(\rightarrow\) beginning, I \(\rightarrow\) inside, O \(\rightarrow\) outside
+\end{itemize}
+
+\section{Co-reference Resolution}
+Identify all mentions that refer to the same entity in the text
+\subsection{Detect the Mention}
+\begin{itemize}
+    \item Part of the text that can receive mentioning. Pronouns, named entities, noun phrases
+    \item Making all pronouns, named entities and noun phrases as mentions cause over-generation of mentions
+    \begin{itemize}
+        \item Could train a classifier to filter out spurious mentions
+        \item Keep all mentions as "candidate mentions"
+        \item We can build a model that begins with all spans and jointly does mention detection and co-reference resolution end-to-end in one model
+    \end{itemize}
+    \item \textbf{Mention Pairs Model}
+    \begin{itemize}
+        \item Train a binary classifier that assign every pair of mentions a probability of being co-referent. Positive near 1, negative near 0
+    \end{itemize}
+    \item \textbf{Mention airs Model at Test Time}
+    \begin{itemize}
+        \item Co-reference resolution is a clustering task, only scoring pairs, what do
+        \item Pick some threshold and add co-reference links between mention pairs where \(p(m_i, m_j)\) is above the threshold
+        \item Take transitive closure to get the clustering, add missing link, but not all, explain why
+    \end{itemize}
+\end{itemize}
+
+\subsection{Clustering Based Approach}
+\begin{itemize}
+    \item Start with each mention in its own singleton cluster
+    \item Merge a pair of clusters at each step. Use a model to score which cluster merges are good
+    \item Training phase
+    \begin{enumerate}
+        \item Produce a vector for each pair of mentions
+        \item Poolig operation over matrix of mention pair representation to get cluster-pair representation
+        \item Score the candidate cluster, merge by taking the dot product of the representation with a weight vector
+    \end{enumerate}
+    \item Current candidate cluster depend on the previous one, use reinforcement learning to train the model
+    \item \textbf{End-to End Models}
+    \begin{itemize}
+        \item Use an LSTM, attention
+        \item Do mention detection and co-reference end-to-end
+        \item No mention detection step, instead consider every span of text as candidate mention
+        \item Embed the words in the document using a word embedding matrix and a character level CNN
+        \item Run Bi-LSTM over the document
+        \item Represent each span of text i going from start(i) to end(i) as a vector
+    \end{itemize}
+\end{itemize}

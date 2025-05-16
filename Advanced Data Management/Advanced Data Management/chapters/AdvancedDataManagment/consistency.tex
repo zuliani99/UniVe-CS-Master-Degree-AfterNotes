@@ -1,0 +1,77 @@
+\chapter{Consistency}
+\begin{itemize}
+    \item \textbf{Consistency:}
+    \begin{itemize}
+        \item When a server modifies a value in one replica, the value must be immediately modified in all replicas
+        \item Costly for great number of replicas
+        \item Might block a read access until all replicas are updated 
+    \end{itemize}
+    \item \textbf{Availability:}
+    \begin{itemize}
+        \item High performance of query answering
+        \item Very low response time
+    \end{itemize}
+    \item \textbf{Partition Tolerance:}
+    \begin{itemize}
+        \item Failures in distributed systems do not lead to failure of the entire system
+    \end{itemize}
+\end{itemize}
+
+\begin{tcolorbox}[title=\textbf{CAP conjecture}]
+\textbf{C}onsistency, \textbf{A}vailability, \textbf{P}artition Tolerance: \textit{Pick any two!}
+\end{tcolorbox}
+
+\section{Strong Consistency}
+After update, any subsequent access returns the updated value. However we can observe \textbf{stale read} and \textbf{lost update}.
+
+\section{Weak Consistency}
+\begin{itemize}
+    \item Ensuring strong consistency is usually costly
+    \item Strong consistency requires a high amount of synchronization between replicas
+    \item \textbf{Weak consistency} can improve performance of the overall system
+    \item However, weak consistency can cause conflicts and inconsistencies of the data and may even lead to data loss
+\end{itemize}
+
+\subsubsection{Inconsistency window}
+The duration from the acceptance of a write request by the first replica until the last successful write execution by all replicas is called the \textbf{inconsistency window}. Ideally, the inconsistency window is only very short in order to reduce the amount of stale reads.
+
+\subsubsection{Eventual consistency}
+\begin{itemize}
+    \item Replicas may hold divergent versions of a data item due to concurrent updates and propagation delays
+    \item Replicas agree on a version after some time of inconsistency and as long as no new updates are issued by users
+    \item Eventual consistency requires the two properties:
+    \begin{enumerate}
+        \item Total propagation of writes to all replicas
+        \item Convergence of all replicas towards a unique common value
+    \end{enumerate}
+\end{itemize}
+
+\section{Write and Read Quorums}
+A flexible mechanism to avoid stale reads and lost updates among a group of servers in a replicated database system is to use quorums when reading and writing data:
+\begin{itemize}
+    \item \textit{Read quorum} is a subset of replicas that have to be contacted when \textbf{reading data}
+    \begin{itemize}
+        \item For a \textbf{successful read}, all replicas in a read quorum have to return the \textit{same answer value}
+    \end{itemize}
+    \item \textit{Write quorum} is a subset of replicas that have to be contacted when \textbf{writing data}
+    \begin{itemize}
+        \item For a \textbf{successful write}, all replicas in the write quorum have to \textit{acknowledge the write request}
+    \end{itemize}
+\end{itemize}
+A usual requirement for a quorum-based system is that any read and write \textbf{quorums overlap:} \textbf{the sum of read quorum size and write quorum size are larger than the replication factor}. In this way, it can be ensured that at least one replica has acknowledged all previous writes and hence is able to return the most recent value.
+
+Quorum rules for $N$ \textbf{replicas}, \textbf{read} quorum size $R$, \textbf{write} quorum size $W$:
+\begin{itemize}
+    \item $R + W > N$ for \textit{consistent read}
+    \item $2W > N$ for \textit{consistent write}
+\end{itemize}
+
+We typically have two typical variants of quorum-based systems:
+\begin{itemize}
+    \item \textbf{Read-one write-all (ROWA):} writes are acknowledged by all replicas, but for reads it suffices to contact one replica
+    \item \textbf{Majority Quorum:} or both reads and writes requires that (for $N$ replicas) at least $\frac{N}{2} + 1$ replicas acknowledge the writes and at least $\frac{N}{2} + 1$ replicas are asked when reading a value
+\end{itemize}
+When all replicas in a read quorum return an identical value, the requesting client can be sure that this is the most recent value and hence the read value is strongly consistent.
+
+We mention also that \textbf{Partial quorums} only ensure weak consistency (for example, during failures) or when strong consistency is not
+required.

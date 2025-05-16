@@ -1,0 +1,79 @@
+\chapter{Mobility Computing}
+\begin{itemize}
+    \item \textbf{Mobile computing} is concerned with exploiting the connection of devices that move around in the everyday physical world
+    \item \textbf{Ubiquitous computing} is about exploiting the increasing integration of computing devices with our everyday physical world. 
+\end{itemize}
+As devices become smaller, we are better able to carry them around with us or wear them, and we can embed them into many parts of the physical world.
+
+Mobile computing is a paradigm that allows users to move their personal computers maintaining some connectivity to other machines. The \textbf{idea of mobility} consists on \textbf{moving the knowledge close to resources} in order to improve the performance of the communication system, and it allows adapting the access of the clients to remote resources improving so the flexibility property of the system. There are two possible levels of mobility:
+\begin{itemize}
+    \item \textbf{Code Mobility:} it is the capability to dynamically relocate at run time the distributed application components
+    \item \textbf{Mobile Agent:} program in execution can migrate among machines in an heterogeneous networks
+\end{itemize}
+Next we have two important aspects of mobility:
+\begin{itemize}
+    \item \textbf{Migration:} with mobile agent there is a sort of migration, thus we could have \textbf{migration of processes} or \textbf{migration of objects}. And the main goal is to implement a load balancing, which a system that distributes load uniformly between machines on the network.
+    \item \textbf{Mobile Code:} defines different paradigms. The service is realized if one knows the services, needed resources or executing item. Components are the resources used, interaction is defined with request-reply protocol. There are essentially four paradigms:
+    \begin{itemize}
+        \item \textbf{Client-server:} here is a client entity that ask for a resource and the server reply with an answer
+        \item \textbf{Remote evaluation:} involves the transmission of executable software code from a client computer to a server computer for subsequent execution at the server
+        \item \textbf{Code on demand:} sends executable software code from a server computer to a client computer upon request from the client’s software.
+        \item \textbf{Mobile agent:} is a composition of computer software and data which is able to migrate (move) from one computer to another autonomously and continue its execution on the destination computer. More specifically, a mobile agent is a process that can transport its state from one environment to another, with its data intact, and be capable of performing appropriately in the new environment.
+    \end{itemize}
+\end{itemize}
+\textbf{Issues} of Mobility are:
+\begin{itemize}
+    \item Security
+    \item Communication
+    \item Data space management
+    \item Mobility specification (how?)
+    \item Mobility management (when?)
+    \item Choose of components to migrate (who?)
+\end{itemize}
+And the \textbf{advantages} of mobility code are:
+\begin{itemize}
+    \item Maintainability
+    \item Flexibility of data management and in protocol
+    \item Inclusion
+    \item Reliability
+    \item Autonomy.
+\end{itemize}
+
+\section{Types of code mobility}
+\begin{itemize}
+    \item \textbf{Strong Mobility:} involves moving both the code, data and the execution state from one hos to another, this is important in cases where the running application needs to maintain its state as it migrates from host to host. Execution is suspended, transmitted to the new environment and there \textbf{started again}
+    \item \textbf{Weak Mobility:} Involves moving the code and the data only. Therefore, it \textbf{may be necessary to restart} the execution of the program at the destination host
+\end{itemize}
+
+\section{Data space management}
+\begin{itemize}
+    \item We can simply say that mobility is a modification of the data space. Management depends on the resource type and by the references.
+    \item We can have transferable resource or non transferable, and we can ave multiple links with the same resource.
+    \item Every resource has one identifier, type and value, and they can be used for binding them
+    \item \textbf{Binding by type} guarantees compatibility, with \textbf{binding by values} the value does not change after the migration, instead with \textbf{binding by identifier} the name identifies the resource
+    \item we have different strategies to manage the data space:
+    \begin{itemize}
+        \item \textbf{Binding Removal:} remove the binging to resources
+        \item \textbf{Network Reference:} maintain the reference but make it remote
+        \item \textbf{Move:} moves directly the resource and it remains local.
+        \item \textbf{Copy:} duplicate the resources and code
+        \item \textbf{Re-Binding:} instead of applying a copy try to use an object of the same type
+    \end{itemize}
+\end{itemize}
+
+\section{Mobility Design}
+Security is a fundamental point for mobility, since communication is not sure and there can be applied different types of attacks like: access to private resources, spoofing, incorrect resource using, denial of service or block of machines. The \textbf{main goals} of the design of mobile code are:
+\begin{itemize}
+    \item \textbf{Security:} protection by accidental damages or intentional ones of the execution environment
+    \item \textbf{Portability:} heterogeneity management of the platforms
+    \item \textbf{Performance:} provide an high level of performance.
+\end{itemize}
+Code can be \textbf{interpreted} or \textbf{compiled}, both the two strategies bring some advantages and limits. 
+\begin{itemize}
+    \item \textbf{Interpretation} increases portability and security run time control, but decreases performance
+    \item \textbf{Compilation} improves performance but decreases portability and security
+    \item As we know there are also other strategies, called \textbf{hybrid} (like java), that try to get the best of both the two strategies
+\end{itemize}
+
+\section{Ubiquitous systems}
+\textbf{Ubiquitous computing} refers to a system in which computing is made to appear anytime and everywhere. In contrast to desktop computing, ubiquitous computing \textit{can occur using any device}, in any location, and in any format.

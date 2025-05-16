@@ -1,0 +1,211 @@
+\chapter{VA Discrete}
+
+\section{Distribuzione di Bernoulli}
+\begin{tcolorbox}
+Utilizzato ogni volta che abbiamo un risultato 0/1, quindi quando potremmo avere solo due possibili risultati nel nostro esperimento.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(p\) & probabilità di successo \\ \hline
+\(P[X]\) & $p^x(1 - p)^{1-x} = \begin{cases} 1 - p & \mbox{if } x = 0 \\p & \mbox{if } x = 1 
+\end{cases}$ \\ \hline
+\(\mathbf{E}[X]\) & $p$ \\ \hline
+\(\text{VAR}[X]\) & $p(1 - p)$ \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+
+
+
+
+\section{Distribuzione Binomiale}
+\begin{tcolorbox}
+Utilizzato ogni volta che consideriamo una sequenza di prove Bernoulliane indipendenti e contiamo il numero di successi in essa contenuti.
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(n\) & numero di osservazioni \\ \hline
+\(p\) & probabilità di successo \\ \hline
+\(P[x]\) & $\dbinom{n}{x} p^x(1-p)^{n - x}$\\ \hline
+\(F[x]\) & $\sum_{i = 1}^n \dbinom{n}{i} p^i(1 - p)^{n-i}$ \\ \hline
+\(\mathbf{E}[X]\) & \(np\) \\ \hline
+VAR\([X]\) & \(np(1 - p)\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dbinom(#success, size, prob_success)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pbinom(#success, size, prob_success)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+
+
+
+\section{Distribuzione Geometrica}
+\begin{tcolorbox}
+Considera una sequenza di prove Bernoulliane indipendenti, ciascuna prova si traduce in un "successo" o un "fallimento". Il numero di prove Bernoulliane necessarie per ottenere il primo successo ha distribuzione geometrica.
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(p\) & probabilità di successo \\ \hline
+\(P[x]\) & \((1 - p)^{x-1}p, x = 1,2,...\)\\ \hline
+\(F[x]\) & \(p \sum_{i = 0}^x (1 - p)^i\) \\ \hline
+\(\mathbf{E}[X]\) & \(\frac{1}{p}\) \\ \hline
+VAR\([X]\) & \(\frac{1-p}{p^2}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dgeom(#failures, prob_success)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pgeom(#failures, prob_success)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\subsection{Memory Less Propriety}
+Se \(X \sim Geo(p)\) allora
+\[\mathbb{P}[X > m + n | X > m] \frac{\mathbb{P}[X > m + n]}{\mathbb{P}[X > n]}\]
+Questa proprietà si dimostra tenendo conto che
+\[\mathbb{P}[X > k] = (1 - p)^k \quad k = 0,1,2,...\]
+
+
+\newpage
+\section{Distribuzione IperGeometrica}
+\begin{tcolorbox}
+Descrive la probabilità di \(k\) successi (estrazioni casuali per le quali l'oggetto disegnato ha una caratteristica specificata) in \(n\) estrazioni, senza reinserimento, da una popolazione finita di dimensione \(N\) che contiene esattamente \( K\) oggetti con quella caratteristica, in cui ogni pareggio è un successo o un fallimento.
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(N\) & Dimensione della popolazione \\ \hline
+\(K\) & Numero di successi nella popolazione \\ \hline
+\(n\) & Numero di campionamenti  \\ \hline
+\(k\) & Numero di successi osservati \\ \hline
+\(P[x]\) & \(\frac{\dbinom{K}{k}\dbinom{N-K}{n-k}}{\dbinom{N}{n}}\)\\ \hline
+\(\mathbf{E}[X]\) & \(n \cdot \frac{K}{N}\) \\ \hline
+VAR\([X]\) & \(n \cdot \frac{K}{N} \cdot\frac{N-K}{N} \cdot \frac{N-n}{N-1}\) \\\hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dhyper(#succ, #succ_samp, #pop_dim, #samp_dim)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+phyper(#succ, #succ_samp, #pop_dim, #samp_dim)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+
+
+\section{Distribuzione Multinomiale}
+\begin{tcolorbox}[title=NOTA]
+Il seguente paragrafo è opzionale, non è richiesto per l'esame!
+\end{tcolorbox}
+\begin{tcolorbox}
+Mentre la distribuzione binomiale descrive il numero di successi in un processo di Bernoulli, per il quale ogni singolo test può fornire solo due risultati, la distribuzione multinomiale descrive il caso più generale in cui ogni test può fornire un numero finito di risultati, ciascuno con la propria probabilità.
+\end{tcolorbox}
+\[P[X_1, X_2,...,X_k] = \frac{n!}{x_1!...x_k!}p_1^{x_1}...p_k^{x_k} \quad \text{dove} \quad \sum_{i = 1}^n p_1 = 1\]
+
+
+\newpage
+\section{Distribuzione Binomiale Negativa}
+\begin{tcolorbox}[title=NOTA]
+Il seguente paragrafo è opzionale, non è richiesto per l'esame!
+\end{tcolorbox}
+\begin{tcolorbox}
+In una sequenza di prove Bernoulliane indipendenti, il numero di prove necessarie per ottenere \(k\) successi ha distribuzione binomiale negativa.
+
+In altre parole conta il numero di fallimenti prima di ottenere un numero target di successi (k).
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(k\) & Numero di successi \\ \hline
+\(p\) & Probabilità di successo \\ \hline
+\(P[x]\) & $\dbinom{x - 1}{k - 1}(1 - p)^{x - k}p^k \quad x = k, k+1,...$\\ \hline
+\(\mathbf{E}[X]\) & \(\frac{k}{p}\) \\ \hline
+VAR\([X]\) & \(\frac{k(1 - p)}{p^2}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dnbinom(#failures, #successes, prob_success)
+dnbinom(#trial-#successes, #successes, prob_success)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pnbinom(#failures, #successes, prob_success)
+pnbinom(#trial-#successes, #successes, prob_success)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\newpage
+\section{Distribuzione di Poisson}
+\begin{tcolorbox}
+    Poisson è legata agli \textbf{eventi rari}. Ciò significa che è estremamente improbabile che due eventi si verifichino contemporaneamente o in un periodo di tempo molto breve.
+
+    Il numero di eventi rari che si verificano in un determinato periodo di tempo ha una distribuzione di Poisson.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\lambda\) & Frequenza, numero medio di eventi \\ \hline
+\(p\) & Probabilità di successo \\ \hline
+\(P[x]\) & $e^{-\lambda} \frac{\lambda^x}{x!} \quad x = 0,1,2,...$\\ \hline
+\(\mathbf{E}[X]\) & \(\lambda\) \\ \hline
+VAR\([X]\) & \(\lambda\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dpois(x, lambda)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+ppois(x, lambda)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+
+\subsection{Approssimazione della Binomiale tramite Poisson}
+La distribuzione di Poisson può essere utilizzata efficacemente per approssimare le probabilità binomiali quando il \textit{numero di prove} \(n\) è \textbf{grande} e la \textit{probabilità di successo} \(p\) è \textbf{piccola}
+\[n \geq 30 \quad p \leq 0.05\]
+
+\[\text{Binomiale}(n,p) \approx \text{Poisson}(\lambda)\]
+\[\text{dove } n \geq 30 \quad p \leq 0.05 \quad np=\lambda\]
+
+\subsection{Proprietà Additiva}
+Se
+\[X \sim Pois(\lambda) \quad \text{and} \quad Y \sim Pois(\mu)\]
+e sono \textbf{indipendenti}, dopo possiamo dire che:
+\[W = X + Y \sim Pois(\lambda + \mu)\]
+
+\subsection{Relazione tra Poisson e Distribuzione Multinomiale}
+\begin{tcolorbox}[title=NOTA]
+Il seguente paragrafo è opzionale, non è richiesto per l'esame!
+\end{tcolorbox}
+Sia 
+\[S_n = X_1 + X_2 + ... + X_n \quad \text{with} \quad X_i\stackrel{iid}{\sim} Pois(\lambda_i)\]
+dato
+\[(X_1,X_2,...,X_n)|S_n \sim Mult\Big(\frac{\lambda_1}{\lambda},\frac{\lambda_2}{\lambda},...,\frac{\lambda_n}{\lambda}\Big) \quad \text{dove} \quad \lambda = \sum_{i = 1}^n \lambda_i\]

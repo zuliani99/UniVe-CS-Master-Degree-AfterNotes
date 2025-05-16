@@ -1,0 +1,284 @@
+\chapter{CTMC}
+\begin{tcolorbox}
+\textbf{Transition Semi-group of the CTMC.} The family $\{P_t : t \geq 0\}$ (set of matrices containing the conditional probability mass function) is the \textbf{transition semi-group} of the process.
+\end{tcolorbox}
+\begin{enumerate}
+    \item $P_0 = I$
+    \item $\forall t > 0$ $P_t$ is a \textit{Stochastic Process}
+    \begin{itemize}
+        \item Every entity is non negative
+        \item Sum of elements of each row is 1 by (law of total probability)
+    \end{itemize}
+    \item \textbf{Chapman-Kolmogorov Equation} $P_{s+t} = P_s  \cdot P_t$
+    \begin{itemize}
+        \item The \textbf{Stochastic Semi-group} $\{P_t\}$ with the \textbf{distribution of the initial point} $X(0)$ determine the \textbf{behaviour of the process $X$}
+    \end{itemize}
+    
+    $$
+    p_{ij}(s+t) = 
+    \begin{bmatrix}
+    p_{i1}(s) & p_{is}(s) & \hdots
+    \end{bmatrix}
+    \cdot
+    \begin{bmatrix}
+    p_{1j}(s)\\
+    p_{2j}(s)\\
+    \vdots\\
+    \end{bmatrix}
+    = \sum_{k = 1}^{\#S} p_{ik}(s) \cdot p_{kj}(t)
+    $$
+    
+\end{enumerate}
+
+\begin{tcolorbox}
+    \textbf{Standard Semi-Group.} The \textbf{Semi-Group} $\{P_t\}$ standard if in addition to the previous 3 properties we have also that:
+$$
+    P_t \rightarrow I \quad p_{ij}(t) \xrightarrow[t \rightarrow 0]{} \begin{cases}
+        1 & \mbox{if } i = j\\
+        0 & \mbox{if } i \neq j\\
+    \end{cases}
+$$
+\end{tcolorbox}
+
+\begin{tcolorbox}
+    \textbf{The Generator.} Time $t \geq 0$ the chain $X$ is in state $i$. Let $h \geq$ small and consider what could happened in the small time interval $(t,t+h)$
+    \begin{itemize}
+        \item \textit{No change in state:} $p_{ii}(h) + o(h)$
+        \item \textit{The chain arrives at state $j$:} $p_{ij}(h) + o(h)$
+    \end{itemize}
+    There exist constants $\{g_{ij}: i,j \in S\}$ st for small $h$:
+    $$
+    p_{ij}(h) = \begin{cases}
+        g_{ij}h & \mbox{if } i \neq j\\
+        1+g_{ii}h & \mbox{if } i = j\\
+    \end{cases}$$
+\end{tcolorbox}
+The matrix \textbf{G} is the \textbf{Infinitesimal Generator Matrix} it takes the role of the \textbf{Transition Matrix} $P$ over \textit{discrete-time chains}, thus we can construct a \textbf{path} of $X$ by moving iteratively  for sufficient small $h$:
+$$X(t+h) = 
+\begin{cases}
+    i & \mbox{with probability } 1 + g_{ii}(h) + o(h)\\
+    j \neq i & \mbox{with probability } g_{ij}+ o(h)
+\end{cases}$$
+
+$$1 = \sum_{j \in S}p_{ij}(h) \approx 1 + g_{ii}h + \sum_{j \neq i}g_{ii}h = 1 + h \sum_{j \in S}g_{ij} = \sum_{j \in S}g_{ij} = 0$$
+G is a matrix with \textbf{rows adding to 0}  and \textbf{non-negative value outside the diagonal}
+$$g_{ii} = -\sum_{j\ neq i}g_{ij}$$
+
+\begin{tcolorbox}
+The \textbf{Generator of a Process} is therefore a square matrix with:
+\begin{itemize}
+    \item The \textbf{Instantaneous Exit Rates} on the \textit{diagonal}
+    \item The \textbf{Instantaneous Transition Rates} \textit{outside the diagonal}
+\end{itemize}    
+\end{tcolorbox}
+
+\section{Birth Process}
+A \textbf{Birth Process} with intensity $\lambda_0, \lambda_1, \lambda_2, ...$ is a stochastic process $N = \{N(t): t \geq 0\}$ taking value in $S = \{0,1,2,...\}$ st:
+\begin{enumerate}
+    \item Is positive and non decreasing: $N(0 > 0)$ and $N(s) \leq N(t)$ for $s < t$
+    \item $$
+    P[N(t+h) = n+m | N(t) = n] = \begin{cases}
+        \lambda_n + o(h) & \mbox{if } m = 1\\
+        o(h) & \mbox{if } m > 1\\
+        1- \lambda_n h + o(h) & \mbox{if } m = 0
+    \end{cases}
+    $$
+    \item Given $N(s)$, the increment $N(t) - N(s)$ is independent of all arrivals prior to $s$, $\forall s < t$
+\end{enumerate}
+\section{Forward and Backward Equations}
+Can we recover $P_t$ from $G$? Yes using the chapman-kolmogorov equation, for sufficiently small h considering the transition probabilities for $(t +t h)$ given $X(t)$ yields to:
+\begin{itemize}
+    \item \textbf{Forward}
+    $$p_{ij}(t + h) = \sum_{k \in S} p_{ik}(t) \cdot p_{kj}(h)$$
+    $$\lim_{h \rightarrow 0} \frac{p_{ij}(t + h) - p_{ij}(t)}{h} \approx \lim_{h \rightarrow 0}\frac{p_{ij}(t) + h\sum_{k \in S}p_{ik}(t)g_{kj} - p_{ij}(t)}{h}$$
+    $$p_{ij}'(t) = \sum_{k \in S}p_{ik}(t)g_{kj}$$
+    $$P_t' = P_t \cdot G$$
+
+    \item \textbf{Backward}
+    $$p_{ij}(t + h) = \sum_{k \in S} p_{ik}(h) \cdot p_{kj}(t)$$
+    $$\lim_{h \rightarrow 0} \frac{p_{ij}(t + h) - p_{ij}(t)}{h} \approx \lim_{h \rightarrow 0}\frac{p_{ij}(t) + h\sum_{k \in S}p_{ik}(t)g_{kj} - p_{ij}(t)}{h}$$
+    $$p_{ij}'(t) = \sum_{k \in S}g_{ik}p_{kj}(t)$$
+    $$P_t' = G \cdot P_t$$
+\end{itemize}
+
+\section{Matrix Exponential}
+$A$ be a square matrix, the Matrix Exponential $e^A$ is the square matrix of the same size as A given by:
+$$e^A = \sum_{n = 0}^\infty \frac{1}{n!}A^n = I + A + \frac{1}{2}A^2 + \frac{1}{6}A^3 + \hdots$$
+\textbf{Forward} and \textbf{Backward} equations are the same:
+\begin{tcolorbox}
+$$P_t = e^{t \cdot G} \quad P_t = expm(t*G)$$    
+\end{tcolorbox}
+
+\subsection{Matrix Exponential and Diagonalization}
+A Square matrix $A$ is \textbf{Diagonalizable} it it can be rewritten as $A = V \cdot D \cdot V^{-1}$
+$$
+D = \begin{bmatrix}
+\lambda_1 & 0 & \hdots & 0\\
+0 & \lambda_2 & \hdots & 0\\
+\vdots & \vdots & \ddots & \vdots\\
+0 & 0 & \hdots  &\lambda_3 
+\end{bmatrix}
+$$
+Where:
+\begin{itemize}
+    \item $\{\lambda_1, ...,\lambda_2\}$ are the \textbf{eigenvalues} of $A$
+    \item $V$ is an invertible matrix whose columns are the corresponding \textbf{eigenvectors}
+\end{itemize}
+The diagonalization can be used to efficiently compute the \textbf{power} of the matrix $A = V \cdot D \cdot V^{-1}$
+$$e^{tG} = V\Bigg(\sum_{n = 1}^\infty \frac{1}{n!}D^n\Bigg)V^{-1} = V \cdot e^D \cdot V^{-1}$$
+$e^D$ has $e^{t \cdot d_{ii}}$ in the diagonal and \textbf{zeros} everywhere else
+
+
+\section{Holding time \& Transition Probabilities}
+\begin{tcolorbox}
+If we want to simulate a \textbf{path} given $X(t) = i$ we need to know \textbf{how long it stay} \textit{(holding time)} and \textbf{where it goes once it jumps} \textit{(transition probabilities)}
+\end{tcolorbox}
+
+\subsection{Holding time}
+\begin{tcolorbox}
+Total exit rate from state $i$ is and is Exponentially distributed:
+$$g_i := \sum_{j \neq i} g_{ij} = -g_{ii} \quad U_i \sim Exp(-g_{ii})$$    
+\end{tcolorbox}
+
+\subsection{Transition Probabilities Matrix}
+\begin{tcolorbox}
+$$P[\text{the chain jumps from }i \text{ to }j | \text{the chain jumps}] = \frac{p_{ij}(h)}{1- p_{ii}(h)}$$
+Or
+$$\tilde{p_{ij}} = \frac{g_{ij}}{-g_{ii}} = \frac{g_{ij}}{g_i}$$  
+$$g_{ij} = -g_{ii} \cdot \tilde{p_{ij}}$$
+Thus each element of our transition probability matrix $p_{ij}$ will be:
+$$
+\tilde{p_{ij}}=
+\begin{cases} 
+-\frac{g_{ij}}{g_{ii}} & \mbox{if } i \neq j \\
+0 & \mbox{if } i=j
+\end{cases}
+$$
+\end{tcolorbox}
+
+\section{Irreducible HCTMC}
+\begin{tcolorbox}
+    A HCTMC is \textbf{irreducible} if the probability of reaching state $j$ from state $i$ in time $t$ is \textbf{positive}, $\forall i,j \in S$ and $ t > 0$. With the graph representation we just need to verify there is \textbf{at least} one \textbf{path} from $i$ to $j$ $\forall i \neq j$
+\end{tcolorbox}
+
+\newpage
+\section{Birth-Death Process}
+\begin{enumerate}
+    \item $X$ is a Markov chain taking values in $\{0,1,2,3,...\}$
+    \item The \textbf{Infinitesimal Transition Probabilities} are given by:
+    $$
+    P[N(t+h) = n+m | N(t) = n] = \begin{cases}
+        \lambda_n h + o(h) & \mbox{if } m = 1\\
+        \mu_n h + o(h) & \mbox{if } m = -1\\
+        o(h) & \mbox{if } m > 1\\
+    \end{cases}
+    $$
+    \item $\lambda_i \geq 0, \quad \mu_i \geq 0, \quad \mu_0 = 0$
+\end{enumerate}
+
+\section{Stationary Distribution}
+\begin{tcolorbox}
+The vector $\pi$ is a \textbf{Stationary Distribution} of the chain $X$ if:
+\begin{itemize}
+    \item $\pi_j \geq 0 \quad \forall j \in S$
+    \item $\sum_{j \in S} \pi_j = 1$
+    \item $\pi^t = \pi^t \cdot P_t$
+\end{itemize}
+\end{tcolorbox}
+The Stationary Distribution is also called \textbf{Steady State Distribution} because if the process starts at the stationary distribution, then it will stay in the stationary distribution
+$$X(0) \sim \mu_0 = \pi \Rightarrow X(t) \sim \mu_t = \pi \cdot P_t = \pi$$
+
+\begin{tcolorbox}
+Let $X$ and irreducible HCTMC with standard semi-group $\{P_t\}$. If there exists a stationary distribution $\pi$ then it is \textbf{unique} $\forall i,j \in S$
+$$p_{ij}(t) = P[X(t) = j | X(0) = i] \xrightarrow[t \rightarrow \infty]{} \pi_j$$
+\end{tcolorbox}
+
+\subsection{Global Balance Equations}
+A Distribution $\pi$ is the \textbf{stationary distribution} of a HCTMC with transition semi-group $P_t$ iff:
+$$\pi^t \cdot G = 0$$
+The result can be interpreted as \textbf{flux in} and \textbf{flux out} of a given state $j \in S$. So a distribution $\pi$ is the \textbf{stationary distribution} of an HCTMC with transition semi-group $P_t$ iff it satisfy the \textbf{global balance equations:}
+$$\pi_i \sum_{j:j \neq i}g_{ij} = \sum_{j:j \neq i}\pi_j \cdot g_{ji}$$
+
+\begin{itemize}
+    \item In general the global balance equations define an \textbf{irreducible} system of equations, so in order to obtain a \textbf{unique solution} we must consider the \textbf{normalization condition}
+    $$\sum_{i \in S} \pi_i = 1$$
+    Applied by substituting one of the columns of the, matrix $G$ with a row of ones and placing a one i the corresponding pace of the row vector 0.
+    \item $Ax = b$ where:
+    \begin{itemize}
+        \item $A$, $b$ are matrix and vector of known constants
+        \item $x$ vector for which we wish to find
+    \end{itemize}
+    It is therefor convenient to write:
+    \begin{itemize}
+        \item $A = \tilde{G}^T$ where $\tilde{G}$ is obtained by substituting the \textbf{last column} of $G$ with a column of \textbf{once}
+        \item $b = e_N \in \mathbb{R}^n$ the n-th \textbf{canonical vector} where only the \textbf{last element} is 1 and the others are 0
+    \end{itemize}
+\end{itemize}
+
+\subsection{STD Birth - Death Process}
+$$
+G = \begin{bmatrix}
+-\lambda_0 & \lambda_0 & 0 & 0 & 0 & \hdots \\
+\mu_1 & -(\lambda_1 + \mu_1) & \lambda_1 & 0 & 0 & \hdots\\
+0 & \mu_2 & -(\lambda_2 + \mu_2) & \mu_2 & 0 & \hdots\\
+\vdots & \vdots & \vdots & \vdots & \vdots & \ddots
+\end{bmatrix}
+$$
+If $\lambda_0 > 0 $, the process is irreducible, so the stationary distribution $\pi$, if it exists, can be found as the unique solution to the global balance equations $\pi^TG = 0$. This is a system with an infinite number of equations:
+
+\begin{align*}
+-\lambda_0\pi_0 + \mu_1\pi_1 &= 0\\
+\lambda_{n-1}\pi_{n-1} - (\lambda_n + \mu_n)\pi_n + \mu_{n+1}\pi_{n+1} &= 0 \text{ if } n \geq 1
+\end{align*}
+We can solve this system by induction so:
+$$
+-\lambda_0\pi_0 + \mu_1\pi_1 = 0  \Rightarrow \pi_1 = \frac{\lambda_0}{\mu_1}\pi_0
+$$
+
+\begin{align*}
+\lambda_{0}\pi_{0} - (\lambda_1 + \mu_1)\pi_1 + \mu_{2}\pi_{2} &= 0\\
+\lambda_{0}\pi_{0} - (\lambda_1 + \mu_1)\frac{\lambda_0}{\mu_1}\pi_0 + \mu_{2}\pi_{2} &= 0\\
+&= \lambda_0\pi_0 - (\lambda_1 + \mu_1)\frac{\lambda_0}{\mu_1}\pi_0\\
+&= \lambda_0\pi_0 - \frac{\lambda_1\lambda_0}{\mu_1}\pi_0 +  \lambda_0\pi_0\\
+&= - \frac{\lambda_1\lambda_0}{\mu_1}\pi_0
+\end{align*}
+$$
+\Rightarrow \pi_2 = \frac{\lambda_0\lambda_1}{\mu_1\mu_2}\pi_0
+$$
+In General:
+$$
+\pi_n = \frac{\lambda_0\lambda_1 \hdots \lambda_{n-1}}{\mu_1\mu_2 \hdots \mu_n}\pi_0 \quad n \geq 1
+$$
+The vector $\pi$ is a stationary distribution iff $\sum_n \pi_n = 1$ which may happen iff:
+$$
+1 + \sum_{n = 1}^\infty \frac{\lambda_0\lambda_1 \hdots \lambda_{n-1}}{\mu_1\mu_2 \hdots \mu_n} < \infty
+$$
+If it holds, then:
+$$
+\pi_0 = \Bigg(1 + \sum_{n = 1}^\infty \frac{\lambda_0\lambda_1 \hdots \lambda_{n-1}}{\mu_1\mu_2 \hdots \mu_n}\Bigg)^{-1}
+$$
+
+\subsubsection{Proof}
+We recognize $X$ as the birth-death process with birth rates $\lambda_i =\lambda \quad \forall i \geq 0$ and $\mu_i =\mu \quad \forall i \geq 1$. Since $\lambda_0 = \lambda > 0$ the process is irreducible and the stationary distribution is:
+$$
+\pi_n = \frac{\lambda_0\lambda_1 \hdots \lambda_{n-1}}{\mu_1\mu_2 \hdots \mu_n}\pi_0 = \Bigg(\frac{\lambda}{\mu}\Bigg)^n \pi_0 \quad n \geq 0
+$$
+The vector $\pi$ is a stationary distribution iff $\sum_n \pi_n = 1$ which may happen iff:
+$$
+1 + \sum_{n = 1}^\infty \frac{\lambda_0\lambda_1 \hdots \lambda_{n-1}}{\mu_1\mu_2 \hdots \mu_n} = 1 + \sum_{n = 1}^\infty \Bigg(\frac{\lambda}{\mu}\Bigg)^n = \sum_{n=0}^\infty \Bigg(\frac{\lambda}{\mu}\Bigg)^n = \frac{1}{1-\frac{\lambda}{\mu}}< \infty
+$$
+This is a geometric series and it is known to converge iff:
+$$\frac{\lambda}{\mu} < 1 \iff \lambda < \mu \quad \text{since we are talking about probabilities } 0 < \pi_i \leq 1 $$
+Thus: 
+\begin{align*}
+\pi_0 = \Bigg(1 + \sum_{n = 1}^\infty \frac{\lambda_0\lambda_1 \hdots \lambda_{n-1}}{\mu_1\mu_2 \hdots \mu_n}\Bigg)^{-1} &=\\
+\Bigg(1 + \sum_{n = 1}^\infty\Big(\frac{\lambda}{\mu}^n\Big)\Bigg)^{-1} &=\\
+\Bigg(\sum_{n = 0}^n\Big(\frac{\lambda}{\mu}\Big)^n\Bigg)^{-1} &=\\
+\Bigg(\frac{1}{1-\frac{\lambda}{\mu}}\Bigg)^{-1} &=\\
+1 - \frac{\lambda}{\mu}
+\end{align*}
+So for example we can calculate $\pi_1$ by: 
+$$
+\pi_i =  \frac{\lambda_{0} \cdot \lambda_{1} \dots \lambda_{i-1}}{\mu_{1} \cdot \mu_{2} \dots \mu_{i}}\pi_0
+$$
+Thus we can compute recursively all the value we want.

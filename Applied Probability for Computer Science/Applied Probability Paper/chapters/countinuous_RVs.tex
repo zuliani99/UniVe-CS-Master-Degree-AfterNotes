@@ -1,0 +1,192 @@
+\chapter{Continuous RVs}
+\section{Uniform Distribution}
+\begin{tcolorbox}
+The distribution describes an experiment where there is an arbitrary outcome that lies between certain bounds. The bounds are defined by the parameters, a and b, which are the minimum and maximum values.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\((a, b)\) & range of values \\ \hline
+\(f(x)\) & $\frac{1}{b - a} \quad a < x < b$ \\ \hline
+\(F_x(x)\) & $\frac{x - a}{b - a} \quad a < x < b$ \\ \hline
+\(\mathbf{E}[X]\) & \(\frac{a + b}{2}\) \\ \hline
+VAR\([X]\) & \(\frac{(b - a)^2}{12}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dunif(x, min, max)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+punif(x, min, max)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\section{Exponential Distribution}
+\begin{tcolorbox}
+Exponential distribution used to model \textbf{time}. In a sequence of rare events, when the number of events is Poisson, the time between events is Exponential
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\lambda\) & frequency parameter, the number of events per time unit \\ \hline
+\(f(x)\) & $\lambda e^{-\lambda x} \quad x > 0$ \\ \hline
+\(F_x(x)\) & $1 - e^{-\lambda x} \quad x > 0$ \\ \hline
+\(\mathbf{E}[X]\) & \(\frac{1}{\lambda}\) \\ \hline
+VAR\([X]\) & \(\frac{1}{\lambda^2}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dexp(x, rate (^-1)) 
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pexp(x, rate (^-1))
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+\begin{tcolorbox}
+If in the exercise it is not explicit the measure unit at \(\mathbf{^{-1}}\), we have to insert the \textbf{rate} parameter: \(1/rate = rate^{-1}\). Like in the case that we know the mean, by the formula we can retrieve the exact value of $\lambda$.
+\end{tcolorbox}
+
+\subsection{Times between rare events are Exponential}
+Event: "the time \(T\) until the next event is greater than \(t\)" can be rephrased as: "zero events occur by the time \(t\)".
+\[P_X(0) = e^{-\lambda t}\frac{(\lambda t)^0}{0!} = e^{-\lambda t}\]
+Then the cdf of \(T\) is:
+\[F_T[t] = 1 - P[T > t] = 1- P[T = t] = 1 - e^{-\lambda t}\]
+
+\subsection{Memory Less Propriety}
+The fact of having waited for \(t\) minutes gets "forgotten", and it does not affect the future waiting time.
+\[P[T > t + x | T > t] = P[T > x] \quad \forall t,x > 0\]
+
+\subsection{Minimization}
+Consider a collection of \(X_j \sim Exp(\lambda_i)\) with \(j = 1,...,n\) independent from each other we state that there exist a new random variable:
+\[L_n = \min\{X_1,...,X_n\} \sim Exp(\lambda) \quad \lambda = \sum_{j = 1}^n \lambda_j\]
+\centerline{It has the same propriety as a classical \textbf{Exponential Random Variable}}
+
+\subsection{Maximization}
+\[\mathbb{P}[x \leq x] = \prod_{i = 1}^n (1-e^{-\lambda_ix})\]
+\[\mathbb{E}[X] = \frac{1}{\lambda} \sum_{i=1}^n \frac{1}{i}\]
+
+\section{Gamma Distribution}
+\begin{tcolorbox}
+When a certain procedure consist of \(\alpha\) \textit{independent steps}, and each step takes \textbf{Exponential(\(\lambda\))} amount of time, then the total time has \textbf{Gamma distribution} with parameters \(\alpha\) and \(\lambda\).
+
+In a process of rare events, with \textbf{Exponential} times between any two consecutive events, the time of the \(\alpha\)-th events has \textbf{Gamma} distribution because it consists of \(\alpha\) \textit{independent} \textbf{Exponential} times.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\alpha\) & shape parameter \\ \hline
+\(\lambda\) & frequency parameter \\ \hline
+\(f(x)\) & $\frac{\lambda^\alpha}{\rho(\alpha)}x^{\alpha - 1}e^{-\lambda x} \quad x > 0$ \\ \hline
+\(\mathbf{E}[X]\) & \(\frac{\alpha}{\lambda}\) \\ \hline
+VAR\([X]\) & \(\frac{\alpha}{\lambda^2}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dgamma(x, alpha, rate (^-1))
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pgamma(x, alpha, rate (^-1))
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\begin{tcolorbox}
+If in the exercise it is not explicit the measure unit at \(\mathbf{^{-1}}\), we have to insert the \textbf{rate} parameter: \(1/rate = rate^{-1}\). Like in the case that we know the mean, by the formula we can retrieve the exact value of $\lambda$.
+\end{tcolorbox}
+
+\section{Normal Distribution}
+\begin{tcolorbox}
+Besides sums, averages, and errors, Normal distribution is often found to be a good model for physical variables like weight, height, temperature, voltage, pollution level, and for instance, household incomes or student grades.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\mu\) & expectation, location parameter \\ \hline
+\(\sigma\) & standard deviation, scale parameter \\ \hline
+\(f(x)\) & $\frac{1}{\sigma \sqrt{2\pi}} exp\Big\{\frac{-(x - \mu)^2}{2\sigma^2}\Big\} \quad -\infty < x < \infty$ \\ \hline
+\(F_x[X]\) & $\int_{-\infty}^{\infty} \frac{1}{\sigma \sqrt{2\pi}} exp\Big\{\frac{-(x - \mu)^2}{2\sigma^2}\Big\} \,dz \quad -\infty < x < \infty$ \\ \hline
+\(\mathbf{E}[X]\) & \(\mu\) \\ \hline
+VAR\([X]\) & \(\sigma^2\) \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\subsection{Standard Normal Distribution}
+\begin{tcolorbox}
+Normal distribution with “standard parameters” \(\mu = 0\) and \(\sigma = 1\) is called \textbf{Standard Normal distribution}.
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\mu\) & expectation, location parameter \\ \hline
+\(\sigma\) & standard deviation, scale parameter \\ \hline
+\(Z\) & Standard Normal Random Variable \\ \hline
+\(\phi(x)\) & $\frac{1}{\sqrt{2\pi}}e^{-x^2/2} \quad\text{Standard Normal \textbf{pdf}}$ \\ \hline
+\(\Phi(x)\) & $\int_{-\infty}^{x} \frac{1}{\sqrt{2\pi}}e^{-x^2/2} \quad\text{Standard Normal \textbf{cdf}}$ \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dnorm((X - mean) / sd)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pnorm((X - mean) / sd)
+\end{lstlisting} \\ \hline
+\(\Phi^{-1}(x)\) & \begin{lstlisting}[language=R]
+qnorm(x)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+A Standard Normal can be obtained from a non standard Normal\((\mu, \sigma)\) random variable \(X\) by \textbf{standardizing}, which means \textit{subtracting} the \textbf{mean} and \textit{dividing} by the \textbf{standard deviation}:
+\[Z = \frac{X - \mu}{\sigma} \sim N(0,1)\]
+Using the transformation, any Normal Random Variable can be obtained from a \textbf{Standard Normal Random Variable \(Z\):}
+\[F_x[x] = P[X \leq x] = P\Big[\frac{X' - \mu'}{\sigma'} \leq \frac{x - \mu}{\sigma}\Big] = P\Big[Z \leq \frac{x - \mu}{\sigma}\Big] = F_z\Big[\frac{x - \mu}{\sigma}\Big]\]
+
+\subsubsection{Linear Combination of Normal RVs are Normal}
+\[X_1,X_2,...,X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)\]
+%questo era un esempio
+\[\text{and if} \quad a_i = \frac{1}{n} \quad \forall i \quad \text{or} \quad \frac{1}{n} \sum_{i = 1}^n x_i \sim N(\mu, \sigma^2/n)\]
+%fine exempio
+\[\sum_{i = 1}^n a_ix_i \sim N\Big(\mu\sum_{i = 1}^n a_i, \sigma^2\sum_{i = 1}^n a_i\Big)\]
+
+\section{Central Limit Theorem}
+To be used when in the exercise it is asked to find some king of probability given quantity of elements and relative mean and sd.
+\[X_1,X_2,... \quad \text{independent RVs} \quad \mu = \mathbf{E}[X_i] \quad \sigma = \text{Std}[X_i]\]
+\[S_n = \sum_{i = 1}^n X_i = X_1 + ... + X_n\]
+As \(n \rightarrow \infty\) the standardized sum is
+\[Z_n = \frac{S_n - \mathbf{E}[S_n]}{\text{Std}[S_n]} = \frac{S_n - n\mu}{\sigma\sqrt{n}}\]
+converges in distribution to a \textbf{Standard Normal Random Variable}
+\[F_{Z_n}(z) = P\Big[\frac{S_n - n\mu}{\sigma\sqrt{n}} \leq z\Big] \rightarrow \Phi(z) \quad \forall z\]
+\begin{tcolorbox}
+\[\text{Applied when} \quad n \geq 30\]
+\end{tcolorbox}
+
+\subsection{Normal Approximation to Binomial Distribution}
+\begin{tcolorbox}
+\textbf{Binomial Variables} represent a special case of \(S_n = X_1+...+X_n\), where all \(X_i \sim Ber(p)\), moreover in case our \(n\) is \textbf{large} and for moderate values of \(p: (0.05 \leq p \leq 0.95)\) we have the following approximation 
+\end{tcolorbox}
+\[\text{Binomial}(n,p) \approx Normal\Big(\mu = np, \sigma = \sqrt{np(1 - p)}\Big)\]
+
+\subsection{Continuity Correction}
+\begin{tcolorbox}
+It is needed when we approximate a discrete distribution (like Binomial) by a continuous distribution (Normal). Since in the discrete case \(P[X = x]\) could be positive in the continuous case it is always \(0\). This is way we introduce this correction.
+
+We expand the interval by 0.5 units in each direction, then use the Normal approximation.
+\end{tcolorbox}
+\[P_X[x] = P[X = x] = P[x - 0.5 < X < x + 0.5]\]

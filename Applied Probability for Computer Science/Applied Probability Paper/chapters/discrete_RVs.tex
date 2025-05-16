@@ -1,0 +1,194 @@
+\chapter{Discrete RVs}
+
+\section{Bernoulli Distribution}
+\begin{tcolorbox}
+Used whenever we have a 0 / 1 outcome, thus when we could have only two possible result in our experiment.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(p\) & probability of success \\ \hline
+\(P[X]\) & $p^x(1 - p)^{1-x} = \begin{cases} 1 - p & \mbox{if } x = 0 \\p & \mbox{if } x = 1 
+\end{cases}$ \\ \hline
+\(\mathbf{E}[X]\) & $p$ \\ \hline
+\(\text{VAR}[X]\) & $p(1 - p)$ \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+
+
+
+
+\section{Binomial Distribution}
+\begin{tcolorbox}
+Used whenever we consider a sequence of independent Bernoulli trials and count the number of success in it.
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(n\) & number of trials \\ \hline
+\(p\) & probability of success \\ \hline
+\(P[x]\) & $\dbinom{n}{x} p^x(1-p)^{n - x}$\\ \hline
+\(F[x]\) & $\sum_{i = 1}^n \dbinom{n}{i} p^i(1 - p)^{n-i}$ \\ \hline
+\(\mathbf{E}[X]\) & \(np\) \\ \hline
+VAR\([X]\) & \(np(1 - p)\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dbinom(#success, size, prob_success)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pbinom(#success, size, prob_success)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+
+
+
+\section{Geometric Distribution}
+\begin{tcolorbox}
+Consider a sequence of independent Bernoulli trials, each trial results in a "success" or a "failure". The number of Bernoulli trials needed to get the first success has Geometric Distribution.
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(p\) & probability of success \\ \hline
+\(P[x]\) & \((1 - p)^{x-1}p, x = 1,2,...\)\\ \hline
+\(F[x]\) & \(p \sum_{i = 0}^x (1 - p)^i\) \\ \hline
+\(\mathbf{E}[X]\) & \(\frac{1}{p}\) \\ \hline
+VAR\([X]\) & \(\frac{1-p}{p^2}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dgeom(#failures, prob_success)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pgeom(#failures, prob_success)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+
+\section{HyperGeometric Distribution}
+\begin{tcolorbox}
+Describes the probability of \(k\) successes (random draws for which the object drawn has a specified feature) in \(n\) draws, without replacement, from a finite population of size \(N\) that contains exactly \(K\) objects with that feature, wherein each draw is either a success or a failure.
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(N\) & Is the population size \\ \hline
+\(K\) & Is the number of success states in the population \\ \hline
+\(n\) & Is the number of draws  \\ \hline
+\(k\) & Is the number of observed successes \\ \hline
+\(P[x]\) & \(\frac{\dbinom{K}{k}\dbinom{N-K}{n-k}}{\dbinom{N}{n}}\)\\ \hline
+\(\mathbf{E}[X]\) & \(n\frac{K}{N}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dhyper(#succ, #succ_samp, #pop_dim, #samp_dim)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+phyper(#succ, #succ_samp, #pop_dim, #samp_dim)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+
+
+\section{Multinomial Distribution}
+\begin{tcolorbox}
+Whereas the binomial distribution describes the number of successes in a Bernoulli process, for which each single test can provide only two results, the multinomial distribution describes the more general case in which each test can provide a finite number of results, each with the own probability.
+\end{tcolorbox}
+\[P[X_1, X_2,...,X_k] = \frac{n!}{x_1!...x_k!}p_1^{x_1}...p_k^{x_k} \quad \text{where} \quad \sum_{i = 1}^n p_1 = 1\]
+
+
+\newpage
+\section{Negative Binomial Distribution}
+\begin{tcolorbox}
+In a sequence of independent Bernoulli trials, the number of trials needed to obtain \(k\) successes has Negative Binomial distribution. 
+
+In other words it counts the number of failures before obtaining a target number of successes (k).
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(k\) & number of success \\ \hline
+\(p\) & probability of success \\ \hline
+\(P[x]\) & $\dbinom{x - 1}{k - 1}(1 - p)^{x - k}p^k \quad x = k, k+1,...$\\ \hline
+\(\mathbf{E}[X]\) & \(\frac{k}{p}\) \\ \hline
+VAR\([X]\) & \(\frac{k(1 - p)}{p^2}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dnbinom(#failures, #successes, prob_success)
+dnbinom(#trial-#successes, #successes, prob_success)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pnbinom(#failures, #successes, prob_success)
+pnbinom(#trial-#successes, #successes, prob_success)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+
+\section{Poisson Distribution}
+\begin{tcolorbox}
+    Poisson distribution is related to \textbf{rare events}. It means that two events are extremely unlikely to occur simultaneously or within a very short period of time.
+
+    The number of rare events occurring within a fixed period of time has Poisson Distribution.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\lambda\) & frequency, average number of events \\ \hline
+\(p\) & probability of success \\ \hline
+\(P[x]\) & $e^{-\lambda} \frac{\lambda^x}{x!} \quad x = 0,1,2,...$\\ \hline
+\(\mathbf{E}[X]\) & \(\lambda\) \\ \hline
+VAR\([X]\) & \(\lambda\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dpois(x, lambda)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+ppois(x, lambda)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\newpage
+\subsection{Poisson approximation of Binomial distribution}
+Poisson distribution can be effectively used to approximate Binomial probabilities when the \textit{number of trials} \(n\) is \textbf{large} and the \textit{probability of success} \(p\) is \textbf{small}
+\[n \geq 30 \quad p \leq 0.05\]
+
+\[\text{Binomial}(n,p) \approx \text{Poisson}(\lambda)\]
+\[\text{where } n \geq 30 \quad p \leq 0.05 \quad np=\lambda\]
+
+\subsection{Additivity}
+If
+\[X \sim Pois(\lambda) \quad \text{and} \quad Y \sim Pois(\mu)\]
+and they are \textbf{independent}, then we can say that:
+\[W = X + Y \sim Pois(\lambda + \mu)\]
+
+\subsection{Relation between Poisson and Multinomial Distribution}
+Let 
+\[S_n = X_1 + X_2 + ... + X_n \quad \text{with} \quad X_i\stackrel{iid}{\sim} Pois(\lambda_i)\]
+given
+\[(X_1,X_2,...,X_n)|S_n \sim Mult\Big(\frac{\lambda_1}{\lambda},\frac{\lambda_2}{\lambda},...,\frac{\lambda_n}{\lambda}\Big) \quad \text{where} \quad \lambda = \sum_{i = 1}^n \lambda_i\]

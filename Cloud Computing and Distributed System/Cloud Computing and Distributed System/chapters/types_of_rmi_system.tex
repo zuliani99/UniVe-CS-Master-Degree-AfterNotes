@@ -1,0 +1,40 @@
+\chapter{Types of RMI system}
+\begin{itemize}
+    \item \textbf{Common Object Broker Architecture (CORBA):}
+        \begin{itemize}
+            \item Allows the communication among applications written in \textbf{various languages} through the use of a model of neutral object
+            \item Allows the communication among existing applications developed in \textbf{heterogeneous environments} and for which one cannot make a conversion in a common language
+        \end{itemize}
+    \item \textbf{Java RMI:}
+        \begin{itemize}
+            \item Allows the communication among \textbf{applications written in Java}
+            \item \textbf{Environment heterogeneity} as a consequence of the Java language portability. It leads to a simpler code 
+        \end{itemize}
+\end{itemize}
+
+\section{Distributed object model features}
+\begin{itemize}
+    \item The clients of remote objects interact through remote interface and must manage the exception for possible failure of RMI 
+    \item The arguments and the results of the remote methods are passed by value and not by reference, by using the concept of serialisation
+    \item A remote object is always passed by reference
+    \item There are some security mechanisms introduced to check the behaviour of the classes and the references
+\end{itemize}
+
+
+\section{Garbage collection of remote objects}
+\begin{itemize}
+    \item Every JVM updates a series of counters, each of them associated to a given object
+    \item Each counter represents the reference number to a given object that is currently active on a JVM
+    \item Every time a reference to a remote object is created, the corresponding counter is incremented
+    \item When no client has reference to an object, the runtime of RMI uses a “weak reference” to address it 
+    \item The weak reference is used by the garbage collector to cancel the object as soon as also the local references are not present
+\end{itemize}
+
+\section{Serialisation}
+\begin{itemize}
+    \item Mechanism used for the data transmission between client and server in RMI 
+    \item It is an automatic transformation of objects and structures of objects in simple byte sequences, to be sent in a data stream
+    \item There can be serialisation only for instances of serializable object
+    \item It is not transferred the real object, but only the information that characterise the instance of it
+    \item At de-serialization time a copy will be created of the transmitted instance by using the .class
+\end{itemize}

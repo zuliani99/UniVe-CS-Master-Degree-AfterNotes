@@ -1,0 +1,214 @@
+\chapter{VA Continue}
+\section{Distribuzione uniforme}
+\begin{tcolorbox}
+La distribuzione descrive un esperimento in cui esiste un risultato arbitrario compreso tra determinati limiti. I limiti sono definiti dai parametri a e b, che rappresentano i valori minimo e massimo.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\((a, b)\) & range di valori \\ \hline
+\(f(x)\) & $\frac{1}{b - a} \quad a < x < b$ \\ \hline
+\(F_x(x)\) & $\frac{x - a}{b - a} \quad a < x < b$ \\ \hline
+\(\mathbf{E}[X]\) & \(\frac{a + b}{2}\) \\ \hline
+VAR\([X]\) & \(\frac{(b - a)^2}{12}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dunif(x, min, max)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+punif(x, min, max)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\newpage
+\section{Distribuzione Esponenziale}
+\begin{tcolorbox}
+Distribuzione esponenziale utilizzata per modellare il \textbf{tempo}. In una sequenza di eventi rari, quando il numero di eventi è Poisson, il tempo tra gli eventi è Esponenziale
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\lambda\) & parametro di frequenza, numero di eventi per unità \\ \hline
+\(f(x)\) & $\lambda e^{-\lambda x} \quad x > 0$ \\ \hline
+\(F_x(x)\) & $1 - e^{-\lambda x} \quad x > 0$ \\ \hline
+\(\mathbf{E}[X]\) & \(\frac{1}{\lambda}\) \\ \hline
+VAR\([X]\) & \(\frac{1}{\lambda^2}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dexp(x, rate (^-1)) 
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pexp(x, rate (^-1))
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+\begin{tcolorbox}
+Se nell'esercizio non è esplicitata l'unità di misura in \(\mathbf{^{-1}}\), dobbiamo inserire il parametro \textbf{rate}: \(1/rate = rate^{-1} \). Come nel caso in cui conosciamo la media, dalla formula possiamo recuperare il valore esatto di $\lambda$.
+\end{tcolorbox}
+
+\subsection{I tempi tra eventi rari sono esponenziali}
+Evento: "il tempo \(T\) fino al prossimo evento è maggiore di \(t\)" può essere riformulato come: "zero eventi si verificano entro il tempo \(t\)".
+\[P_X(0) = e^{-\lambda t}\frac{(\lambda t)^0}{0!} = e^{-\lambda t}\]
+Poi la CDF di \(T\) è:
+\[F_T[t] = 1 - P[T > t] = 1- P[T = t] = 1 - e^{-\lambda t}\]
+
+\subsection{Proprietà Memory Less}
+Il fatto di aver aspettato per \(t\) minuti viene "dimenticato" e non influisce sul tempo di attesa futuro.
+\[P[T > t + x | T > t] = P[T > x] \quad \forall t,x > 0\]
+
+\subsection{Minimizzazione}
+Consideriamo una collezione di \(X_j \sim Exp(\lambda_i)\) con \(j = 1,...,n\) indipendenti tra loro affermiamo che esiste una nuova variabile casuale:
+\[L_n = \min\{X_1,...,X_n\} \sim Exp(\lambda) \quad \lambda = \sum_{j = 1}^n \lambda_j\]
+\centerline{Ha la stessa proprietà di una classica \textbf{Variabile casuale esponenziale}}
+
+\subsection{Massimizzazione}
+\[\mathbb{P}[x \leq x] = \prod_{i = 1}^n (1-e^{-\lambda_ix})\]
+\[\mathbb{E}[X] = \frac{1}{\lambda} \sum_{i=1}^n \frac{1}{i}\]
+
+\section{Distribuzione Gamma}
+\begin{tcolorbox}
+Quando una certa procedura consiste di \(\alpha\) \textit{passi indipendenti}, e ogni passo richiede una quantità di tempo \textbf{Esponenziale(\(\lambda\))}, allora il tempo totale ha una distribuzione \textbf{Gamma } con parametri \(\alpha\) e \(\lambda\).
+
+In un processo di eventi rari, con tempi \textbf{Esponenziale} tra due eventi consecutivi qualsiasi, il tempo degli eventi \(\alpha\)-esimi ha distribuzione \textbf{Gamma} perché consiste di \(\alpha\) \textit{indipendente} \textbf{Esponenziale} volte.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\alpha\) & parametro di forma \\ \hline
+\(\lambda\) & parametro di frequenza \\ \hline
+\(f(x)\) & $\frac{\lambda^\alpha}{\rho(\alpha)}x^{\alpha - 1}e^{-\lambda x} \quad x > 0$ \\ \hline
+\(\mathbf{E}[X]\) & \(\frac{\alpha}{\lambda}\) \\ \hline
+VAR\([X]\) & \(\frac{\alpha}{\lambda^2}\) \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dgamma(x, alpha, rate (^-1))
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pgamma(x, alpha, rate (^-1))
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\begin{tcolorbox}
+Se nell'esercizio non è esplicitata l'unità di misura in \(\mathbf{^{-1}}\), dobbiamo inserire il parametro \textbf{rate}: \(1/rate = rate^{-1} \). Come nel caso in cui conosciamo la media, dalla formula possiamo recuperare il valore esatto di $\lambda$.
+\end{tcolorbox}
+
+\section{Distribuzione Normale}
+\begin{tcolorbox}
+Oltre a somme, medie ed errori, la distribuzione normale si rivela spesso un buon modello per variabili fisiche come peso, altezza, temperatura, voltaggio, livello di inquinamento e, ad esempio, redditi familiari o voti degli studenti.
+\end{tcolorbox}
+
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\mu\) & media, parametro di posizione \\ \hline
+\(\sigma\) & deviazione standard, parametro di scala \\ \hline
+\(f(x)\) & $\frac{1}{\sigma \sqrt{2\pi}} exp\Big\{\frac{-(x - \mu)^2}{2\sigma^2}\Big\} \quad -\infty < x < \infty$ \\ \hline
+\(F_x[X]\) & $\int_{-\infty}^{\infty} \frac{1}{\sigma \sqrt{2\pi}} exp\Big\{\frac{-(x - \mu)^2}{2\sigma^2}\Big\} \,dz \quad -\infty < x < \infty$ \\ \hline
+\(\mathbf{E}[X]\) & \(\mu\) \\ \hline
+VAR\([X]\) & \(\sigma^2\) \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+
+\subsection{Distribuzione Normale Standard}
+\begin{tcolorbox}
+La distribuzione normale con “parametri standard” \(\mu = 0\) e \(\sigma = 1\) è chiamata \textbf{Distribuzione Normale Standard}.
+\end{tcolorbox}
+\begingroup
+\setlength{\tabcolsep}{10pt} % Default value: 6pt
+\renewcommand{\arraystretch}{1.5} % Default value: 1
+\begin{center}
+\begin{tabular}{ |c|c| } 
+\hline
+\(\mu\) & media, parametro di posizione \\ \hline
+\(\sigma\) &  deviazione standard, parametro di scala \\ \hline
+\(Z\) & Variabile Aleatoria Nosmale Standard \\ \hline
+\(\phi(x)\) & $\frac{1}{\sqrt{2\pi}}e^{-x^2/2} \quad\text{Normale Standard \textbf{pdf}}$ \\ \hline
+\(\Phi(x)\) & $\int_{-\infty}^{x} \frac{1}{\sqrt{2\pi}}e^{-x^2/2} \quad\text{Normale Standard \textbf{cdf}}$ \\ \hline\hline
+\(P[X = x]\) & \begin{lstlisting}[language=R]
+dnorm((X - mean) / sd)
+\end{lstlisting} \\ \hline
+\(P[X \leq x]\) & \begin{lstlisting}[language=R]
+pnorm((X - mean) / sd)
+\end{lstlisting} \\ \hline
+\(\Phi^{-1}(x)\) & \begin{lstlisting}[language=R]
+qnorm(x)
+\end{lstlisting} \\ \hline
+\end{tabular}
+\end{center}
+\endgroup
+Una Normale Standard può essere ottenuta da una variabile casuale Normale\((\mu, \sigma)\) non standard \(X\) stramite \textbf{standardizzazione}, che significa \textit{sottrarre} la \textbf{media} e \textit{dividendo} per la \textbf{deviazione standard}:
+\[Z = \frac{X - \mu}{\sigma} \sim N(0,1)\]
+Utilizzando la trasformazione, qualsiasi variabile casuale normale può essere ottenuta da una \textbf{Variabile Casuale Normale Standard \(Z\):}
+\[F_x[x] = P[X \leq x] = P\Big[\frac{X' - \mu'}{\sigma'} \leq \frac{x - \mu}{\sigma}\Big] = P\Big[Z \leq \frac{x - \mu}{\sigma}\Big] = F_z\Big[\frac{x - \mu}{\sigma}\Big]\]
+
+\subsubsection{La Combinazion Lineare di VA Normali è Normale}
+\[X_1,X_2,...,X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)\]
+%questo era un esempio
+\[\text{e se} \quad a_i = \frac{1}{n} \quad \forall i \quad \text{o} \quad \frac{1}{n} \sum_{i = 1}^n x_i \sim N(\mu, \sigma^2/n)\]
+%fine exempio
+\[\sum_{i = 1}^n a_ix_i \sim N\Big(\mu\sum_{i = 1}^n a_i, \sigma^2\sum_{i = 1}^n a_i\Big)\]
+
+\section{Teorema del limite centrale}
+Da utilizzare quando nell'esercizio si chiede di trovare un qualche tipo di probabilità data la quantità di elementi e relativa media e ds.
+\[X_1,X_2,... \quad \text{VA indipendenti} \quad \mu = \mathbf{E}[X_i] \quad \sigma = \text{Std}[X_i]\]
+\[S_n = \sum_{i = 1}^n X_i = X_1 + ... + X_n\]
+As \(n \rightarrow \infty\) the standardized sum is
+\[Z_n = \frac{S_n - \mathbf{E}[S_n]}{\text{Std}[S_n]} = \frac{S_n - n\mu}{\sigma\sqrt{n}}\]
+converge in distribuzione in una \textbf{Variabile Causale Normale Standard}
+\[F_{Z_n}(z) = P\Big[\frac{S_n - n\mu}{\sigma\sqrt{n}} \leq z\Big] \rightarrow \Phi(z) \quad \forall z\]
+\begin{tcolorbox}
+\[\text{Applicata quando} \quad n \geq 30\]
+\end{tcolorbox}
+
+\subsection{Approssimazione dalla Normale alla  Binomiale}
+\begin{tcolorbox}
+\textbf{Variabili Binomiali} rappresentano un caso speciale di \(S_n = X_1+...+X_n\), dove tutti \(X_i \sim Ber(p)\), inoltre nel caso in cui il nostro \(n\) sia \textbf {largo} e per valori moderati di \(p: (0.05 \leq p \leq 0.95)\) abbiamo la seguente approssimazione
+\end{tcolorbox}
+\[\text{Binomiale}(n,p) \approx Normal\Big(\mu = np, \sigma = \sqrt{np(1 - p)}\Big)\]
+
+\subsection{Correzione della Continuità}
+\begin{tcolorbox}
+È necessario quando approssimiamo una distribuzione discreta (come Binomiale) con una distribuzione continua (Normale). Poiché nel caso discreto \(P[X = x]\) potrebbe essere positivo, nel caso continuo è sempre \(0\). In questo modo introduciamo questa correzione.
+
+Espandiamo l'intervallo di 0,5 unità in ciascuna direzione, quindi utilizziamo l'approssimazione Normale.
+\end{tcolorbox}
+\[P_X[x] = P[X = x] = P[x - 0.5 < X < x + 0.5]\]
+
+\section{Processo di Poisson}
+\begin{tcolorbox}
+Il processo di Poisson è una successione di variabili aleatorie \(\{X_t\}_{t \geq 0}\), con distribuzione di Poisson il cui parametro dipende dall’indice \(t\):
+\[X_t \sim \mathcal{P}(\lambda \cdot t)\]
+Si usa per contare il numero di manifestazioni di un fenomeno di interesse in un qualsiasi intervallo di tempo di ampiezza \(t\).
+\end{tcolorbox}
+Possiamo allora scrivere:
+\begin{itemize}
+    \item \(X_t\) =“\# eventi in un intervallo di tempo \(t\)”
+    \item \(\lambda\) =“\# medio di eventi nell’unità di tempo”
+\end{itemize}
+
+\subsection{Relazione con la Distribuzione Esponenziale}
+Associata ad ogni processo di Poisson c’è una variabile aleatoria esponenziale che misura il tempo fra due manifestazioni successive del fenomeno in questione:
+\begin{itemize}
+    \item \(X_t\) = "\# eventi in un intervallo di tempo \(t\)"
+    \[X_t \sim Po(\lambda t)\]
+    \item \(T\) = "tempo trascorso fra due eventi successivi"
+    \[T \sim Exp(\lambda)\]
+\end{itemize}

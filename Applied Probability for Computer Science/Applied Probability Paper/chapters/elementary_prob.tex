@@ -1,0 +1,18 @@
+\chapter{Elementary Probability}
+\begin{itemize}
+    \item $A \cup B \quad A \cap B \quad A^c = 1 - A$
+    \item $(A \cap B)^c = A^c \cup B^c \quad (A \cup B)^c = A^c \cap B^c$
+    \item $A \setminus B = A \cap B^c$
+    \item $P[A \cup B] = P[A] + P[B] - P[A \cap B] \quad P[A \cup B] = P[A] + P[B] \text{ if independent}$
+    \item $P[A|B] = \frac{P[A \cap B]}{P[B]}$
+    \begin{itemize}
+        \item If $A$ and $B$ are independent$P[A] = P[A|B] = \frac{P[A \cap B]}{P[B]} = \frac{P[A] \cdot P[B]}{P[B]} = P[A]$
+    \end{itemize}
+    \item Bayes rule:
+    $$P[B|A] = \frac{P[A|B] \cdot P[B]}{P[A]}$$
+    \item System reliability:
+    \begin{itemize}
+        \item \textit{Series Circuit:} works if \textbf{all} sequential components work $ \rightarrow \cap$
+        \item \textit{Parallel Circuit:} it works if \textbf{at least} one of the components work $\rightarrow \cup$
+    \end{itemize}
+\end{itemize}

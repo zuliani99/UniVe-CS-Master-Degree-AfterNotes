@@ -1,0 +1,899 @@
+\documentclass[12pt,oneside]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\pagestyle{fancy}
+\usepackage{biblatex}
+\addbibresource{references.bib}
+\usepackage{comment}
+\usepackage{amsfonts}
+\usepackage{tcolorbox}
+\usepackage{amsmath}
+\usepackage{wrapfig}
+\usepackage{tabularx}
+\usepackage{csquotes}
+\usepackage{adjustbox}
+\usepackage{graphicx}
+\usepackage{makecell}
+\usepackage{footnote}
+\usepackage{lscape}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{array}
+\usepackage{threeparttable}
+\usepackage{rotating}
+\usepackage[titletoc]{appendix}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+%\usepackage{afterpage}
+
+
+\newcommand{\newblanckpage}{
+    \newpage
+    \thispagestyle{plain} % empty
+    \mbox{}
+}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+\begin{document}
+\newgeometry{margin=1in}
+\input{titlepage}
+\restoregeometry
+
+%\newblanckpage
+
+\pagenumbering{roman}
+
+%\newblanckpage
+\tableofcontents
+
+\clearpage
+
+\pagenumbering{arabic}
+
+\setcounter{page}{1}
+
+
+
+\part{Lucchese Part}
+\chapter{Introduction}
+\begin{itemize}
+    \item The Moore's Law
+    \item Some advantages of multicores:
+    \begin{itemize}
+        \item Power
+        \item Design cost
+        \item Defect tollerance
+    \end{itemize}
+    \item Sequential VS Parallel computing
+    \begin{itemize}
+        \item Sequential computing
+        \item Parallel Computing
+    \end{itemize}
+    \item Clusters
+    \item When is Parallelism Necessary?
+\end{itemize}
+
+\chapter{Cache Awareness}
+\begin{itemize}
+    \item Effect of memory latency
+    \item Cache Memory
+    \begin{itemize}
+        \item Definition
+        \item Performance improve in presence of high locality
+        \begin{itemize}
+            \item Temporal locality
+            \item Spartial locality
+        \end{itemize}
+        \item Cache hit rateo
+        \item Other approaches for hiding memory latency
+        \begin{itemize}
+            \item Multi-threading
+            \item Pre-fetching
+            \item Drawbacks (Bandwidth and cache pollution)
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\section{Cache-to-memory Coherence}
+\begin{itemize}
+    \item After updating/writing data in cache, when to write to memory?
+    \item \textbf{Write-Through Policy} definition
+    \item \textbf{Write-Back Policy} definition, in case of write data not being in cache
+    \begin{itemize}
+        \item Write Allocate
+        \item Write No Allocate
+    \end{itemize}
+    \item \textbf{Cache-to-cache Coherence in Symmetric Multi-Processors}
+    \begin{itemize}
+        \item Snooping Protocols
+        \item Cache controller snoop all the bus transactions
+        \begin{itemize}
+            \item Transaction relevant
+            \item Actions to guarantee \textbf{cache coherence}
+            \begin{itemize}
+                \item \textit{Update}
+                \item \textit{Invalidate}
+            \end{itemize}
+        \end{itemize}
+        \item \textbf{Update}
+        \begin{itemize}
+            \item \textit{Pros:}
+            \begin{itemize}
+                \item Multiple r/w copies are kept coherent after each write, save bandwidth
+            \end{itemize}
+            \item \textit{Con:} Unnecessary waste
+            \begin{itemize}
+                \item Cache block is update but no longer read
+                \item Subsequent writes by the same processor cause multiple updates
+            \end{itemize}
+        \end{itemize}
+        \item \textbf{Invalidate}
+        \begin{itemize}
+            \item \textit{Pro:}
+            \begin{itemize}
+                \item Multiple writes by the same processor do not cause any additional overhead
+            \end{itemize}
+            \item \textit{Con:}
+            \begin{itemize}
+                \item An access that follows an invalidation causes a miss
+            \end{itemize}
+        \end{itemize}
+        \item \textbf{False Sharing}
+        \begin{itemize}
+            \item Coherent protocols works in term of cache blocks/lines rather single words/bytes
+            \item Blocks plays an important role in coherence protocol
+            \begin{itemize}
+                \item Small blocks the protocols are more efficient
+                \item Large blocks are better for spartial locality
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{We want to minimize the cache miss and maximize the cache hit}
+    \item External memory model
+    \begin{itemize}
+        \item Transfer occur in blocks of size \(B\)
+        \item The cache has size \(M \geq B\)
+        \item With \(M/B\) entries
+    \end{itemize}
+    \item \textbf{Example of linear scan:} \(\ceil*{\frac{N}{B}+1}\) memory scan
+\end{itemize}
+
+\section{Matrix Multiplication}
+\begin{itemize}
+    \item Rows in row-wise
+    \item Columns in column-wise
+    \item Each element of matrix \(C\) involves \(O(1+\frac{N}{B})\) transfers
+    \item Since there are \(N^2\) elements of \(C\) the complexity is \(O(N^2 \frac{N^3}{B})\)
+    \item Approach to reduce the cost
+    \item \textbf{Improved Algorithm} complexity \(O\Big(\frac{N^2}{B} + \frac{N^3}{B \cdot \sqrt{M}}\Big)\) with block matrices
+
+    \item \textbf{Cache Oblivious Algorithm}
+    \begin{itemize}
+        \item Divide-and-conquer approach
+        \item We recursively split the matrix until at some point the matrix will fit in cache, whatever is its size
+        \item \textit{Recursive Data Layout}, st however we recursively split the matrix, at some point the data will be in consecutive memory location that can be easily loaded in cache
+        \item \textbf{Z-Order}
+    \end{itemize}
+    \item \textbf{Complexity}
+    \begin{itemize}
+        \item \textit{Case base:} three blocks fit in cache, since successive recursion step do not cause additional misses
+        \begin{itemize}
+            \item Block size \(k\sqrt{M} \cdot k\sqrt{M}\) for some constant \(k\)
+        \end{itemize}
+        \item Three of such blocks fill the cache with \(M/B\) misses
+        \item Computational complexity of the block-based multiplication is \(\Big(\frac{N}{k\sqrt{M}}\Big)^3\)
+        \item Number of misses: \(\Big(\frac{N}{k\sqrt{M}}\Big)^3 \cdot \frac{M}{B} = O\Big(\frac{N^3}{B\sqrt{M}}\Big)\)
+        \item When \(N\) is small, data loading: \(O\Big(\frac{N^2}{B}\Big)\)
+        \item Total cost: \(O\Big(\frac{N^2}{B} + \frac{N^3}{B \cdot \sqrt{M}}\Big)\)
+    \end{itemize}
+\end{itemize}
+
+
+\section{Sorting \& K-Funnel}
+\begin{itemize}
+    \item Merge sort
+    \item \textbf{Cache-aware solution}
+    \begin{itemize}
+        \item M/B-way merge
+        \item \(\theta\Big(\frac{N}{B}\log_{\frac{M}{B}}\frac{N}{M}\Big)\)
+    \end{itemize}
+    \item \textbf{First Cache Oblivious Solution}
+    \begin{itemize}
+        \item 2-way merge sort
+        \item \(\theta\Big(\frac{N}{B}\log_2\frac{N}{M}\Big)\)
+        \item Can we rise the vase of the logarithm to M/M
+    \end{itemize}
+    \item \textbf{Cache Oblivious Sort: K-Funnel}
+    \begin{itemize}
+        \item Definition
+        \item Description
+        \item \item \(\theta\Big(\frac{N}{B}\log_{\frac{M}{B}}\frac{N}{M}\Big)\) like cache-aware solution
+    \end{itemize}
+\end{itemize}
+
+\section{Multi-core Hierarchies: key challenge}
+\begin{itemize}
+    \item Good performance for any \(M\) \& \(B\) on 2 levels \textbf{does not} imply \textit{good performance} at all levels of hierarchy
+    \item Reason: cache is not fully shared, what is \textbf{good} for \(cpu_1\) is often \textbf{bad} for \(cpu_2\) and \(cpu_3\)
+    \item Scheduling of parallel thread has a large impact on cache performance
+\end{itemize}
+
+\chapter{Shared Memory: Threads}
+\section{Performance Metrics}
+\begin{itemize}
+    \item two metrics:
+    \begin{itemize}
+        \item Parallel run time
+        \item Cost
+    \end{itemize}
+    \item \textit{When a parallel algorithm is cost optimal}
+    \item \textbf{SpeedUp}
+    \begin{itemize}
+        \item Formula
+        \item Typical success
+        \item Linear speedup
+        \item Super linear speedup
+        \item Using more thread require more overhead
+    \end{itemize}
+    \item \textbf{Efficiency}
+    \begin{itemize}
+        \item Measure of resource usage
+        \item fraction of time the processors are fully used to execute a fraction 1/p of the best sequential algorithm
+        \item Formula
+    \end{itemize}
+    \item \textbf{Amdahl's Law (SpeedUp)}
+    \begin{itemize}
+        \item Parallel execution time \(T_p\) cannot be arbitrary reduced by increasing \(p\)
+        \item Suppose a fraction \(f\) cannot be executed in parallel
+        \item Formula
+        \item The sequential fraction \(f\) is an upper bound on the speedup \(S\)
+    \end{itemize}
+    \item \textbf{Gustafson's Law (Scalability)}
+    \begin{itemize}
+        \item We can't use a large number of processors in order to process large amount of data
+        \item Sequential part c is constant wrt n
+        \item \(T(n,p)\) the execution time of the parallelizable part over \(p\) processors, \textit{perfectly parallelizable}
+        \item Formula of the scaled speedup
+        \item If \(T(n,1)\) increases monotonically with n and the sequential part c is constant, we can achieve linear scaled speedup 
+    \end{itemize}
+    \item \textbf{Scalability}
+    \begin{itemize}
+        \item Ability to increase the speedup proportionally to the processors number
+        \item Keep efficiency \(E=s/p\) constant when increasing both the processors number and the problem size, such algo are said \textit{scalable}
+    \end{itemize}
+\end{itemize}
+
+\chapter{OpenMP \& Cache}
+\begin{itemize}
+    \item Comparison between matrix multiplication algorithm
+    \begin{enumerate}
+        \item Strategy: \(n^2\) do not fit in cache
+        \item Strategy: 
+        \begin{itemize}
+            \item Pro: cache is better
+            \item Cons: 
+            \begin{itemize}
+                \item Threads are created and destroied many times
+                \item Race condition, reading and writing the same memory location
+                \item \(n + \#t \cdot n + n\)
+            \end{itemize}
+        \end{itemize}
+        \item Strategy:
+        \begin{itemize}
+            \item Pro: cache, 1 row an d1 col fit in cache
+            \item Con: thread, inner loop takes \(n^2\) times overhead due to thread managment
+            \item reduction(+:cij), provate so non race condition
+        \end{itemize}
+    \end{enumerate}
+    \begin{itemize}
+        \item First strategy bes one
+        \item Second strategy has huge variability since we do not know where the threads will be putted , thus there is the possibility the cache has heavy load already
+        \item Third strategy worst one
+    \end{itemize}
+    \begin{enumerate}
+        \setcounter{enumi}{3}
+        \item Strategy: Swap the initial two inner loop, reduce the number of creation and elimination of threads
+        \item Strategy:
+        \begin{itemize}
+            \item num\_thread(num\_thread)
+            \item nowait, when we finish we move forward the next row
+            \item barrier, deciding how many rows are processed each time
+            \item best strategy overall
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
+
+\chapter{Pattern of Paralleism I}
+\begin{itemize}
+    \item Need to design something quite specific for the problem
+    \begin{itemize}
+        \item \textbf{Decomposition technique}, generate enough sub-problem to be executed in parallel
+        \item \textbf{Mapping}, how is going to executo waht maximizing the load balancing
+    \end{itemize}
+\end{itemize}
+
+\section{Decomposition}
+\begin{itemize}
+    \item \textbf{Data-Input Decomposition}
+    \item \textbf{Data-Output Decomposition}
+    \item \textbf{Exploratory}
+    \begin{itemize}
+        \item Find the best solution, exploring such space
+        \item Exploratory decomposition, solution space partitioned and each partition is explored independently
+        \item Only one task will find the solution the others become useless
+        \begin{itemize}
+            \item Look for a valid solution, tasks are forced to end
+            \item Look for the best solution, subtree are associated with an expected of the solution, most promising task are explored first
+            \item Task works in parallel, exploration order could be different
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Task Dependency Graph}
+\begin{itemize}
+    \item Model decomposition and they control dependencies
+    \item Not unique for a given problem
+    \begin{itemize}
+        \item Node = Task
+        \item Edges = Task/Data Dependencies
+        \item Node Labels = Task Computational Cost
+    \end{itemize}
+\end{itemize}
+
+\subsection{Parallelism Degree and Critical Path}
+\begin{itemize}
+    \item \textbf{Parallelism Degree}: number of tasks that can be executed in parallel
+    \item \textit{Direct Path in a TDG}: sequence of tasks in the TDG liked by a dependency relation (not in parallel)
+    \item \textbf{Critical Path}: longest direct path in the TDG (bottleneck, minimum execution time)
+    \item \textit{Average Parallelism Degree}, work/length of the critical path
+\end{itemize}
+
+\subsection{Task Interaction Graph}
+\begin{itemize}
+    \item Data Dependencies task exchange data with others in a decomposition
+    \begin{itemize}
+        \item Node = Task
+        \item Edges = Task/Data Dependencies
+        \item Node Labels = Task Computational Cost 
+        \item Edges Labels = Amount of data exchanged 
+    \end{itemize}
+\end{itemize}
+
+\section{Mapping}
+\begin{itemize}
+    \item \textbf{TDG}: loading balance and minimizing waiting time
+    \item \textbf{TIG}: minimizes interaction/communication between tasks
+    \item \textbf{Mapping Guidelines}
+    \begin{itemize}
+        \item Independent task to different processors
+        \item Task in Critical Path assigned as early as possible
+        \item Minimizing communication cost by scheduling dense subgraphs of the TIG to the same processor
+        \item \textbf{Conflict:} tasks to the same processors reduce the communication cost but does not produce any performance improvement
+    \end{itemize}
+\end{itemize}
+
+
+\section{Prefix-Sum}
+\begin{itemize}
+    \item Algorithm
+    \item Naive way to parallelize
+    \item Analysis of the speedup
+    \item \textbf{Exclusive Prefix Sum}
+    \begin{itemize}
+        \item \textit{UpSweep Pass}
+        \begin{itemize}
+            \item Complexity
+            \item Each node holds the sum of its children
+        \end{itemize}
+        \item \textit{DownSweep Pass}
+        \begin{itemize}
+            \item Every Node should have the sum of all the leaves preceding it (before it left most child)
+            \item Root = 0
+            \item Left child = Parent
+            \item Right child = Parent + UpSweep value of its sibling
+        \end{itemize}
+    \end{itemize}
+    \item \(O(\log N)\) Steps and \(O(N)\) summations
+    \item Large parallelism degree cna be exploited
+\end{itemize}
+
+
+\chapter{Pattern of Parallelism II - Common Patterns}
+\begin{itemize}
+    \item \textbf{Pipelines}
+    \begin{itemize}
+        \item Special kind of task-parallelism
+        \item The computation is divided into stages that are executed sequentially
+        \item Asymptotically a pipeline achieves a speedup equal to the number of stages
+    \end{itemize}
+    \item \textbf{Single Program Multiple Data Embarrassingly Parallel}
+    \begin{itemize}
+        \item Problem that can be solved with a large set of complexity independent sub-tasks (data-parallel)
+    \end{itemize}
+    \item \textbf{Task Pool}
+    \begin{itemize}
+        \item \textit{Task List} is stored in a shared data structures
+        \item Fixed number of threads
+        \item Each one pick a task and execute it, thus synchronization
+        \item A thread can generate a new task
+    \end{itemize}
+    \item \textbf{Dynamic Task Creation}
+    \begin{itemize}
+        \item Each task can dynamically create new tasks
+        \item \textit{Useful for}
+        \begin{itemize}
+            \item Improve parallelism degree
+            \item Split a long task into smaller ones
+            \item Adapt to non uniform resources
+        \end{itemize}
+        \item A task queue has to be shared among a pool of threads, master-worker perform centralized load balancing
+        \begin{itemize}
+            \item Remove centralization and favour data exchange among neighbors
+            \item \textit{Push-Sender Initialized} worker that generates a new task sends it to an other worker
+            \item \textit{Pull-Receiver Initialized} when a worker is idle, it asks to other worker for a job to execute (work stealing)
+        \end{itemize}
+        \item \textit{Partner Selection}
+        \begin{itemize}
+            \item Random
+            \item Global Round Robin (GRR)
+            \begin{itemize}
+                \item Global variable points to the next worker
+                \item A worker that needs a partner reads and increments the global variable
+                \item Implement a GRR
+            \end{itemize}
+            \item Local Round Robin (LRR)
+            \begin{itemize}
+                \item Every processor keeps a private pointer to the next available worker
+                \item No overhead due to sharing a global variable
+                \item Approximate a GRR
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{Parallelizing Quicksort}
+\subsection{Sequential Version}
+\begin{itemize}
+    \item Divide-and-conquer, sort a sequence by recursively dividing it into smaller subsequences
+    \item \textit{Divide:} a sequence is partitioned into two nonempty subsequences such that each element of the first subsequence is smaller than or equal to each element of the second subsequence
+    \item \textit{Conquer:} subsequences are sorted by recursively applying quicksort
+    \item This is accomplished by selecting the pivot and using this element to partition the sequence into two parts - one with elements less than or equal to x and the other with elements greater than the pivot
+    \item \textbf{Issues:}
+    \begin{itemize}
+        \item Insufficient parallelism degree
+        \item Load imbalance
+        \begin{itemize}
+            \item Sub-arrays depends on the pivot selection
+            \item Their length varies and it is difficult to control
+            \item Different length lead to different workloads and imbalance
+            \item Wors case, one task get N elements
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Parallel Version}
+\begin{itemize}
+    \item Assign sub-arrays to processors
+    \item Pick a pivot
+    \item \textit{Local arrangement} we divide each sub-arrays in a smaller and a greater part respect the pivot
+    \item \textit{Global arrangement} merge the the left and right part of each sub-arrays in two bigger sub-arrays
+    \item Recursion of the two new sub-arrays until each process can use a sequential algorithm to sort its sub-array
+    \item \textbf{Note}
+    \begin{itemize}
+        \item Higher parallelism degree
+        \item Load balance is still sensitive to pivot selection 
+    \end{itemize}
+\end{itemize}
+
+
+\section{Odd-Even Transposition}
+\begin{itemize}
+    \item Based on the bubble sort, which compares every 2 consecutive numbers in the array and swap them if first is greater than the second to get an ascending order array
+    \item Repeat n/2 times:
+    \begin{itemize}
+        \item Compare-exchange odd elements with their immediate neighbour
+        \item Compare-exchange even elements with their immediate neighbour
+    \end{itemize}
+    \item Sequential: \(O(n^2)\)
+    \item Parallel cost when \(p = n/2\): \(O(n^2)\)
+    \item Complexity of sorting not optimal: \(O(n \log n)\)
+    \item Generalized assign batches of \(n/p\) elements to each processor
+    \item Local sort on \(n/p\) elements
+    \item Algorithm across batches with p phases
+    \item Total cost
+    \item \(p=O(\log n)\) parallel is cost optimal \(O(n \log n)\)
+    \item \textbf{Drawback}: increasing \(p\) need to increase exponentially \(n\) to have scalability
+\end{itemize}
+
+
+\section{Bitonic Sort}
+\begin{itemize}
+    \item \textbf{Bitonic Sequence}
+    \begin{itemize}
+        \item \(x_1,...,x_j\) is monotonically increasing
+        \item \(x_{j+1},...,x_n\) is monotonically decreasing
+    \end{itemize}
+    \item \textbf{Bitonic Split}
+    \begin{itemize}
+        \item Comparator \([i:j]\)
+        \item n/2 comparator of the kind \([i: i+n/2]\) for \(\i \leq i \leq n/2\) to a bitonic sequence
+        \item proof
+    \end{itemize}
+    \item \textbf{Bitonic Merge}
+    \begin{itemize}
+        \item Recursive bitonic split until sequence is sorted in increasing order
+        \item \(\log n\) stages, each one perform n/2 compare/swap
+        \item complexity and parallel time
+    \end{itemize}
+    \item \textbf{Bitonic Sort for non-Bitonic Sequence}
+    \begin{itemize}
+        \item Ascendingly \& Descendingly by recursively invoking bitonic sort
+        \item \(\log N\) bitonic merge phases
+        \item Sequential complexity
+        \item Parallel Complexity (not optimal)
+    \end{itemize}
+    \item Can be parallelized very easily, it exploit a large parallelism degree
+\end{itemize}
+
+
+
+\chapter{Large-Scale Data Processing with Map-Reduce}
+\begin{itemize}
+    \item Everything is build o top key value pairs\
+    \begin{itemize}
+        \item \(map(k_1, v_1) \rightarrow list(k_2, v_2)\)
+        \item \(reduce(k_2, list(v_2), \rightarrow list(k_3, v_3)\)
+    \end{itemize}
+    \item All in parallel we have a set of mappers and a set of reducers
+    \begin{itemize}
+        \item \(map(k_1, v_1) \rightarrow list(k_2, v_2)\)
+        \item \(shuffle\)
+        \item \(reduce(k_2, list(v_2), \rightarrow list(k_3, v_3)\)
+    \end{itemize}
+    \item \textbf{Coordination: master data structures}
+    \begin{itemize}
+        \item task status: idle, in-progress, completed
+        \item Idle get scheduled as workers become available
+        \item When a map task is completed, it send the master the location and sizes of its R intermediate files, one for each reducer
+        \item Master pushes this info to reducers
+        \item Master ping workers periodically to detect failures
+    \end{itemize}
+    \item \textbf{Failures}
+    \begin{itemize}
+        \item \textit{Map Worker Failures}
+        \begin{itemize}
+            \item Map task completed or in progress are reset to idle
+            \item Reduce workers are notified when task is rescheduled on another worker 
+        \end{itemize}
+        \item \textit{Reduce Worker Failures}
+        \begin{itemize}
+            \item Only in progress tasks are reset to idle
+            \item A different reducer may take the idle task over
+        \end{itemize}
+        \item \textit{Master Failure}
+        \begin{itemize}
+            \item Map Reduce task is aborted and client is notified
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{How many Map and Reduce jobs?}
+    \begin{itemize}
+        \item Make M and R larger than the number of nodes in the cluster
+        \item \#Mappers is determined by the \#input split
+        \item Many mappers/reducers improve the load balance and speed recovery but increase overhead management
+        \item \(R \leq M\)
+        \begin{itemize}
+            \item System has a maximum capacity of parallel reducers, executed in waves
+            \item Shuffling of the first wave is done in parallel by mappers
+            \item Shuffling of other waves done later
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Combiners}
+    \begin{itemize}
+        \item Map tasks on the same node will produce many pairs with the same key
+        \item We can pre-aggregate information after mapper
+        \item \(combine(k_2,list(v_2)) \rightarrow list(k_3, v_3)\)
+    \end{itemize}
+    \item \textbf{Partition Function}
+    \begin{itemize}
+        \item Inputs are created by continuous split of the input
+        \item For reducer, intermediate(k,v) pairs with the same key end up at the same reducer
+        \item Hash default partitioning function
+    \end{itemize}
+    \item \textbf{Is Map Reduce so good?}
+    \begin{itemize}
+        \item Map reduce is not for performance
+        \begin{itemize}
+            \item Mapper writes to disk, huge overhead
+            \item Shuffle bottleneck
+        \end{itemize}
+        \item Little coding time
+        \begin{itemize}
+            \item Override two functions
+            \item Not everything can be implemented in terms of map reduce
+        \end{itemize}
+        \item Fault tolerance
+    \end{itemize}
+\end{itemize}
+
+
+\chapter{Vertex Centric Paradigm}
+\begin{itemize}
+    \item Each node knows about its neighbours (graph structure may change)
+    \item Each node may hold some additional custom info
+    \item Pros:
+    \begin{itemize}
+        \item Easy to design
+        \item Large parallelism
+        \item Can be implemented over map reduce
+    \end{itemize}
+    \item Con: local view may lead to sub-optimal results
+\end{itemize}
+
+\section{Label Propagation}
+\begin{itemize}
+    \item \((X, C_{min})\), meaning that \(X\) belongs to the connected component with id \(C_{min}\), initially \(X\) belongs only to itself
+    \item Each node knows its neighbours
+    \item Iterative algorithm
+    \item Algorithm
+    \item \(O(d)\) with d is the diameter
+\end{itemize}
+
+\section{Hash-To-Min}
+\begin{itemize}
+    \item List of \((X, C)\), meaning that \(X\) knows about nodes in the set \(C\), initially \(X\) knows C=X plus its neighbours
+    \item Algorithm
+    \item \(O(\log d)\) with d is the diameter
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+\part{Bruch Part}
+\chapter{Ranking}
+\begin{itemize}
+    \item Ranking Dataset
+    \begin{itemize}
+        \item Explicit Feedback: human assessors are presented with a query and a ranked list, and are asked to grade each document with respect to the query, challenge
+        \item Implicit Feedback: as user interact with a ranking system, collect signals that are indicative of relevance, challenge
+    \end{itemize}
+
+    \item Ranking Metrics
+        \begin{itemize}
+        \item \textbf{Ranking as a classification or regression}, problem: we do not care on label value, we care only if a document is relevant or not
+        \item \textbf{Rank correlation (kendall's \(\tau\))}, pairwise classification if the documents are correctly ordered, problem: the bottom and the upper part are equally weighted 
+        \item \textbf{Reciprocal rank at K}, position of the first relevant document over the top k position
+        \item \textbf{Precision at rank K}, fraction of documents in the top -k set having \(y_i > 0\)
+        \item \textbf{Average Precision at rank K}, gain (tells us if it is a good document) and discount (intuitively it is the probability of been visited)
+    \end{itemize}
+
+    \item Learning to Rank / Ml framework
+    \begin{itemize}
+        \item Input space
+        \item Output space
+        \item Hypothesis space
+        \item Loss function
+    \end{itemize}
+
+    \item Learning to Rank proprieties
+    \begin{itemize}
+        \item Feature based
+        \item Discriminative training
+    \end{itemize}
+\end{itemize}
+
+\chapter{Ranking Loss Function}
+\begin{itemize}
+    \item \textbf{Point Wise Losses}
+    \begin{enumerate}
+        \item Input space: feature vector of each single document
+        \item Output space: relevance of each single document
+        \item Hypothesis space: feature vector as input and predict the relevance degree (document)
+        \item Loss function: measure the accurate prediction of the ground truth
+    \end{enumerate}
+    \begin{itemize}
+        \item Ranking as ordinal regression
+        \item Ranking as binary classification, sigmoid
+    \end{itemize}
+    \item \textbf{Pair Wise Losses}
+    \begin{enumerate}
+        \item Input space: pair of documents as feature vectors
+        \item Output space: pairwise preferences between each doc pair
+        \item Hypothesis space: bivariate functions, pair of docs as input and output the relative order
+        \item Loss function: measure the inconsistency between the obtained order and the ground truth
+    \end{enumerate}
+    \begin{itemize}
+        \item Ranking as preference learning: ranknet, ranking svm
+        \item From ranknet to lambda-rank
+    \end{itemize}
+    \item \textbf{List Wise Losses}
+    \begin{enumerate}
+        \item Input space: group of documents associated witht he query
+        \item Output space: relevance degree of all the documents associated to the query, ranked list of all the documents
+        \item Hypothesis space: Multivariate functions \(h\), operate on a group of docs and predict their relevance
+        \item Loss function: can we use greadient descent?
+    \end{enumerate}
+    \begin{itemize}
+        \item Listnet
+    \end{itemize}
+    \item \textbf{NDCG Consistency}
+\end{itemize}
+
+\chapter{Representation and Hypothesis Classes}
+\begin{itemize}
+    \item \textbf{Gradient Boosting Decision Trees}
+    \begin{itemize}
+        \item Weak learner
+        \item We can not use gradient descend in a linear function, not differentiable
+        \item So regression, with loss MSE
+    \end{itemize}
+    \item \textbf{Neural Network and Pre-Trained Transformer}
+    \begin{itemize}
+        \item Representing word as vectors:
+        \begin{itemize}
+            \item Skip-grap
+            \item Continuous Bag of words
+        \end{itemize}
+        \item Learning word embedding: word2vec
+        \item \textit{Context Embedding}
+        \begin{itemize}
+            \item Bert (Bidirectional Encoder Representation for Transformers)
+            \begin{itemize}
+                \item Tokenization
+                \item Input Encoding, wordpiece
+                \item Model Architecture, deep bidirectional transformer: self-attention and feed-forward
+                \item Masked Language Model, predict missing word by random masking
+                \item Next Sentence Prediction: sentence consecutively or not
+                \item Pre-train and fine tuning
+            \end{itemize}
+            \item MonoBert
+            \begin{itemize}
+                \item Training identical as the Bert
+                \item  Data fro training and fine tuning are specific tot he target language
+            \end{itemize}
+            \item DuoBert
+            \begin{itemize}
+                \item Multilingual corpus
+                \item Language identification
+                \item Tokenization and input encoding
+                \item Multilingual model architecture
+                \item Multilingual MLM and NSP
+                \item Pretrained and fine tuning
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\chapter{Complexity of Ranking Functions}
+\begin{itemize}
+    \item \textbf{Knowledge Distillation:} given a large model find a smaller more efficient model that is just as effective
+    \begin{itemize}
+        \item Pruning nodes in trees
+        \item Discarding Redundant Tree in Forest: n trees, impact score, discard tree with lowest impact score, repeat until reach p\% is removed
+        \item Learning a NN from a tree: lambda-mart
+    \end{itemize}
+    \item \textbf{Early Exit Algorithm:} perform approximate inference with partial evaluation instead
+    \begin{itemize}
+        \item Placing exit points in decision tree: decide to discard a doc at an exit point given a score/rank threshold
+        \item Placing exit point in layed NN: cascade transformer
+    \end{itemize}
+    \item \textbf{Ranking cascade:} apply mode complex models to progressively smaller set of documents
+    \begin{itemize}
+        \item Less sophisticated ranking functions are cheap but less accurate
+        \item More sophisticated ranking functions are expensive but more accurate
+    \end{itemize}
+\end{itemize}
+
+
+\chapter{Retrieval with MIPS: Representation Learning}
+\section{Sparse Representation}
+\begin{itemize}
+    \item \textbf{Term Matching}
+    \begin{itemize}
+        \item TF-IDF
+        \item BM25
+        \item TF-IDF and BM25 ans inner product of vectors
+        \item Learning term importance
+        \item Learning term Frequencies
+        \item Vocabulary miss match problem
+        \item \textbf{SPLADE (Supervised Progressive Learning for Approximate Dictionary based Entity extraction)}
+        \begin{itemize}
+            \item Seed terms: start with an initial seed 
+            \item Progressive learning: expand the dictionary terms
+            \item Contextual extraction: it consider the contextual info to improve extraction accuracy
+            \item Supervised learning: classifier for entity extraction
+            \item Approximate matching: account for variations in entity names by allowing approximate matching
+        \end{itemize}
+        \item \textbf{Document Expansion}
+        \begin{itemize}
+            \item Anticipating queries from text
+            \item \textbf{Doc2Query}: automatically generates queries that are representative of the information contained in the doc
+            \begin{itemize}
+                \item Pre-trained with LM: bert
+                \item Fine-tune with D-Q pairs: doc and human generated query, helps the model learn to generate queries that are relevant given docs
+                \item Masked language model objective: mask word in both doc and query and train the model to predict those
+                \item Joint D-Q encoding: capture the relationship between the model and the desired query representation
+                \item Generation and ranking: multiple candidates queries and ranks according to the doc
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{Dense Representation}
+\begin{itemize}
+    \item Cross-Encoders vs Bi-Encoders
+    \item Representing words as vectors
+    \begin{itemize}
+        \item Skip-gram
+        \item Continuous bag of words
+    \end{itemize}
+    \item \textbf{Sentence BERT}
+    \begin{itemize}
+        \item Pretrained Transformer model: BERT
+        \item Siamese of triplet network architecture
+        \item Contrastive objective for fine tuning
+        \item Sentence Embedding
+        \item Semantic sentence similarity
+    \end{itemize}
+    \item Deep Passage Retrieval
+    \item How to find non relevant document: ANCE
+\end{itemize}
+
+\chapter{Retrieval with MIPS: Sparse Vectors}
+\begin{itemize}
+    \item \textbf{The Inverted Index}
+    \begin{itemize}
+        \item TAAT-Retrieval
+        \item DAAT-Retrieval
+    \end{itemize}
+    \item Dynamic Pruning for TAAT-Early termination
+    \begin{itemize}
+        \item Upper Bound
+        \item Threshold
+    \end{itemize}
+    \item Dynamic Pruning for DAAT
+    \begin{itemize}
+        \item Assumption: non negativity and zipfian's distribution of items
+        \item Concepts: upperbound and threshold
+        \item \textit{Max Score}
+        \item \textit{WAND}
+    \end{itemize}
+\end{itemize}
+
+\chapter{Retrieval with MIPS: Dense Vectors}
+\begin{itemize}
+    \item Quantization
+    \begin{itemize}
+        \item Distance approximation
+        \item Query execution
+    \end{itemize}
+    \item Product Quantization
+    \begin{itemize}
+        \item Subspace quantization
+        \item Query execution
+    \end{itemize}
+    \item IVFPQ
+    \item Clustering methods - Two Step Approximate MIPS
+    \item Graph metods
+    \begin{itemize}
+        \item Voronoi Regions
+        \item Delaunay Graph
+        \item Approximate the Delaunay Graph 
+    \end{itemize}
+\end{itemize}
+
+\end{document}
+

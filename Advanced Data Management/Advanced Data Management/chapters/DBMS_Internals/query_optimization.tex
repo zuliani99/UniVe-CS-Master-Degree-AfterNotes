@@ -1,0 +1,89 @@
+\chapter{Query Optimization}
+\begin{itemize}
+    \item \textbf{Goal of optimization:} to find an efficient plan to execute a query
+    \item \textbf{Access plan:} tree of physical operator
+    \item \textbf{Query optimization:} important task in a DBMS, and it is divided into 4 phases:
+    \begin{enumerate}
+        \item \textit{Query analysis:} the correctness of the SQL query is checked
+        \item \textit{Query transformation:} where the initial logical plan is transformed into an equivalent one that provides a better query performance
+        \item \textit{Physical plan generation:} alternative algorithms for the query execution are considered
+        \item \textit{Query evaluation:} the physical plan is executed
+    \end{enumerate}
+\end{itemize}
+
+\section{Query Analysis Phase}
+\begin{enumerate}
+    \item Lexical and syntactic query analysis. Like type checking and user's access rights
+    \item Simplification of conditions (where) with:
+    \begin{itemize}
+        \item The equivalence rules of boolean expression
+        \item Conversion into conjunctive normal form
+        \item Elimination of contradiction
+        \item Usage of Dde Morgan rules to eliminate NOT before simple expression
+    \end{itemize}
+    \item Transformation into tree of relational algebraic operators
+\end{enumerate}
+
+\section{Query Transformation Phase}
+\begin{itemize}
+    \item Selections are pushed below projections
+    \item Selections are grouped
+    \item Selections and projections are pushed below an inner join
+    \item Unnecessary projections are eliminated
+    \item Projections are grouped
+\end{itemize}
+
+\subsection{DISTINCT Elimination}
+\begin{itemize}
+    \item DISTINCT require SORT, which is a costly operation
+    \item We use the functional dependency theory in order to discover if an interesting functional dependency can be inferred into the result of a query
+\end{itemize}
+
+\subsection{GROUP BY Elimination}
+\begin{itemize}
+    \item GROUP BY require SORT, which is a costly operation
+    \item It can be eliminated in the following two cases:
+    \begin{itemize}
+        \item If there is only a single group
+        \item Each group is composed by a single tuple
+    \end{itemize}
+\end{itemize}
+
+\subsection{WHERE-Subquery Elimination}
+Subqueries can occur in the WHERE clause through operators =, $<$, $>$, ...; through the quantifiers ANY, or ALL; or through the operators EXISTS and IN, and their negations. All these cases can be rewritten using EXISTS and NOT EXISTS. In which in a certain cases can be eliminated with the introduction of JOIN.
+
+\subsubsection{View Merging}
+\begin{itemize}
+    \item Complex queries are much easier to write and understand if views are used
+    \item  Instead, the use of the WITH clause provides a way of defining temporary views available only to the query in which the clause occurs
+    \item the optimizer generates a physical sub-plan for the SELECT that defines the view, and optimizes the query considering the scan as the only access method available for the result of the view
+\end{itemize}
+
+\section{Physical Plan Generation Phase}
+The goal is to find a plan to execute a query, among the possible ones, which has the minimum cost on the basis of the available information.
+
+The two main steps are:
+\begin{itemize}
+    \item Generation of alternative physical plans
+    \item Estimation of the costs and the choice of the lowest cost plan. To estimate the cost of a physical query plan it is necessary to estimate, for each node in the physical tree, the following parameters:
+    \begin{itemize}
+        \item The cost of the physical operator
+        \item The size of the result and if the result is sorted
+    \end{itemize}
+\end{itemize}
+
+\subsection{Single-Relation Queries}
+If the query uses just one relation, the operations involved are the projection and selection, like:
+
+SELECT bs
+
+FROM S
+
+WHERE FkR $>$ 100 AND cS = 2000
+
+If there are no useful indexes, the solution is to perform a \textbf{Scan + Projection}. Otherwise if there are useful index we can:
+\begin{itemize}
+    \item \textbf{If there are no useful indexes:} If there are different indexes usable for one of the simple conditions, the one of minimal cost is used. Test if the record satisfy the conditions and projection is applied
+    \item \textbf{Use of Multiple-Indexes:} the operation is completed by testing whether the retrieved records satisfy the remaining conditions and the projection is applied
+    \item \textbf{Use of Index-Only:} If all the attributes of the condition of the SELECT are included in the prefix of the key of an index, the query can be evaluated using only the index with the query plan of minimum cost
+\end{itemize}

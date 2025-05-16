@@ -1,0 +1,114 @@
+\chapter{Catene di Markov}
+
+\subsubsection{Catena di markov (omogenea)}
+\begin{tcolorbox}
+Sia \((X_0,X_1,X_2,...)\)  una successione di variabili casuali (discrete) a valori in un insieme finito (o numerabile) \(S = {1,2,...,M}\), detto \textbf{spazio degli stati}
+
+\(X = \{X_n\}_{n \geq 0}\) e' una \textbf{catena di Markov} (omogenea) se
+\[P(X_{n+1} = j | X_n = i, X_{n-1} = i_{n-1},...,X_0 = i_0) = P(X_{n+1} = j | X_n = i) = p_{ij}\]
+
+\(P = (p_{ij})_{ij}\) è la matrice di transizione e i sui elementi \(p_{ij}\) sono le probabilità di transizione
+\end{tcolorbox}
+
+\subsubsection{La matrice di transizione}
+\[
+P = \begin{pmatrix}
+p_{11} & p_{12} & \hdots & p_{1M}\\
+p_{21} & p_{22} & \hdots & p_{2M}\\
+\vdots & \vdots & \ddots & \vdots\\
+p_{M1} & p_{M2} & \hdots & p_{MM}\\
+\end{pmatrix}
+\]
+\begin{itemize}
+    \item \(p_{ij} \geq 0\), \(i,j = 1,...,M)\)
+    \item \(\sum_{j=0}^M p_{ij} = 1\), \(i = 1,...,M\)
+\end{itemize}
+Conoscere la matrice di transizione e la funzione di probabilità dello stato iniziale, \(\pi^{(0)}\), permette di calcolare probabilità condizionate, congiunte e marginali della catena
+
+\subsubsection{Matrice di transizione a due passi}
+\begin{align*}
+P(X_2 = j | X_0 = i) &= \sum_{k \in S} P(X_2 = j | X_1 = k)P(X_1 =k | X_0 = i)\\
+&= \sum_{k \in S}p_{kj}p_{ik} = p_{ij}^{(2)}
+\end{align*}
+
+Dove \(p_{ij}^{(2)}\) è l'elemento \(ij\) della matrice \(P^2 = P \cdot P\), dove \(P^2\) è chiamata la \textbf{matrice di transizione a due passi}
+
+\subsubsection{Transizione a \(n\) passi}
+Reiterando l’operazione a due passi, si ottiene la \textbf{matrice di transizione a \(n\) passi}:
+\[P^n = P \cdot P \cdot ... \cdot P\]
+i cui elementi sono le probabilità condizionate a n passi
+\[p_{ij}^{(n)} = P(X_n = j | X_0 = i\]
+
+\subsubsection{Distribuziioni marginali}
+Le distribuzioni marginali della catena si ottengono dalla funzione di probabilità iniziale della catena, \(\pi^{(0)}\), e dalla matrice di transizione a n passi:
+\begin{align*}
+\pi_i^{(n)} &= P(X_n = i) = \sum_{s \in S} P(X_n = i | X_0 = k)P(X_0 = k)\\
+&= \sum_{s \in S}p_{ki}^{(n)}\pi_k^{(0)}
+\end{align*}
+Quindi
+\[\pi^{(n)} = \pi^{(0)} \cdot P^n\]
+
+\subsubsection{Catene regolari}
+\begin{tcolorbox}
+Una catena di Markov si dice \textbf{regolare} se esiste un indice \(n\) per cui \(P^n\) ha tutti elementi strettamente positivi.
+\end{tcolorbox}
+
+\subsubsection{Distribuzione stazionaria}
+Se \(P\) è regolare allora esiste \(\pi = (\pi_1, . . . , \pi_M)\) tale che
+\[
+\lim_{n \rightarrow \infty}P^n = \begin{pmatrix}
+\pi_{1} & \pi_{2} & \hdots & \pi_{M}\\
+\pi_{1} & \pi_{2} & \hdots & \pi_{M}\\
+\vdots & \vdots & \ddots & \vdots\\
+\pi_{1} & \pi_{2} & \hdots & \pi_{M}\\
+\end{pmatrix}
+\]
+\begin{tcolorbox}
+Si dimostra che \(\pi\) è l’unica distribuzione stazionaria della catena, ovvero tale che
+\[\pi P = \pi \quad \sum_{i = 1}^M \pi_i = 1\]
+\end{tcolorbox}
+
+\subsubsection{Catena stazionaria}
+\begin{tcolorbox}
+Se la distribuzione iniziale di \(X_0\) è la distribuzione stazionaria \(\pi\), allora
+\[\pi P^n =\pi,\quad \forall n\]
+e tutte le distribuzioni marginali della catena sono uguali a \(\pi\).
+
+Si dice allora che la catena di Markov è una \textbf{catena stazionaria}.
+\end{tcolorbox}
+
+\subsubsection{Passeggiata aleatoria}
+\begin{tcolorbox}
+Una \textbf{passeggiata aleatoria} (\textit{random walk} in inglese) è una catena di Markov con spazio degli stati \(S = Z\) che ad ogni istante si muove di un passo a destra o a sinistra con probabilità rispettivamente \(p\) e \(1 - p\):
+\[p_{ii + 1} = p, \quad p_{ii - 1} = 1 - p, \quad p_{ij} = 0\]
+\end{tcolorbox}
+
+\subsubsection{La passeggiata aleatoria con barriere non assorbenti}
+Si possono aggiungere alla passeggiata aleatoria due barriere non assorbenti, in modo che, una volta raggiunte, il sistema rimbalzi allo stato precedente.
+\[S = \{-L,...,-2,-1,0,1,2,...,L\}\]
+\[p_{-L,-L+1} = p_{L,L-1} =1\]
+\[
+P = \begin{pmatrix}
+0 & 1 & \hdots & \hdots & \hdots & 0\\
+1-p & 0 & p & 0 & \hdots & 0\\
+0 & 1-p & 0 & p & 0 & \hdots\\
+\vdots & \hdots & \ddots & \ddots & \ddots & \vdots\\
+0 & \hdots & 0 & 1-p & 0 & p\\
+0 & \hdots & \hdots & \hdots & 1 & 0\\
+\end{pmatrix}
+\]
+
+\subsubsection{La passeggiata aleatoria con barriere assorbenti}
+Alternativamente, si possono aggiungere alla passeggiata aleatoria due barriere assorbenti, in modo che, una volta raggiunte, il sistema non si muova più da lì.
+\[S = \{-L,...,-2,-1,0,1,2,...,L\}\]
+\[p_{-L,-L} = p_{L,L} =1\]
+\[
+P = \begin{pmatrix}
+1 & 0 & \hdots & \hdots & \hdots & 0\\
+1-p & 0 & p & 0 & \hdots & 0\\
+0 & 1-p & 0 & p & 0 & \hdots\\
+\vdots & \hdots & \ddots & \ddots & \ddots & \vdots\\
+0 & \hdots & 0 & 1-p & 0 & p\\
+0 & \hdots & \hdots & \hdots & 0 & 1\\
+\end{pmatrix}
+\]

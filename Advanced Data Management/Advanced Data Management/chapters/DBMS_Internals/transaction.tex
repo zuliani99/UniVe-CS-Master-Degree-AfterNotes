@@ -1,0 +1,242 @@
+\chapter{Transaction And Recovery Management}
+\section{Transaction}
+A DBMS provides a programming abstraction called a \textbf{transaction}, which groups together a set of instructions that read and write data. And it has the following properties:
+\begin{itemize}
+    \item \textbf{Atomicity} only transactions terminated normally change the database, otherwise the database remains unchanged
+    \item \textbf{Isolation} when a transaction is executed concurrently with others, the final effect must be the same as if it was executed alone
+    \item \textbf{Durability} commitment is an irrevocable act
+\end{itemize}
+
+The acronym ACID is frequently used to refer to the following four properties of transactions: \textit{Atomicity}, \textit{Consistency}, \textit{Isolation}, and \textit{Durability}. \textbf{Consistency} cannot be ensured by the system when the integrity constraints are not declared in the schema. However, assuming that each transaction program maintains the consistency of the database, the concurrent execution of the transactions by a DBMS also maintain consistency due to the isolation property.
+
+\begin{itemize}
+    \item \textit{Isolation} when a action is executed concurrently with others, the final effect must be the same as a serial execution of committed transactions
+\end{itemize}
+
+The DBMS provide modules that guaranteed the previous properties:
+\begin{itemize}
+    \item \textbf{Atomicity} $\rightarrow$ \textbf{Transaction Manager}
+    \item \textbf{Durability} $\rightarrow$ \textbf{Recovery Manager}
+    \item \textbf{Isolation} $\rightarrow$ \textbf{Concurrency Manager}
+\end{itemize}
+
+\subsection{Tansactions from the DBMS’s Point of View}
+\begin{tcolorbox}
+DBMS only “sees” the read and write operations on its data. A write operation updates a page in the buffer, but does not cause an immediate transfer of the page to the permanent memory. So in case of failure the content of the buffer is lost, the updates might not have been written to the database.
+\end{tcolorbox}
+
+A transaction for the DBMS is a sequence of read and write operations which start and end with the following \textit{transaction operations}:
+\begin{itemize}
+    \item \textit{beginTransaction} beginning of the transaction
+    \item \textit{commit} successful termination of the transaction, the system has to make its updates durable
+    \item \textit{abort} abnormal termination, the system has to undo its updates
+\end{itemize}
+
+\begin{tcolorbox}
+The execution of the \textbf{commit} operation does not guarantee the successful termination of the transaction, because it is possible that the transaction updates cannot be written to the permanent memory, and therefore it will be aborted,
+\end{tcolorbox}
+
+Then we list all the \textbf{Transaction States}:
+\begin{itemize}
+    \item \textit{active} immediately after it starts
+    \item \textit{partially committed} when it ends, but no consistent update has been made at this point
+    \item \textit{committed} if it has been processed successfully and all its updates on the database have been made durable
+    \item \textit{failed} if it cannot be committed or it has been interrupted
+    \item \textit{aborted} if it has been interrupted and all its updates on the database have been undone
+\end{itemize}
+
+\section{Types of Failures}
+A centralized database can become inconsistent because of the following types of failures:
+\begin{itemize}
+    \item \textbf{Transaction Failure:} interruption of a transaction which \textit{does not damage} the content of the \textbf{buffer} and \textit{permanent memory}
+    \item \textbf{System Failure:} system interruption, where the \textit{content of the buffer} is \textbf{lost}, but \textit{content of the permanent memory} remains \textbf{intact}
+    \item \textbf{Media Failure:}  interruption of the DBMS in which the \textit{content of the permanent memory} is corrupted or \textbf{lost}
+\end{itemize}
+
+\section{Database System Model}
+The permanent memory consists of three main components:
+\begin{enumerate}
+    \item The database
+    \item \textit{Log}
+    \item \textit{DB Backup}
+\end{enumerate}
+The last two are used by the recovery procedure in the case of failures. The database, log and backup are usually stored on distinct physical devices.
+
+\section{Data Protection}
+To protect a database the DBMS maintains some redundant information during normal execution of transactions so that in the case of a failure it can reconstruct the most recent database state before the occurrence of the failure.
+
+\subsubsection{Database Backup}
+DBMSs provide facilities for periodically making a backup copy of the database.
+
+\subsubsection{Log}
+\begin{itemize}
+    \item The \textbf{history} of the operations performed on the database from the last backup is stored in the \textbf{log}. For each transaction we write in the log when the transaction: \textit{starts}, \textit{commits}, \textit{aborts}, \textit{modifies} a page
+    \item Each log record is identified through the so called \textbf{LSN (Log Sequence Number)}, that is assigned in a strictly increasing order
+    \item The LSN can be viewed as the serial number of the position of the first character of the record in the file.
+    \item The exact content of the log depends on the algorithms
+    \item In general a log is stored in a file buffered for efficiency reasons
+    \item The log is not buffered and each record is immediately written to the permanent memory
+\end{itemize}
+
+\subsubsection{Undo and Redo Algorithms}
+A database update changes a page in the buffer, and only after some time the page may be written back to the permanent memory. We say that a recovery algorithm requires
+\begin{itemize}
+    \item An \textit{undo} if an update of some uncommitted transaction is stored in the database, so the  recovery algorithm must undo the updates
+    \item \textit{Redo} if a transaction is committed before all of its updates are stored in the database, so the recovery algorithm must redo the updates
+\end{itemize}
+A failure can happen also during the execution of a recovery procedure, and this requires the restart of the procedure.
+
+\subsubsection{Chechpoint}
+To reduce the work performed by a recovery procedure in the case of system failure, another information is written to the log, the so called \textbf{checkpoint (CKP) event}.
+
+We specify only a single type of Checkpoint, the \textbf{Commit-consistent checkpoint}:
+\begin{enumerate}
+    \item The activation of new transactions is suspended
+    \item The systems waits for the completion of all active transactions
+    \item All modified pages present in the buffer are written to the permanent memory and the relevant records are written to the log. Here the permanent memory is forced so that all the transactions terminated before the checkpoint have their updates
+    \item The CKP record is written to the log
+    \item A pointer to the CKP record is stored in a special file, called \textit{restart file}.
+    \item The system allows the activation of new transactions
+\end{enumerate}
+\textbf{Not efficient} by the first two steps.
+
+The problem of finding the optimal checkpoint interval can be solved with a balance between the cost of the checkpoint and that of the recovery, but is very complex. Thus more efficient checkpoint method is preferred, called \textbf{buffer-consistent checkpoint – Version 1}.
+\begin{itemize}
+    \item This method does not need the waiting for the termination of active transactions
+    \item Still presents the problem of the buffer flush operation
+    \item Other methods have been studied, like the ARIES algorithm, that avoids
+    \begin{itemize}
+        \item The suspension of the activation of new transactions
+        \item The execution of active transactions
+        \item The buffer flush operation
+    \end{itemize}
+\end{itemize}
+
+
+\section{Recovery Algorithms}
+The Recovery managers for the transactions management differ in the way they combine the \textit{undo} and \textit{redo} algorithms:
+\begin{itemize}
+    \item \textbf{Undo-Redo}
+    \item \textbf{Undo-NoRedo}
+    \item \textbf{NoUndo-Redo}
+    \item \textbf{NoUndo-NoRedo}
+\end{itemize}
+
+\subsection{Use of the Undo Algorithm}
+Depends on the policy used to \textit{write pages} updated by an active transaction to the database: \textit{Deferred update} and \textit{Immediate update}. these two are called \textit{NoUndo-Undo} policies.
+
+\begin{tcolorbox}
+\textbf{Deferred update policy}  requires that updated pages cannot be written to the database before the transaction has committed
+\end{tcolorbox}
+\begin{itemize}
+    \item To avoid the pages updated by a transaction are \textit{“pinned”} in the buffer until the end of the transaction
+    \item \textit{NoUndo} type: it is not necessary to undo its updates since the database has not been changed
+\end{itemize}
+
+
+\begin{tcolorbox}
+\textbf{Immediate update policy} allows that updated pages can be written to the database before the transaction has committed
+\end{tcolorbox}
+\begin{itemize}
+    \item To allow this, the page is marked as \textit{“dirty”} and its pin is removed
+    \item \textit{Undo} type: if a transaction or system failure occurs the updates on the database must be undone
+\end{itemize}
+
+
+\begin{tcolorbox}
+If a database page is updated before the transaction has committed, its before-image must have been previously written to the log file in the permanent
+memory.
+\end{tcolorbox}
+
+\subsection{Use of the Redo Algorithm}
+Depends on the policy used to \textit{commit} a transaction. There are \textit{Deferred commit} and \textit{Immediate commit}. These two policies are called \textit{NoRedo-Redo}.
+
+\begin{tcolorbox}
+\textbf{Deferred commit policy} requires that all updated pages are written to the database before the commit record has been written to the log
+\end{tcolorbox}
+\begin{itemize}
+    \item \textit{NoRedo} type: it is not necessary to redo all the updates on the database in the case of failure
+    \item Buffer manager is forced to transfer to the permanent memory all the pages updated by the transaction before the commit operation
+\end{itemize}
+
+\begin{tcolorbox}
+\textbf{Immediate commit policy} allows the commit record to be written to the log before all updated pages have been written to the database
+\end{tcolorbox}
+\begin{itemize}
+    \item \textit{Redo} type: it is necessary to redo all the updates in the case of a system failure
+    \item The buffer manager is free to transfer the unpinned pages to the permanent memory
+\end{itemize}
+
+\begin{tcolorbox}
+\textbf{Redo Rule or Commit Rule} Before a transaction can commit, the after-images produced by the transaction must have been written to the log file in the permanent memory.
+\end{tcolorbox}
+
+\subsection{No use of the Undo and Redo Algorithms}
+\begin{itemize}
+    \item \textbf{NoUndo} algorithm requires that all the updates of a transaction must be in the database \textit{after} the transaction has committed
+    \item \textbf{NoRedo} algorithm requires that all the updates of a transaction must be in the database \textit{before} the transaction has committed
+\end{itemize}
+\begin{tcolorbox}
+Therefore, a NoUndo-NoRedo algorithm requires that all the
+updates of a transaction must be in the database neither before nor after the transaction has committed.
+\end{tcolorbox}
+When a transaction updates for the first time a page:
+\begin{enumerate}
+    \item A new database page is created, the \textit{current page} with a certain address $p$, whereas the old page becomes a \textbf{shadow page}
+    \item The \textit{New Page Table} is updated so that the first element contains the physical address $p$ of the current page
+\end{enumerate}
+When the transaction reaches the commit point, the system should substitute all
+the shadow pages with an atomic action, otherwise if a failure happen the  database would be left in an incorrect
+state.
+
+This atomic action is implemented by executing the following steps:
+\begin{enumerate}
+    \item The pages updated in the buffer are written to the permanent memory
+    \item The descriptor of the database is updated with an atomic operation
+\end{enumerate}
+
+\section{Recovery Manager Operations}
+\subsection{Undo-NoRedo Algorithm}
+\begin{itemize}
+    \item Redoing a transaction to recover from a system failure is never necessary
+    \item Only the \textit{before-image} must be written to the log
+    \item This algorithm is generally used with pessimistic concurrency control algorithm that rarely aborts transactions
+\end{itemize}
+
+\subsection{NoUndo-Redo Algorithm}
+\begin{itemize}
+    \item Redoing a transaction to recover from a system failure is never necessary
+    \item Only the \textit{after-image} must be written to the log
+    \item The pages updated by a transaction are written to the database when the transaction has committed, but after the writing of the commit record to the log
+    \item Optimistic concurrency control algorithm, which aborts transactions in case of conflict
+\end{itemize}
+
+\subsection{Undo-Redo Algorithm}
+\begin{itemize}
+    \item Require both undo and redo, and is the most complicated one
+    \item Both the \textit{after-image} and the \textit{before-image} must be written to the log to deal with transaction and system failures
+    \item The recovery algorithm is more costly, but it is preferred by the commercial DBMS, since it privileges the normal execution of transactions
+\end{itemize}
+
+\section{Recovery from System and Media Failures}
+In the case of system failures, in order to recover the database, the \textbf{restart} operator is invoked to perform the following steps \textbf{(warm restart)}:
+\begin{itemize}
+    \item Bring the database in its committed state with respect to the execution up to the to the system failure
+    \item Restart the normal system operations
+\end{itemize}
+And is described with two phases:
+\begin{itemize}
+    \item In the \textit{Rollback phase} the log is read from the end to the beginning
+    \begin{itemize}
+        \item To \textit{undo}, if necessary, the updates of the non terminated transactions
+        \item To find the set of the identifiers of the transactions which are terminated successfully in order to redo their operations
+    \end{itemize}
+    \item In the \textit{rollforward phase} the log is read onward from the first record after the checkpoint to redo all the operations of the terminated transaction
+\end{itemize}
+
+In the case of media failure, that is of the loss of the database but not of the log, a \textbf{cold restart} is performed through the following steps:
+\begin{itemize}
+    \item The most recent database backup is reloaded
+    \item A \textit{rollback phase} is performed on the log
+    \item A \textit{rollforward phase} is performed to update the copy of the database,
+\end{itemize}

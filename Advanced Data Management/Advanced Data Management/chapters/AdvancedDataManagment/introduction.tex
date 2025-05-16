@@ -1,0 +1,56 @@
+\chapter{Introduction}
+\section{Database Proprieties}
+Database systems should guarantee a correct and reliable execution
+in several use cases. Database system fulfill the following properties:
+\begin{itemize}
+    \item \textbf{Data management:} 
+    \begin{itemize}
+        \item A database system not only stores data, it also support operations for retrieval of data, search and updates. 
+        \item Database system should also support transactions: a sequence of operations on data in a database that must not be interrupted, or in others words either all operations succeed to their full extent or none of the operations is executed.
+    \end{itemize}
+    \item \textbf{Scalability:} processing data by its distribution in a network of database servers and a high level of parallelization.
+    \item \textbf{Heterogeneity:} when collecting data or producing data, could be saved in different type of structure:
+    \begin{itemize}
+        \item \textit{Structured:} if the data is in relational format which describe a fixed schema
+        \item \textit{Semi-structured:} like tree or more in general graphs
+        \item \textit{Unstructuired:} text documents
+    \end{itemize}
+    \item \textbf{Efficiency:} the majority of database applications need fast database systems, so fast storage and retrieval.
+    \item \textbf{Persistence:} providing a long-term storage facility for data, implementing also recovery system like transaction manager to allow to go back after a crash or continue if the operation has finish correctly. (Transaction could take some time)
+    \item \textbf{Reliability:} database must prevent data loss and they have to support some kind of recovery system, thus they have to ensure:
+    \begin{itemize}
+        \item \textit{Data integrity:} data stored in the database system should not be distorted unintentionally
+        \item \textit{Physical redundancy:} storing copies of data on other servers
+    \end{itemize}
+    \item \textbf{Consistency:} 
+    \begin{itemize}
+        \item Database system must do its best to ensure that no incorrect or contradictory data persist in the system.
+        \item Automatic verification of consistency constraints
+        \item Automatic update of distributed data copies
+    \end{itemize}
+    \item \textbf{Non-redundancy:} 
+    \begin{itemize}
+        \item Duplication of values inside the stored data sets should be avoided
+        \item Data sets with logical redundancy are prone to different forms of anomalies
+        \item \textit{Normalization} is one way to transform data sets into a non-redundant format
+    \end{itemize}
+    \item \textbf{Multi-User Support:} support concurrent accesses by multiple users or applications, with the constraint of isolation and not interference between users. A major issue is the control access: in which data must be protected like the usage of \textit{views} or implementing an \textit{authentication mechanism}
+\end{itemize}
+
+\section{DB Design}
+The design phase should clearly answer basic questions like:
+\begin{itemize}
+    \item Which data are relevant for the customers or the external applications?
+    \item How should these relevant data be stored in the database? 
+    \item Which are usual access patterns on the stored data?
+\end{itemize}
+For conventional database systems changing the schema on a running database system is complex and costly, thus database design should be done with due care and following design criteria like the following:
+\begin{itemize}
+    \item \textbf{Completeness:} all aspects of the information needed by the accessing applications should be covered
+    \item \textbf{Soundness:} all information aspects and relationships between different aspects should be modeled correctly
+    \item \textbf{Minimality:} no unnecessary or logically redundant information should be stored
+    \item \textbf{Readability:} no complex encoding should be used
+    \item \textbf{Modifiability:} changes in the structure of the stored data are likely to occur when running a database system over a long time
+    \item \textbf{Modularity:} the entire data set should be divided into subsets
+\end{itemize}
+There are several graphical languages for database design, like Entity-Relationship Model (ERM) and the Unified Modeling Language (UML). For further information refer to the book.

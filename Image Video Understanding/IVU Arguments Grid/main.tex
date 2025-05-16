@@ -1,0 +1,871 @@
+\documentclass[12pt,oneside]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage[a4paper,width=150mm,top=25mm,bottom=25mm,bindingoffset=6mm]{geometry}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\pagestyle{fancy}
+\usepackage{biblatex}
+\addbibresource{references.bib}
+\usepackage{comment}
+\usepackage{amsfonts}
+\usepackage{tcolorbox}
+\usepackage{amsmath}
+\usepackage{wrapfig}
+\usepackage{tabularx}
+\usepackage{csquotes}
+\usepackage{adjustbox}
+\usepackage{graphicx}
+\usepackage{makecell}
+\usepackage{footnote}
+\usepackage{lscape}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{array}
+\usepackage{threeparttable}
+\usepackage{rotating}
+\usepackage[titletoc]{appendix}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+%\usepackage{afterpage}
+
+
+\newcommand{\newblanckpage}{
+    \newpage
+    \thispagestyle{plain} % empty
+    \mbox{}
+}
+
+\begin{document}
+\newgeometry{margin=1in}
+\input{titlepage}
+\restoregeometry
+
+%\newblanckpage
+
+\pagenumbering{roman}
+
+%\newblanckpage
+
+\tableofcontents
+
+\clearpage
+
+\pagenumbering{arabic}
+
+\setcounter{page}{1}
+
+
+
+
+
+\chapter{Introduction}
+\section{Theories of vision: from Pythagoras to Marr}
+\begin{itemize}
+    \item The emission theory
+    \item Foundamentally misunderstanding visual perception
+    \item The intromission theory
+    \item Plato's view
+    \item Alhazen's synthesis: book of optics
+    \item Kepler's modern theory of retinal images
+    \item Nativism vs Empiricism
+    \item Helmholtz: vision as unconcius inference
+    \item The Gestal School
+    \item David MArr ad the computational approach
+    \item Missing component
+\end{itemize}
+
+\section{Computer Vision}
+\begin{itemize}
+    \item What is computer vision
+    \item Image processing
+    \item Pattern recognition
+    \item Scene analysis
+    \item Block worlds
+    \begin{itemize}
+        \item Input image
+        \item Primal sketch
+        \item 2 \textonehalf D sketch
+        \item 3D model representation
+    \end{itemize}
+    \item Edge detection
+    \item Image segmentation and clustering
+    \item Face Detection: Viola \& Jones
+    \item Sift Features
+    \item Pascal Visual object challenge
+    \item ImageNet
+    \item Deep learning philosophy
+    \item Inspiration from biology
+    \item Foveal vision
+\end{itemize}
+
+
+\chapter{Machine Learning Basics}
+\begin{itemize}
+    \item What is Machine Learning
+    \begin{itemize}
+        \item Given n obj, nxn matrix of pairwise similarity
+        \item Goal
+        \item Usual assumption
+    \end{itemize}
+    \item Clustering 
+    \item Image segmentation as cluster
+    \begin{itemize}
+        \item Partition the image in choerence region
+        \item Group pixels togheter
+        \item How compare pixels? measure distance in 3d using euclidean distance
+    \end{itemize}
+    \item K-Means
+    \begin{itemize}
+        \item Iterative algorithm, obj represented as feature vector
+        \item Algorithm
+        \begin{enumerate}
+            \item Initialize: pick k random points as cluster center
+            \item Alternate: assign data point to closest cluster center, change cluster center to average of its points
+            \item Stop: when no changes
+        \end{enumerate}
+        \item Proprieties:
+        \begin{itemize}
+            \item Converge
+            \item Minimize an objective function, thus convergence is proved
+            \item Pros: very efficient, simple
+            \item Cons:
+            \begin{enumerate}
+                \item Converges to local minimum
+                \item Need to pick K
+                \item Sensitive to initialization
+                \item Sensitive to outliers
+            \end{enumerate}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{Supervised Learning a.k.a. Classification}
+\begin{itemize}
+    \item Classification Problem
+    \item Geometric Interpretation
+    \item The formal Setup: statistical learning theory deal with supervised learning problems
+    \begin{itemize}
+        \item Given Input feature space \(X\)
+        \item Output label space \(Y = \{-1, +1\}\)
+    \end{itemize}
+    \item Estimate a functional relation between the input and the output
+    \item Training data
+    \item Given the training set find a good classifier
+    \item Assumption
+    \item Loss \& Risk
+    \item Bayes Classifier
+    \item Bayes' Theorem
+    \item The classification problem revisited
+    \item The Nearest Neighbour (NN) Rule
+    \begin{itemize}
+        \item Definition
+        \item How good is the NN rule
+        \item Variations: K-NN, \(K_n\)-NN
+        \item Stone theorem
+    \end{itemize}
+\end{itemize}
+
+\section{Neural Network}
+\begin{itemize}
+    \item McCulloch and Pitts Model
+    \item Network Topologies and Architectures
+    \begin{itemize}
+        \item Feedforward only: fully connected and single layer
+        \item Feedback networks: sparsely connected and multilayer
+    \end{itemize}
+    \item Classification Problem
+    \begin{itemize}
+        \item Features, classes
+        \item Finding the best configuration of weights on the income connection and the threshold
+        \item Forget the threshold by adding an extra unit set to -1
+    \end{itemize}
+    \item \textbf{Perceptron:} definition
+    \item The perceptron Convergence Theorem
+    \item Multilayer feedforward networks
+    \begin{itemize}
+        \item Single layer
+        \item Multilayer feedforward network by adding a hidden layer
+        \item \textbf{Universal Approximation Power}
+    \end{itemize}
+    \item Continuous - values units:
+    \begin{itemize}
+        \item Sigmoid
+        \item Hyperblioc Tangent
+    \end{itemize}
+    \item \textbf{Back - propagation Learning Algorithm}
+    \begin{itemize}
+        \item Definition, Supervised Learning
+        \item In what consist the learning
+        \item Error Function
+        \item What is our aim
+        \item What do we use to achieve this
+        \item \textbf{Pass:}
+        \begin{itemize}
+            \item Feedforward Pass
+            \item Backword Pass
+        \end{itemize}
+        \item Locality of Back - propagation
+        \begin{itemize}
+            \item Off - Line
+            \item On - Line
+            \item Compromise
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{The Algorithm}
+    \item Problem of the choice of the learning rate:
+    \begin{itemize}
+        \item Small
+        \item Big
+        \item Solution: momentum term: definition and characteristics
+    \end{itemize}
+    \item Problem of local minima
+    \item Theoretical / Practical questions
+    \begin{itemize}
+        \item Generalization
+        \item Training, Validation and Test set
+        \item Learning phase stopped in the minimum validation error
+    \end{itemize}
+    \item Cross validation
+    \item Overfitting
+\end{itemize}
+
+
+\chapter{Detecting Faces}
+\begin{itemize}
+    \item Difficulties
+    \item Related Problems:
+    \begin{itemize}
+        \item Face localization
+        \item Face feature extraction
+        \item Face recognition
+        \item Face Authentication
+        \item Face Tracking
+        \item Emotion Recognition
+    \end{itemize}
+    \item Detection: concerned with a category of object
+    \item Recognition: concernes with the identity of the object
+    \item Methods to detect faces:
+    \begin{itemize}
+        \item Knowledge-Based Methods: encode human knowledge of what constitutes a typical face
+        \item Feature Invariant Approaches: aim to find structural features, invariant in some scenario
+        \item Template Matching Methods
+        \item Appearence-Based Methods: the models are learned from a set of training images
+    \end{itemize}
+\end{itemize}
+
+\section{Knowledge-Based Method}
+\begin{itemize}
+    \item Top down approaches
+    \item Multi resolution focus of attention approach
+    \begin{itemize}
+        \item Level 1: lowest resolution, make the hypothesis
+        \item Level 2: local histogram eqalization followed by edge detection
+        \item Level 3: search fro eye and mouth for feature validation
+    \end{itemize}
+    \item Takes horizontal and vertical projection of rows and columns of our image to get an histogram of the pixel level of roes and columns
+    \item Pros:
+    \begin{itemize}
+        \item Easy, simple rules
+        \item Facial features in an input image are extracted first
+        \item Work well for face localization in uncluttered background
+    \end{itemize}
+    \item Cons:
+    \begin{itemize}
+        \item Difficult to translate human knowledge
+        \item Different poses of faces are difficut to detect
+    \end{itemize}
+\end{itemize}
+
+\section{Feature-Based Methods}
+\begin{itemize}
+    \item Bottom Up approach
+    \item Random graph matching
+    \item Pro: features are invariant to pose and orientation
+    \item Cons:
+    \begin{itemize}
+        \item Difficult to locate facial features due to several corruption
+        \item Difficult to detect features in complex background
+    \end{itemize}
+\end{itemize}
+
+
+\section{Template Matching Methods}
+\begin{itemize}
+    \item Store a template, predefined or deformable
+    \item Templates are hard coded
+    \item Use correlation to locate faces
+    \item Abstraction of the face in term of line drawing, move the template around the image trying to find the best match
+    \item Pro: simple
+    \item Cons:
+    \begin{itemize}
+        \item Template must be first initialized near a face image
+        \item Difficult to enumerate templates for different poses
+    \end{itemize}
+\end{itemize}
+
+\section{Appearence-Based Methods}
+\begin{itemize}
+    \item Collect a large set of face and non face images and train a classifier to discriminate them
+    \item given a test image, detect faces by applying the classifier at each position and scale of the image
+\end{itemize}
+
+\subsection{Sun and Poggio}
+\begin{itemize}
+    \item The system was capable of:
+    \begin{itemize}
+        \item Be invariant on the position of the face (19 x 19 pixels sliding window)
+        \item Detect faces in different scale
+    \end{itemize}
+    \item Preprocessing
+    \begin{itemize}
+        \item Resizing: 19 x 19
+        \item Masking: cropping image angle of the window
+        \item Illumination gradient correction: find the best brightness plane and the subtract
+        \item Histogram equalization: compensates the imaging effects
+    \end{itemize}
+    \item Distribution of the face patterns
+    \begin{itemize}
+        \item Record are grouped in 6 clusters using k-means with k = 6
+        \item cluster modified via a multi-dimensional gaussian with cetroid and a covariance matrix
+        \item Spectro analysis using the largest eigenvector
+    \end{itemize}
+    \item Distance Metrics: distances of a sample to all the dace and non face clusters, each distance has two metrics
+    \begin{itemize}
+        \item Distance between the point and the subspace corresponding to the cluster
+        \item Given the projection of the point on the subspace what is the distance between the point and the centroid of the clusters
+        \item each face non face is represented by a vector of these two distances
+    \end{itemize}
+    \item The classifier
+    \begin{itemize}
+        \item Multilayer NN to identify "face" window patterns from "non face" patterns on their "difference" feature vector of the 12 distance measurements
+    \end{itemize}
+    \item Create virtual positive examples, data argumentation
+    \item Bootstrapping: how can i create a dataset that contains all the non faces -> Algorithm
+\end{itemize}
+
+\subsection{Rowley - Baluja - Kandle}
+\begin{itemize}
+    \item Features:
+    \begin{itemize}
+        \item Similar to sun and poggio
+        \item 20 x 20 instead of 19 x 19
+        \item same technique for bootstrapping and pre-processing
+        \item NN applied directly to the image
+        \item Different heuristic
+        \item Faster than sun and poggio
+    \end{itemize}
+    \item The architecture:
+    \begin{itemize}
+        \item Neurons as feature detector, each see only a small part of the image and respond in a specific scenario
+    \end{itemize}
+    \item Problem \& Solution: only detect faces in upper right position
+    \begin{itemize}
+        \item Image in input to the first NN -> output the probable orientation
+        \item Roteate the image with the angle obtained and feed this input to the previous NN
+    \end{itemize}
+    \item Router Network:
+    \begin{itemize}
+        \item Roteate a dace sample at 10 degree increment
+        \item Create virtual examples from each sample
+        \item Train a multilayer NN 
+    \end{itemize}
+\end{itemize}
+
+\section{The Viola - Jones Face Detector}
+\begin{itemize}
+    \item Previous algorithm quite slow, create a fast and accurate one
+    \item Has the following main 
+    \begin{itemize}
+        \item Integral images for fast future evaluation
+        \item Boosting for feature selection
+        \item Attention cascade for fast rejection of non-face windows
+    \end{itemize}
+    \item Rectangular image features: by nose, mouth, face approx in rect features, dark and lighter
+    \item Fast computation with integral images
+    \begin{itemize}
+        \item sum of pixels value to the top and left of (x,y)
+        \item done in 1 pass in linear time starting from the top left corner
+        \item cum sum row
+        \item integral image
+    \end{itemize}
+    \item Computing sum within a rectangle
+    \begin{itemize}
+        \item A,B,C,D
+        \item A-B-C+D
+    \end{itemize}
+    \item Feature selection aka boosting
+    \begin{itemize}
+        \item 24 x 24 detection region, how learn the best rectangle
+        \item boosting build ensamble sequntially
+        \item each mdoel corrects the mistakes of its predecessors
+    \end{itemize}
+    \item Boosting:
+    \begin{itemize}
+        \item Combination of weak learners
+        \item Training consist in multiple boosting round
+        \begin{enumerate}
+            \item find weak learner with lowest weighted error
+            \item raise the weight of missclassifierd examples
+        \end{enumerate}
+        \item Final classifier is the combination of the weak learner
+    \end{itemize}
+    \item Boosting for face detection
+    \begin{itemize}
+        \item Algorithm intuition
+        \item Algorithm definition
+    \end{itemize}
+    \item Attention cascade
+    \begin{itemize}
+        \item Simple classifier which reject many of the negative sub windows while detecting almost all positive sub-windows
+        \item negative outcome at any point leads to the immediate rejection of the sub-window
+    \end{itemize}
+    \item Non-Maximum suppression
+    \begin{itemize}
+        \item Set of detections \(\rightarrow\) partitioned \(\rightarrow\) disjoint subset
+        \item Two detection are in the same subset if their regions overlap
+        \item Each partition yields a single final detection
+        \item Corner of the final region are the average of the corners of all detections in the set
+    \end{itemize}
+\end{itemize}
+
+
+\chapter{Human Detection}
+\begin{itemize}
+    \item Challenges
+    \item Research issues
+    \item The detection phase, sliding window detectors find object in 4 steps
+    \item Search over space and scale
+    \begin{itemize}
+        \item Space: windows is 128 px tall and 64 px wide, 2:1 aspect ration (person viewed from the front and side)
+        \item Scale: down-scale the image and slide the window again
+    \end{itemize}
+\end{itemize}
+
+\section{Support Vector Machines}
+\begin{itemize}
+    \item Definition
+    \item Issue and question
+    \item Hyperplane, support vectors, margin
+    \item Only support vector thrown away the other examples
+    \item Goals:
+    \begin{itemize}
+        \item 100\% accuracy
+        \item maximize the distance respect to the margin
+    \end{itemize}
+    \item Hyperplane \(w^tx + b = 0\), scalar product does not change it
+    \item Canonical from
+    \item Optimization problem
+    \item Convex quadratic problem, unique minimum
+    \item Assumption: linearly separable problem
+    \item Slack variable
+    \item Regularization term
+\end{itemize}
+
+
+\section{Histogram of Oriented Gradients}
+\begin{itemize}
+    \item Definition
+    \item Steps
+    \item Compute Gradients
+    \begin{itemize}
+        \item Images as continuous function
+        \item Derivaty definition and approximation
+        \item Gradient vector, magnitude and direction
+        \item Horizontal and vertical derivaty by taking the difference of the next and previous points
+        \item Overlapping the mask and computing gradients we obtain the edge detection features
+    \end{itemize}
+    \item Hog Step
+    \begin{enumerate}
+        \item Horizontal and vector gradients , no pre-processing
+        \item Gradient orientation and magnitudes
+        \item 64x128 \(\rightarrow\) 16x16 blocks of 50\% overlap
+        \item Each block is 2x2 cells with size 8x8
+        \item Quantize the gradient orientation into 9 bins
+        \item Concatenate histograms
+    \end{enumerate}
+    \item Classification
+\end{itemize}
+
+\section{The Hog Detector-Post Processing}
+\begin{itemize}
+    \item Non-Maxima Suppression
+    \item Are we done? Objects articulated
+    \item Two component bycicle model-latent SVMs
+\end{itemize}
+
+
+\chapter{Deep Convolutional Neural Networks}
+\begin{itemize}
+    \item Learn feature hierarchy from the initial pixel in order to obtain a classifier
+    \item Inspiration from biology, receptive fields
+    \item Image classification, image, height x weight x 3 of 0 x 255 dimension
+    \item Challenge
+    \begin{itemize}
+        \item Viewpoint 
+        \item Illumination 
+        \item Scale
+        \item Deformation
+        \item Background clutter
+        \item Occlusion
+        \item Intraclass 
+    \end{itemize}
+    \item Data driven approch
+     \item Convolution
+    \item Matrix dot product with filter
+    \item \textbf{Convolution}
+    \item Mask: identity, edge detection, sharpeon, box blur, gaussian blur
+    \item Strade, Padding
+    \item Traditional approach and deep learning
+    \item \textbf{Convolutional Neural Networks (CNN)}
+    \begin{itemize}
+        \item Object Character Recognition
+        \item Fully Connected NN
+        \item Locally Connected NN
+    \end{itemize}
+    \item Maxpooling
+    \item \textbf{AlexNET}
+    \begin{itemize}
+        \item 8 layer in the following schema:
+        \begin{enumerate}
+            \item Conv + Pool
+            \item Conv + Pool
+            \item Conv
+            \item Conv
+            \item Conv + Pool
+            \item Full
+            \item Full
+            \item SoftMax Output (1000 way)
+        \end{enumerate}
+        \item 2 independent GPU, run in parallel and there are connection between the two GPUs
+        \item Way GPU
+        \item Deepening in softmax
+        \item Using the sigmoid activation function to propagate G, becomes zero
+        \item ReLU
+    \end{itemize}
+    \item Mini-Batch stochastic gradient descent
+    \item Technique to reduce overfitting
+    \begin{itemize}
+        \item Data Argumentation
+        \item Dropout
+    \end{itemize}
+    \item \textbf{ImageNET}
+    \begin{itemize}
+        \item What is and how it has been build
+        \item Overall
+    \end{itemize}
+    \item Hierarchy of features
+    \item Feature analysis
+    \item Other Computer vision task
+    \begin{itemize}
+        \item Semantic segmentation
+        \item Classification + Localization
+        \item Object Detection
+        \item Instance Segmentation
+        \item Image Captioning
+    \end{itemize}
+\end{itemize}
+
+\section{Semantic Segmentation}
+\begin{itemize}
+    \item Problems
+    \item \textbf{First ides: sliding window}
+    \begin{itemize}
+        \item Classify the central pixel of the patch
+        \item Process does not consider contextual information
+    \end{itemize}
+    \item \textbf{Second Idea: Fully convolutional}
+    \begin{itemize}
+        \item Feature extractor without pooling layers
+        \item Very expensive
+    \end{itemize}
+    \item \textbf{Third idea: Encoder \& Decoder}
+    \begin{itemize}
+        \item Encoder: downsapmling
+        \item Decoder: upsampling
+    \end{itemize}
+    \item \textbf{Upsampling}
+    \begin{itemize}
+        \item Stride and padding as before
+        \item Manage overlapping area: sum the overlapping results
+        \item Solve "what" but not "where"
+        \item Branches
+        \item U-Net
+    \end{itemize}
+\end{itemize}
+
+\section{2D Object detection}
+\begin{itemize}
+    \item Classification + Localization (ass: single object)
+    \begin{itemize}
+        \item Classification, soft max
+        \item Regression, L2 loss
+        \item Losses sum, back propagation
+    \end{itemize}
+    \item Aside: human pose estimation (ass: single object)
+    \begin{itemize}
+        \item I want the position of the relevant part of the object
+        \item Many output layers, many losses, losses sum, back propagation
+    \end{itemize}
+    \item Object detection as regression
+    \begin{itemize}
+        \item Can we relax the assumption of a single predominant object
+        \item We have to know in advance the number of object
+        \item Not possible
+    \end{itemize}
+    \item Object detection as classification: sliding window
+    \begin{itemize}
+        \item Apply the cnn in to huge number of locations
+        \item Expensive
+    \end{itemize}
+    \item R-CNN / Region proposal -selective search
+    \begin{itemize}
+        \item Find region that are likely to contain objects, selective search
+        \item Image
+        \item Ad Hoc Training Objective
+        \begin{itemize}
+            \item Log loss
+            \item Hinge loss
+            \item Least squares
+        \end{itemize}
+        \item Training slow, heavy in disk
+        \item Inference is slow
+    \end{itemize}
+    \item \textbf{Fast R-CNN}
+    \begin{itemize}
+        \item Input the entire image
+        \item Process the whole image with several conv and max pool layer, get conv feature map
+        \item For each object proposal region of interest pooling layer extract featre vector
+        \item FC Layers, two branches:
+        \begin{itemize}
+            \item Linear + softmax: estimats all k object + "catch-all background class"
+            \item Linear: for each of the k object output 4 real number (bounding box regression)
+        \end{itemize}
+        \item Losses combined by sum and back propagation
+    \end{itemize}
+    \item \textbf{Faster-RCNN}
+    \begin{itemize}
+        \item Learn proposal region and is able to recognize them
+        \item Insert region proposal network to predict proposal from features
+        \item 4 losses from the feature map:
+        \begin{itemize}
+            \item RPN object / non-object
+            \item PRN box coordinates
+            \item Final classification score (obj class)
+            \item Final box coordinates
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Recurrent Neural Network}
+    \begin{itemize}
+        \item Image captioning solved by RNN
+        \item Definition
+        \item Types
+    \end{itemize}
+\end{itemize}
+
+
+\chapter{Graph-Based Methods in Computer Vision: Recent Advances}
+\begin{itemize}
+    \item Images as graphs
+    \item Connection between graphs and matricies
+    \item Matrix representation is sensitive to way we number nodes
+    \item Eigenvalue and eigenvectors are useful
+    \item Invariant respect the way we number the nodes
+    \item Edge weights = similarity
+    \item Pixel with feature vector \(x\), define distance function for this feature rep
+    \item Convert distance between pixels in affinity using gaussial kernel
+    \item Formula
+    \item \textbf{Clustering on graphs}
+    \begin{itemize}
+        \item n objects, nxn pairwise similarity matrix A
+        \item Goal
+        \item Cluster:
+        \begin{itemize}
+            \item Internal criteria
+            \item External criteria
+            \item How do we formalize these two
+        \end{itemize}
+        \item S in or equal to C and i in S
+        \item Average weight degree of i with regard the set S
+        \item Relative similarity bet i and j respect to the average similarity bet i and its neighbours
+        \item Weigh of i with regard to S, gives the similarity bet i and S - i with respect to the overall similarity among the vertices of S - i
+        \item The total weight of S 
+        \item Definition of Dominant Set
+        \begin{itemize}
+            \item Internal homogeneity: all node in the cluster are important for it
+            \item External homogeneity: considering a new point to add the cluster cohesiveness will decrease
+        \end{itemize}
+        \item \textit{From dominant set to local optima}
+        \begin{itemize}
+            \item Cluster as a vector expressing the partecipation of each node to a cluster
+            \item \(f(x) = x^TAx\)
+            \item Finding x that maximizes f
+            \item Normalization, standard simplex
+            \item Standard quadratic problem
+            \item \(x_i = 0\) or \(x_i >> 0\)
+            \item Charateristics
+        \end{itemize}
+        \item \textit{Using binary symmetric affinities}
+        \begin{itemize}
+            \item Clique
+            \item Maxclique
+        \end{itemize}
+        \item \textit{Finding dominant sets}
+        \begin{itemize}
+            \item Replicator dynamics
+            \item Formula
+        \end{itemize}
+        \item Results in image segmentation
+        \begin{itemize}
+            \item Need more sophisticated features
+            \item Similarity measre that takes into account the context of the sorrounding pixels
+        \end{itemize}
+        \item Replicator dynamics useful for ranking elements in the cluster
+        \item Summary of dominant set
+    \end{itemize}
+    \item \textbf{Detecting conversetional groups in image and sequences}
+    \begin{itemize}
+        \item F-Formations
+        \item Similarity: frustrum of visual attention, definition
+    \end{itemize}
+    \item \textbf{Dominant set for constrained image segmentation}
+    \begin{itemize}
+        \item Extract dominant set containing a particular node
+        \item Formula
+        \item \(\hat{I}_s\) special diagonal matrix
+        \item \(\alpha > \lambda_{max}(A_{V/S})\)
+        \item Modalities:
+        \begin{itemize}
+            \item Scribble
+            \item Bounding box
+        \end{itemize}
+        \item Pelillo algo take into account both
+        \item Framework:
+        \begin{itemize}
+            \item Superpixel
+            \item Affinity matrix
+            \item Replicator Dynamic
+            \item Get non zero element from the resulting vector
+        \end{itemize}
+        \item Bounding box \(\rightarrow\) detect background instead of the foreground
+    \end{itemize}
+    \item \textbf{Large-Scale image geo-localization using dominant set}
+    \begin{itemize}
+        \item Problem
+        \item Strategy
+        \item Pipeline
+        \begin{itemize}
+            \item Sift features
+            \item NN for each feature
+            \item NN pruning
+            \item DS using global info
+            \item CDS
+            \item Extract the best matching
+            \item Get GPS coordinates
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Multi-Target Tracking in Multiple Non-Overlapping Cameras using Fast-Constrained Dominant Set}
+    \begin{itemize}
+        \item Recognize an individual over different non-overlapping cameras
+        \item Gallery of person image, recognize a new observed image, probe
+        \item \textit{Video-Based Person Re-Identification}
+        \begin{itemize}
+            \item Traditional Methods
+            \item Pelillo's approach
+            \begin{itemize}
+                \item Bounding box n consecutive frames
+                \item Similarity: person appearance and person motion
+                \item Graph as many nodes as elements plus the probe
+                \item Run CDS to have the probe
+                \item Return a rank, take the top one
+            \end{itemize}
+        \end{itemize}
+        \item \textit{Multi-Target Multi-Camera Tracking}
+        \begin{itemize}
+            \item Track people in each camera
+            \item Short tracklets using amount of overlap of bounding box in cons fames
+            \item DS same simialrity, return bigger tracklets
+            \item DS nodes are the tracklets, return bigger tracklets
+            \item Combine all the tracklets, CDS to the camera
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{Context-Aware of Classification}
+\begin{itemize}
+    \item Context
+    \item The Consistent Labelling Problem
+    \begin{itemize}
+        \item Involves
+        \item Goal
+        \item Local measurements and contextual information
+        \item R
+    \end{itemize}
+    \item Relaxation Labelling Process
+    \item Hummel and Zucker's Consistency
+    \item Relaxation Labeling as a non-cooperatibve game
+    \begin{itemize}
+        \item players = objects
+        \item pure strategies = labels
+        \item mixed strategies = weighted labeling assignments
+        \item payoffs = compatibility coefficients
+    \end{itemize}
+    \item Graph Transduction
+    \begin{itemize}
+        \item Description
+        \item Goal
+        \item Cluster assumption
+    \end{itemize}
+    \item Graph Transduction Game
+    \item Word Sense Disambiguation
+    \begin{itemize}
+        \item Intended meaning of a word based on the context
+        \item Game teoretic model
+        \begin{itemize}
+            \item players = words
+            \item pure strategies = senses
+            \item mixed strategies = sense similarity
+            \item payoffs = weighted graph
+        \end{itemize}
+    \end{itemize}
+    \item The Protein Function Protection game
+    \begin{itemize}
+        \item Motivation
+        \item Hume's principle
+        \item Game:
+        \begin{itemize}
+            \item players = proteins
+            \item strategies = functional classes
+            \item payoff function = combination of protein and function-level similarities
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Metric Learning: Triplet Loss}
+    \begin{itemize}
+        \item Problem
+        \item Triplet Loss
+        \item Formula
+        \item Triplet Loss Pipeline
+        \begin{enumerate}
+            \item Prepare data: mini batch of k images
+            \item Extract Feature Embedding: DNN
+            \item Select Triplets: select subset via its selection method
+            \item Evaluate loss using the selected one
+        \end{enumerate}
+    \end{itemize}
+    \item \textbf{Beyond Triplets: The "Group" Loss}
+    \begin{itemize}
+        \item Initialization: x, softmax, nxn pairwise similarity, nn embedding
+        \item Refiniment: refine x, similarity between all mini-batch and labeling preferences
+        \item cross-entropy loss, update the weights via backprop
+        \item Goal
+    \end{itemize}
+    \item \textbf{Puzzle Solving with RLP}
+\end{itemize}
+
+
+
+
+
+\end{document}

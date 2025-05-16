@@ -1,0 +1,130 @@
+\chapter{Stochastic Processes}
+\begin{tcolorbox}
+A \textbf{Stochastic Process} is a Random Variable that also depends on \textbf{time}, thus it is a function of two arguments \(X(t,w)\) where:
+\begin{itemize}
+    \item \(t \in \mathcal{T}\) is \textbf{time}
+    \item \(w \in \Omega\)
+\end{itemize}
+Moreover:
+\begin{itemize}
+    \item At any time \(t\) we see a \textbf{random variable} \(X_t(w)\): function of random income.
+    \item At a given \(w\) we obtain a \textbf{function of time} \(X_w(t)\)
+\end{itemize}
+\end{tcolorbox}
+
+We have two classification of stochastic processes and are the following one:
+\begin{itemize}
+    \item \textbf{Variable Classification:}
+    \begin{itemize}
+        \item \(X(t,w)\) is a \textbf{discrete-state process} if \(X_t\) is a \textit{discrete rv} \(\forall t\)
+        \item \(X(t,w)\) is a \textbf{continuous-state process} if \(X_t\) is a \textit{continuous rv} \(\forall t\)
+    \end{itemize}
+    \item \textbf{Time Dimension Classification:}
+    \begin{itemize}
+        \item \(X(t,w)\) is a \textbf{discrete-state process} if the set of time \(\mathcal{T}\) is \textit{discrete}
+        \item \(X(t,w)\) is a \textbf{continuous-state process} if \(\mathcal{T}\) is unbounded and thus \textit{continuous} 
+    \end{itemize}
+\end{itemize}
+
+\section{Proprieties}
+\subsection{Mean Function}
+\[\mu_x(t) = \mathbb{E}[X(t)]\]
+Where \(\mathbb{E}[X(t)]\) si the \textbf{expected value} of the rv for the fixed \textit{time point} \(t\)
+
+\subsection{Variance Function}
+\[\sigma^2(t) = VAR[X(t)] = \mathbb{E}[(X(t) - \mu_x(t))^2] = \mathbb{E}[X^2(t)] - [\mu_x(t)]^2\]
+
+\subsection{Standard Deviation Function}
+\[\sigma_x(t) = \sqrt{VAR[X(t)]} = \sqrt{\sigma_x^2(t)}\]
+
+\subsection{Auto-Covariance Function}
+\[\sigma_x(t,s) = C_{x,x} = COV[X(t), X(s)] = \mathbb{E}\Big[\Big(X(t) - \mu_x(t)\Big) \times \Big(X(s) - \mu_x(s)\Big)\Big]\]
+\[ = \mathbb{E}\Big[\Big(X(t) \times X(s)\Big) - \Big(\mu_x(t) \times \mu_x(s)\Big)\Big]\]
+
+And it has the following proprieties:
+\begin{itemize}
+    \item \(C_{x,x}(t,s) = C_{x,x}(s,t)\)
+    \item \(\sigma^2_x(t) = VAR[X(t)] = COV[X(t),X(t)] = C_{x,x}(t,t) = \mathbb{E}[X^2(t)] - u^2_x(t)\)
+    \item It is interpreted as the classic covariance
+\end{itemize}
+
+\subsection{Auto-Correlation Function}
+\[\varphi_x(t,s) = \frac{\sigma_x(t,s)}{\sigma_x(t)\sigma_x(s)} = \frac{C_{x,x}(t,s)}{C_{x,x}(t)C_{x,x}(s)} = \frac{\text{autocovariance}}{\text{SD of s times SD of t}}\]
+In context of \textbf{signal processing} ad in \textbf{engineering literature} the \textbf{autocorrelation functon} is denoted as \(R_{x,x}(t,s)\) and is defined as:
+\[R_{x,x}(t,s) = \mathbb{E}[X(t)X(s)]\]
+And it is equivalent to \(\sigma_x(t,s)\) only when the mean = 0 and the variance = 1
+
+\section{Stationary and wide-sense stationary processes}
+\subsection{Strongly / Strict-Sense Stationary}
+\begin{tcolorbox}
+A stochastic process is called \textbf{Strongly / Strict-Sense Stationary} if:
+\begin{itemize}
+    \item All its \textit{statistical proprieties} are \textbf{invariant over time}
+    \item for any points \(t_1,...,t_r\) and any value \(\tau\) if the two following \textbf{joint distributions} are \textbf{equivalent}
+\[X(t_1),...,X(t_r) \equiv X(t_1 + \tau),...,X(t_r + \tau)\]
+\end{itemize}
+\end{tcolorbox}
+It has the following proprieties:
+\begin{itemize}
+    \item \(X(t)\) and \(X(t + \tau)\) have the \textit{same distribution}, thus same mean, variance, sd
+    \item Since the \textbf{joint distribution} of \(X(t_1)\) and \(X(t_2)\) is invariant respect to its statistical proprieties over time (can be shifted over time with no changes in proprieties) or more shortly \textbf{translation invariant} also the \textbf{autocovariance} of \(X(t)\) must be \textbf{translation invariant}
+    \item Same invariance \(\forall r \geq 1\)
+\end{itemize}
+
+\subsection{Weakly / Wide-Sense Stationary}
+\begin{tcolorbox}
+A stochastic process \(X(t)\) is \textbf{Weakly / Wide-Sense Stationary} if the following two conditions holds:
+\begin{enumerate}
+    \item The \textbf{Mean Function} of \(X(t), X(s)\) is \textit{constant}, thus:
+    \[u(t) \xrightarrow[t \to \infty]{} \mu\]
+    \item The \textbf{Auto-Covariance Function} of \(X(t), C_{xx}(t,s)\) \textit{depends} only on \((s - t) = \tau\), thus:
+    \[\sigma(t, t+h) \xrightarrow[t \to \infty]{} \sigma(h) \quad \text{depends only on the \textit{distance}}\]
+\end{enumerate}
+\end{tcolorbox}
+
+
+\section{Markov Processes}
+\begin{tcolorbox}
+A stochastic process \(X=\{X(t): t \geq 0\}\) is \textbf{Markov} for any \(\textcolor{blue}{t_1 < t_2 < ... } < \textcolor{green}{t_n} < \textcolor{red}{t}\) and for any sets (events) \(A, A_1,...,A_n\):
+\[\mathbb{P}\Big[\textcolor{red}{X(t) \in A} | \textcolor{blue}{X(t_1) \in A_1,...,X(t_{n-1}) \in A_{n-1}}, \textcolor{green}{X(t_n) \in A_n} \Big] = \]
+\[\mathbb{P}\Big[\textcolor{red}{X(t) \in A} | \textcolor{green}{X(t_n) \in A_n} \Big]\]
+
+\[\mathbb{P}\Big[\textcolor{red}{future} | \textcolor{blue}{past}, \textcolor{green}{present} \Big] = \mathbb{P}\Big[\textcolor{red}{future} | \textcolor{green}{present} \Big]\]
+
+\centerline{The \textcolor{red}{future} given the \textcolor{green}{present} is \textbf{independent} from the \textcolor{blue}{past}}
+\end{tcolorbox}
+\subsubsection{Markov Propriety}
+For a \textbf{Markov Process} the \textit{conditional distribution} of \(X(t)\) is the \textbf{same} under two \textbf{different conditions:}
+\begin{enumerate}
+    \item Given observations of the process \(X\) at several moments in the \textcolor{blue}{past}
+    \item Given only the \textcolor{green}{present}, so the latest observation of \(X\)
+\end{enumerate}
+
+\subsection{Markov Chain}
+\begin{tcolorbox}
+The \textbf{Markov Chain} is a stochastic process with \textbf{discrete space} and the \textbf{Markov Propriety}. 
+From now all processes we will study will be \textbf{Markov Chain (continuous time)} unless otherwise started.
+\end{tcolorbox}
+
+\begin{itemize}
+    \item \textbf{Conditional Probability Mass Function}
+    $$\mathcal{P}_{(s,t)}(X_s, X_t) = \mathbb{P}[X(t) = X_t | X(s) = X_s]$$
+    \item \textbf{Time Homogeneous MC}
+    $$\mathbb{P}[X(t) = X_t | X(s) = X_s] = \mathcal{P}_h(X_s, X_t)$$
+    Depends only on $h = t - s$
+    \item $\mathcal{P}_h(i,j) \rightarrow \mathcal{P}_{ij}(h) = \mathbb{P}[X(h) = j| X(0)=i]$
+    \item Set of distribution for $X$ in a time dependent matrix
+    $$
+    \mathcal{P}_h = \begin{bmatrix}
+    P_{11}(h) & P_{12}(h) & \hdots & P_{1n}(h)\\
+    P_{21}(h) & P_{22}(h) & \hdots & P_{2n}(h)\\
+    \vdots & \vdots & \ddots & \vdots\\
+    P_{n1}(h) & P_{n2}(h) & \hdots & P_{nn}(h)\\
+    \end{bmatrix}
+    $$
+    \item Each $P_{ij}(h)$ represent the probability of going \textbf{from state} $i$ \textbf{to state} $j$ in \textbf{time} $h$
+    \item It is a stochastic matrix so, the row has sum up to 1 and each element is greater or equal to 0 $\forall ij,h \geq 0$
+\end{itemize}
+\begin{tcolorbox}
+    A stochastic process $X$ is \textbf{counting} if $X(t)$ is the \textit{number of items / arrivals} counted by the time $t$
+\end{tcolorbox}

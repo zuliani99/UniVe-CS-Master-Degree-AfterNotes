@@ -1,0 +1,54 @@
+\chapter{New Requirements, NOSQL}
+\section{Weaknesses of the RDM}
+The following weaknesses can become an issue when using the relational data model
+\begin{itemize}
+    \item \textbf{Inadequate Representation of Data:} 
+    \begin{itemize}
+        \item Translating arbitrary data into the \textit{relational table} format is not an easy task, since there are complex formats like XML and unstructured text documents, so squeezing data into row and columns need some additional attention
+        \item The efficiency of retrieval is associated also to the data representation since it might have to be recombined from several tables
+        \item Due to normalization data belonging to a single entity might end up in several different tables
+    \end{itemize}
+    \item \textbf{Semantic Overloading:} entities as well as relationships between entities are both mapped to relations in a database schema. In our final database schema, both the entities and the relationships were contained as relation schemas.
+    \item \textbf{Weak Support for Recursion:} in the relational data model it is diffcult to execute recursive queries that need to join. The purpose of a recursive query is to compute the \textit{transitive closure} of some table attributes. Costly to compute in a real RDBMS.
+    \item \textbf{Homogeneous data structure:} the relational data model requires both \textit{horizontal} and \textit{vertical} homogeneity:
+    \begin{itemize}
+        \item \textit{Horizontal homogeneity:} all tuples have to range over the same set of attributes
+        \item \textit{Vertical homogeneity:} values in one column have to come from the same predefined attribute domain
+    \end{itemize}
+    Mixing values from different domains in one column is not allowed
+\end{itemize}
+
+\section{Weaknesses of RDBMSs}
+\begin{itemize}
+    \item \textbf{Infrequent updates:} RDBMSs are designed for frequent queries but very infrequent updates 
+    \item \textbf{SQL dialects:} not all RDBMSs fully support the standard and some deliberately use their own syntax
+    \item \textbf{Restricted data types:} RDBMS can be considered quite inflexible regarding the support of modern data types or formats
+    \item \textbf{Declarative access:} SQL is that queries are usually \textit{declaratively} expressed based on the (expected) content in the database tables. However, other data formats might require a non-declarative access
+    \item \textbf{Short-lived transactions:} the typical RDBMS transaction is however very short-lived. The implemented transaction management mechanisms are usually not suited for long-term transactions. However, the support for long-term transactions is in particular important for data stream processing where queries are periodically executed on continuous streams of data
+    \item \textbf{Lower throughput:} handling massive amounts of data, achieving a suffciently high data throughput might not be possible as good as one would require with an RDBMS
+    \item \textbf{Rigid schema:} schema evolution is poorly supported: Changes in the relation schemas are diffcult and costly
+    \item \textbf{Non-versioned data:} versioning of data is disregarded by conventional RDBMSs
+\end{itemize}
+
+\section{New Data Management Challenges}
+Some of the new challenges for database management are the
+following:
+\begin{itemize}
+    \item \textbf{Complexity:} data are organized in complex structures like social network and thus graph structure
+    \item \textbf{Schema independence:} documents can be processed without a given schema definition, so data can be structured in an arbitrary way without complying with any prescribed format
+    \item \textbf{Sparseness:} if there is an (optional) schema for a data set, it may happen that a lot of data items are not available
+    \item \textbf{Self-descriptiveness:} As a consequence on schema independence and sparseness, metadata are attached to individual values in order to enable data processing
+    \item \textbf{Variability:} data are \textit{constantly changing}, DBMS has to handle frequent data modifications in the form of insertions, updates and deletions
+    \item \textbf{Scalability:} data are distributed on a huge number of interconnected servers. Moreover, the database system has to support flexible horizontal scaling : servers can leave the network and new servers can enter the network on demand.
+    \item \textbf{Volume:} large data volumes have to be processed
+\end{itemize}
+
+\section{NOSQL}
+Non-relational databases have been developed as a reaction to these challenges and new requirements. Historically the term “NoSQL” applied to database systems that offered query languages and access methods other than the standard SQL. NOSQL covers database systems that:
+\begin{itemize}
+    \item Have data models other than the conventional relational tables
+    \item Support programmatic access to the database system or query languages other than SQL
+    \item Can cope with schema evolution
+    \item Support data distribution
+    \item Do not strictly adhere to the ACID properties
+\end{itemize}
