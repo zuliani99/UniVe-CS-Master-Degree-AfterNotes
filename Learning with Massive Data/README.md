@@ -1,2 +1,2 @@
 # Learning with Massive Data
-Hand written [afternotes](https://drive.google.com/file/d/1V-nrnBxi5lL-_4IhHfnrl1-nnkGax9kJ/view?usp=drive_link)
+Hand written [afternotes](https://drive.google.com/file/d/1unP3Itskd8v3auw1Rb1q60wKIdXH2nqT/view?usp=sharing)

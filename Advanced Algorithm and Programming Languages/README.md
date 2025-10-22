@@ -2,4 +2,4 @@
 
 **The new course name is Advanced Distributed Algorithms**
 
-Hand written [afternotes](https://drive.google.com/file/d/1P11kMMvhe4cszMocZ72tTDWVMgCEw15K/view?usp=sharing)
+Hand written [afternotes](https://drive.google.com/file/d/1vJS1EQtl2lS-ErFIEnypyfOH-5NmD33Z/view?usp=sharing)
